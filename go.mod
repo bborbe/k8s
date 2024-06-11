@@ -1,20 +1,29 @@
 module github.com/bborbe/k8s
 
-go 1.22.2
+go 1.22.4
 
 exclude (
 	k8s.io/api v0.29.0
 	k8s.io/api v0.29.1
 	k8s.io/api v0.29.2
 	k8s.io/api v0.29.3
+	k8s.io/api v0.29.4
+	k8s.io/api v0.30.0
+	k8s.io/api v0.30.1
 	k8s.io/apimachinery v0.29.0
 	k8s.io/apimachinery v0.29.1
 	k8s.io/apimachinery v0.29.2
 	k8s.io/apimachinery v0.29.3
+	k8s.io/apimachinery v0.29.4
+	k8s.io/apimachinery v0.30.0
+	k8s.io/apimachinery v0.30.1
 	k8s.io/client-go v0.29.0
 	k8s.io/client-go v0.29.1
 	k8s.io/client-go v0.29.2
 	k8s.io/client-go v0.29.3
+	k8s.io/client-go v0.29.4
+	k8s.io/client-go v0.30.0
+	k8s.io/client-go v0.30.1
 )
 
 require (
