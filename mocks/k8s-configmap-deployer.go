@@ -22,12 +22,12 @@ type K8sConfigMapDeployer struct {
 	deployReturnsOnCall map[int]struct {
 		result1 error
 	}
-	GetStub        func(context.Context, k8s.Namespace, string) (*v1.ConfigMap, error)
+	GetStub        func(context.Context, k8s.Namespace, k8s.Name) (*v1.ConfigMap, error)
 	getMutex       sync.RWMutex
 	getArgsForCall []struct {
 		arg1 context.Context
 		arg2 k8s.Namespace
-		arg3 string
+		arg3 k8s.Name
 	}
 	getReturns struct {
 		result1 *v1.ConfigMap
@@ -37,12 +37,12 @@ type K8sConfigMapDeployer struct {
 		result1 *v1.ConfigMap
 		result2 error
 	}
-	UndeployStub        func(context.Context, k8s.Namespace, string) error
+	UndeployStub        func(context.Context, k8s.Namespace, k8s.Name) error
 	undeployMutex       sync.RWMutex
 	undeployArgsForCall []struct {
 		arg1 context.Context
 		arg2 k8s.Namespace
-		arg3 string
+		arg3 k8s.Name
 	}
 	undeployReturns struct {
 		result1 error
@@ -116,13 +116,13 @@ func (fake *K8sConfigMapDeployer) DeployReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *K8sConfigMapDeployer) Get(arg1 context.Context, arg2 k8s.Namespace, arg3 string) (*v1.ConfigMap, error) {
+func (fake *K8sConfigMapDeployer) Get(arg1 context.Context, arg2 k8s.Namespace, arg3 k8s.Name) (*v1.ConfigMap, error) {
 	fake.getMutex.Lock()
 	ret, specificReturn := fake.getReturnsOnCall[len(fake.getArgsForCall)]
 	fake.getArgsForCall = append(fake.getArgsForCall, struct {
 		arg1 context.Context
 		arg2 k8s.Namespace
-		arg3 string
+		arg3 k8s.Name
 	}{arg1, arg2, arg3})
 	stub := fake.GetStub
 	fakeReturns := fake.getReturns
@@ -143,13 +143,13 @@ func (fake *K8sConfigMapDeployer) GetCallCount() int {
 	return len(fake.getArgsForCall)
 }
 
-func (fake *K8sConfigMapDeployer) GetCalls(stub func(context.Context, k8s.Namespace, string) (*v1.ConfigMap, error)) {
+func (fake *K8sConfigMapDeployer) GetCalls(stub func(context.Context, k8s.Namespace, k8s.Name) (*v1.ConfigMap, error)) {
 	fake.getMutex.Lock()
 	defer fake.getMutex.Unlock()
 	fake.GetStub = stub
 }
 
-func (fake *K8sConfigMapDeployer) GetArgsForCall(i int) (context.Context, k8s.Namespace, string) {
+func (fake *K8sConfigMapDeployer) GetArgsForCall(i int) (context.Context, k8s.Namespace, k8s.Name) {
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
 	argsForCall := fake.getArgsForCall[i]
@@ -182,13 +182,13 @@ func (fake *K8sConfigMapDeployer) GetReturnsOnCall(i int, result1 *v1.ConfigMap,
 	}{result1, result2}
 }
 
-func (fake *K8sConfigMapDeployer) Undeploy(arg1 context.Context, arg2 k8s.Namespace, arg3 string) error {
+func (fake *K8sConfigMapDeployer) Undeploy(arg1 context.Context, arg2 k8s.Namespace, arg3 k8s.Name) error {
 	fake.undeployMutex.Lock()
 	ret, specificReturn := fake.undeployReturnsOnCall[len(fake.undeployArgsForCall)]
 	fake.undeployArgsForCall = append(fake.undeployArgsForCall, struct {
 		arg1 context.Context
 		arg2 k8s.Namespace
-		arg3 string
+		arg3 k8s.Name
 	}{arg1, arg2, arg3})
 	stub := fake.UndeployStub
 	fakeReturns := fake.undeployReturns
@@ -209,13 +209,13 @@ func (fake *K8sConfigMapDeployer) UndeployCallCount() int {
 	return len(fake.undeployArgsForCall)
 }
 
-func (fake *K8sConfigMapDeployer) UndeployCalls(stub func(context.Context, k8s.Namespace, string) error) {
+func (fake *K8sConfigMapDeployer) UndeployCalls(stub func(context.Context, k8s.Namespace, k8s.Name) error) {
 	fake.undeployMutex.Lock()
 	defer fake.undeployMutex.Unlock()
 	fake.UndeployStub = stub
 }
 
-func (fake *K8sConfigMapDeployer) UndeployArgsForCall(i int) (context.Context, k8s.Namespace, string) {
+func (fake *K8sConfigMapDeployer) UndeployArgsForCall(i int) (context.Context, k8s.Namespace, k8s.Name) {
 	fake.undeployMutex.RLock()
 	defer fake.undeployMutex.RUnlock()
 	argsForCall := fake.undeployArgsForCall[i]

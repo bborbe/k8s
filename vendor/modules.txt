@@ -1,8 +1,8 @@
-# github.com/bborbe/errors v1.2.0
-## explicit; go 1.20
+# github.com/bborbe/errors v1.3.0
+## explicit; go 1.22.4
 github.com/bborbe/errors
-# github.com/bborbe/validation v1.0.0
-## explicit; go 1.21.8
+# github.com/bborbe/validation v1.2.0
+## explicit; go 1.22.5
 github.com/bborbe/validation
 # github.com/bmatcuk/doublestar/v4 v4.6.1
 ## explicit; go 1.16
@@ -68,7 +68,7 @@ github.com/google/go-cmp/cmp/internal/value
 ## explicit; go 1.12
 github.com/google/gofuzz
 github.com/google/gofuzz/bytesource
-# github.com/google/pprof v0.0.0-20240528025155-186aa0362fba
+# github.com/google/pprof v0.0.0-20240711041743-f6c9dda6c6da
 ## explicit; go 1.19
 github.com/google/pprof/profile
 # github.com/google/uuid v1.6.0
@@ -150,8 +150,6 @@ github.com/onsi/gomega/types
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
-# github.com/rogpeppe/go-internal v1.12.0
-## explicit; go 1.20
 # github.com/spf13/pflag v1.0.5
 ## explicit; go 1.12
 github.com/spf13/pflag
@@ -159,12 +157,12 @@ github.com/spf13/pflag
 ## explicit; go 1.11
 golang.org/x/lint
 golang.org/x/lint/golint
-# golang.org/x/mod v0.18.0
-## explicit; go 1.18
+# golang.org/x/mod v0.21.0
+## explicit; go 1.22.0
 golang.org/x/mod/internal/lazyregexp
 golang.org/x/mod/module
 golang.org/x/mod/semver
-# golang.org/x/net v0.26.0
+# golang.org/x/net v0.28.0
 ## explicit; go 1.18
 golang.org/x/net/context
 golang.org/x/net/html
@@ -178,16 +176,16 @@ golang.org/x/net/idna
 ## explicit; go 1.18
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
-# golang.org/x/sync v0.7.0
+# golang.org/x/sync v0.8.0
 ## explicit; go 1.18
 golang.org/x/sync/errgroup
-# golang.org/x/sys v0.21.0
+# golang.org/x/sys v0.25.0
 ## explicit; go 1.18
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/telemetry v0.0.0-20240607193123-221703e18637
-## explicit; go 1.20
+# golang.org/x/telemetry v0.0.0-20240904183051-94f817d1df79
+## explicit; go 1.22.0
 golang.org/x/telemetry
 golang.org/x/telemetry/counter
 golang.org/x/telemetry/internal/config
@@ -197,10 +195,10 @@ golang.org/x/telemetry/internal/crashmonitor
 golang.org/x/telemetry/internal/mmap
 golang.org/x/telemetry/internal/telemetry
 golang.org/x/telemetry/internal/upload
-# golang.org/x/term v0.21.0
+# golang.org/x/term v0.23.0
 ## explicit; go 1.18
 golang.org/x/term
-# golang.org/x/text v0.16.0
+# golang.org/x/text v0.18.0
 ## explicit; go 1.18
 golang.org/x/text/cases
 golang.org/x/text/encoding
@@ -227,7 +225,7 @@ golang.org/x/text/unicode/norm
 # golang.org/x/time v0.5.0
 ## explicit; go 1.18
 golang.org/x/time/rate
-# golang.org/x/tools v0.22.0
+# golang.org/x/tools v0.24.0
 ## explicit; go 1.19
 golang.org/x/tools/cover
 golang.org/x/tools/go/analysis
@@ -240,7 +238,6 @@ golang.org/x/tools/go/callgraph/vta
 golang.org/x/tools/go/callgraph/vta/internal/trie
 golang.org/x/tools/go/gcexportdata
 golang.org/x/tools/go/internal/cgo
-golang.org/x/tools/go/internal/packagesdriver
 golang.org/x/tools/go/loader
 golang.org/x/tools/go/packages
 golang.org/x/tools/go/ssa
@@ -264,14 +261,15 @@ golang.org/x/tools/internal/tokeninternal
 golang.org/x/tools/internal/typeparams
 golang.org/x/tools/internal/typesinternal
 golang.org/x/tools/internal/versions
-# golang.org/x/vuln v1.1.2
-## explicit; go 1.18
+# golang.org/x/vuln v1.1.3
+## explicit; go 1.21
 golang.org/x/vuln/cmd/govulncheck
 golang.org/x/vuln/internal
 golang.org/x/vuln/internal/buildinfo
 golang.org/x/vuln/internal/client
 golang.org/x/vuln/internal/derrors
 golang.org/x/vuln/internal/gosym
+golang.org/x/vuln/internal/goversion
 golang.org/x/vuln/internal/govulncheck
 golang.org/x/vuln/internal/openvex
 golang.org/x/vuln/internal/osv

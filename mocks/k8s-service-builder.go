@@ -23,10 +23,10 @@ type K8sServiceBuilder struct {
 		result1 *v1.Service
 		result2 error
 	}
-	SetNameStub        func(string) k8s.ServiceBuilder
+	SetNameStub        func(k8s.Name) k8s.ServiceBuilder
 	setNameMutex       sync.RWMutex
 	setNameArgsForCall []struct {
-		arg1 string
+		arg1 k8s.Name
 	}
 	setNameReturns struct {
 		result1 k8s.ServiceBuilder
@@ -135,11 +135,11 @@ func (fake *K8sServiceBuilder) BuildReturnsOnCall(i int, result1 *v1.Service, re
 	}{result1, result2}
 }
 
-func (fake *K8sServiceBuilder) SetName(arg1 string) k8s.ServiceBuilder {
+func (fake *K8sServiceBuilder) SetName(arg1 k8s.Name) k8s.ServiceBuilder {
 	fake.setNameMutex.Lock()
 	ret, specificReturn := fake.setNameReturnsOnCall[len(fake.setNameArgsForCall)]
 	fake.setNameArgsForCall = append(fake.setNameArgsForCall, struct {
-		arg1 string
+		arg1 k8s.Name
 	}{arg1})
 	stub := fake.SetNameStub
 	fakeReturns := fake.setNameReturns
@@ -160,13 +160,13 @@ func (fake *K8sServiceBuilder) SetNameCallCount() int {
 	return len(fake.setNameArgsForCall)
 }
 
-func (fake *K8sServiceBuilder) SetNameCalls(stub func(string) k8s.ServiceBuilder) {
+func (fake *K8sServiceBuilder) SetNameCalls(stub func(k8s.Name) k8s.ServiceBuilder) {
 	fake.setNameMutex.Lock()
 	defer fake.setNameMutex.Unlock()
 	fake.SetNameStub = stub
 }
 
-func (fake *K8sServiceBuilder) SetNameArgsForCall(i int) string {
+func (fake *K8sServiceBuilder) SetNameArgsForCall(i int) k8s.Name {
 	fake.setNameMutex.RLock()
 	defer fake.setNameMutex.RUnlock()
 	argsForCall := fake.setNameArgsForCall[i]

@@ -19,7 +19,7 @@ type ContainerBuilder interface {
 	Validate(ctx context.Context) error
 	SetEnvBuilder(envBuilder EnvBuilder) ContainerBuilder
 	SetImage(image string) ContainerBuilder
-	SetName(name string) ContainerBuilder
+	SetName(name Name) ContainerBuilder
 	SetCommand(command []string) ContainerBuilder
 	SetArgs(args []string) ContainerBuilder
 	SetPorts(ports []corev1.ContainerPort) ContainerBuilder
@@ -45,7 +45,7 @@ func NewContainerBuilder() ContainerBuilder {
 
 type containerBuilder struct {
 	envBuilder     EnvBuilder
-	name           string
+	name           Name
 	image          string
 	args           []string
 	command        []string
@@ -119,7 +119,7 @@ func (c *containerBuilder) SetEnvBuilder(envBuilder EnvBuilder) ContainerBuilder
 	return c
 }
 
-func (c *containerBuilder) SetName(name string) ContainerBuilder {
+func (c *containerBuilder) SetName(name Name) ContainerBuilder {
 	c.name = name
 	return c
 }
@@ -131,7 +131,7 @@ func (c *containerBuilder) SetImage(image string) ContainerBuilder {
 
 func (c *containerBuilder) Validate(ctx context.Context) error {
 	return validation.All{
-		validation.Name("Name", NotEmptyString(c.name)),
+		validation.Name("Name", validation.NotEmptyString(c.name)),
 		validation.Name("EnvBuilder", validation.NotNilAndValid(c.envBuilder)),
 	}.Validate(ctx)
 }
@@ -147,7 +147,7 @@ func (c *containerBuilder) Build(ctx context.Context) (*corev1.Container, error)
 	}
 
 	return &corev1.Container{
-		Name:    c.name,
+		Name:    c.name.String(),
 		Image:   c.image,
 		Command: c.command,
 		Args:    c.args,

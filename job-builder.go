@@ -17,7 +17,7 @@ import (
 //counterfeiter:generate -o mocks/k8s-job-builder.go --fake-name K8sJobBuilder . JobBuilder
 type JobBuilder interface {
 	Build(ctx context.Context) (*batchv1.Job, error)
-	SetName(name string) JobBuilder
+	SetName(name Name) JobBuilder
 	SetObjectMeta(objectMeta metav1.ObjectMeta) JobBuilder
 	SetComponent(component string) JobBuilder
 	AddLabel(key, value string) JobBuilder
@@ -32,7 +32,7 @@ func NewJobBuilder() JobBuilder {
 }
 
 type jobBuilder struct {
-	name       string
+	name       Name
 	objectMeta metav1.ObjectMeta
 	component  string
 	labels     map[string]string
@@ -49,7 +49,7 @@ func (j *jobBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) JobBuilder {
 	return j
 }
 
-func (j *jobBuilder) SetName(name string) JobBuilder {
+func (j *jobBuilder) SetName(name Name) JobBuilder {
 	j.name = name
 	return j
 }
@@ -79,7 +79,7 @@ func (j *jobBuilder) Build(ctx context.Context) (*batchv1.Job, error) {
 		return nil, errors.Wrapf(ctx, err, "validate jobBuilder failed")
 	}
 
-	j.AddLabel("app", j.name)
+	j.AddLabel("app", j.name.String())
 
 	return &batchv1.Job{
 		TypeMeta: metav1.TypeMeta{

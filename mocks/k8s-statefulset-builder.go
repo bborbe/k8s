@@ -80,10 +80,10 @@ type K8sStatefulSetBuilder struct {
 	setDatadirSizeReturnsOnCall map[int]struct {
 		result1 k8s.StatefulSetBuilder
 	}
-	SetNameStub        func(string) k8s.StatefulSetBuilder
+	SetNameStub        func(k8s.Name) k8s.StatefulSetBuilder
 	setNameMutex       sync.RWMutex
 	setNameArgsForCall []struct {
-		arg1 string
+		arg1 k8s.Name
 	}
 	setNameReturns struct {
 		result1 k8s.StatefulSetBuilder
@@ -498,11 +498,11 @@ func (fake *K8sStatefulSetBuilder) SetDatadirSizeReturnsOnCall(i int, result1 k8
 	}{result1}
 }
 
-func (fake *K8sStatefulSetBuilder) SetName(arg1 string) k8s.StatefulSetBuilder {
+func (fake *K8sStatefulSetBuilder) SetName(arg1 k8s.Name) k8s.StatefulSetBuilder {
 	fake.setNameMutex.Lock()
 	ret, specificReturn := fake.setNameReturnsOnCall[len(fake.setNameArgsForCall)]
 	fake.setNameArgsForCall = append(fake.setNameArgsForCall, struct {
-		arg1 string
+		arg1 k8s.Name
 	}{arg1})
 	stub := fake.SetNameStub
 	fakeReturns := fake.setNameReturns
@@ -523,13 +523,13 @@ func (fake *K8sStatefulSetBuilder) SetNameCallCount() int {
 	return len(fake.setNameArgsForCall)
 }
 
-func (fake *K8sStatefulSetBuilder) SetNameCalls(stub func(string) k8s.StatefulSetBuilder) {
+func (fake *K8sStatefulSetBuilder) SetNameCalls(stub func(k8s.Name) k8s.StatefulSetBuilder) {
 	fake.setNameMutex.Lock()
 	defer fake.setNameMutex.Unlock()
 	fake.SetNameStub = stub
 }
 
-func (fake *K8sStatefulSetBuilder) SetNameArgsForCall(i int) string {
+func (fake *K8sStatefulSetBuilder) SetNameArgsForCall(i int) k8s.Name {
 	fake.setNameMutex.RLock()
 	defer fake.setNameMutex.RUnlock()
 	argsForCall := fake.setNameArgsForCall[i]

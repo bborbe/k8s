@@ -80,10 +80,10 @@ type K8sObjectMetaBuilder struct {
 	setGenerateNameReturnsOnCall map[int]struct {
 		result1 k8s.ObjectMetaBuilder
 	}
-	SetNameStub        func(string) k8s.ObjectMetaBuilder
+	SetNameStub        func(k8s.Name) k8s.ObjectMetaBuilder
 	setNameMutex       sync.RWMutex
 	setNameArgsForCall []struct {
-		arg1 string
+		arg1 k8s.Name
 	}
 	setNameReturns struct {
 		result1 k8s.ObjectMetaBuilder
@@ -493,11 +493,11 @@ func (fake *K8sObjectMetaBuilder) SetGenerateNameReturnsOnCall(i int, result1 k8
 	}{result1}
 }
 
-func (fake *K8sObjectMetaBuilder) SetName(arg1 string) k8s.ObjectMetaBuilder {
+func (fake *K8sObjectMetaBuilder) SetName(arg1 k8s.Name) k8s.ObjectMetaBuilder {
 	fake.setNameMutex.Lock()
 	ret, specificReturn := fake.setNameReturnsOnCall[len(fake.setNameArgsForCall)]
 	fake.setNameArgsForCall = append(fake.setNameArgsForCall, struct {
-		arg1 string
+		arg1 k8s.Name
 	}{arg1})
 	stub := fake.SetNameStub
 	fakeReturns := fake.setNameReturns
@@ -518,13 +518,13 @@ func (fake *K8sObjectMetaBuilder) SetNameCallCount() int {
 	return len(fake.setNameArgsForCall)
 }
 
-func (fake *K8sObjectMetaBuilder) SetNameCalls(stub func(string) k8s.ObjectMetaBuilder) {
+func (fake *K8sObjectMetaBuilder) SetNameCalls(stub func(k8s.Name) k8s.ObjectMetaBuilder) {
 	fake.setNameMutex.Lock()
 	defer fake.setNameMutex.Unlock()
 	fake.SetNameStub = stub
 }
 
-func (fake *K8sObjectMetaBuilder) SetNameArgsForCall(i int) string {
+func (fake *K8sObjectMetaBuilder) SetNameArgsForCall(i int) k8s.Name {
 	fake.setNameMutex.RLock()
 	defer fake.setNameMutex.RUnlock()
 	argsForCall := fake.setNameArgsForCall[i]

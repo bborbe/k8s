@@ -59,10 +59,10 @@ type K8sJobBuilder struct {
 	setLabelsReturnsOnCall map[int]struct {
 		result1 k8s.JobBuilder
 	}
-	SetNameStub        func(string) k8s.JobBuilder
+	SetNameStub        func(k8s.Name) k8s.JobBuilder
 	setNameMutex       sync.RWMutex
 	setNameArgsForCall []struct {
-		arg1 string
+		arg1 k8s.Name
 	}
 	setNameReturns struct {
 		result1 k8s.JobBuilder
@@ -344,11 +344,11 @@ func (fake *K8sJobBuilder) SetLabelsReturnsOnCall(i int, result1 k8s.JobBuilder)
 	}{result1}
 }
 
-func (fake *K8sJobBuilder) SetName(arg1 string) k8s.JobBuilder {
+func (fake *K8sJobBuilder) SetName(arg1 k8s.Name) k8s.JobBuilder {
 	fake.setNameMutex.Lock()
 	ret, specificReturn := fake.setNameReturnsOnCall[len(fake.setNameArgsForCall)]
 	fake.setNameArgsForCall = append(fake.setNameArgsForCall, struct {
-		arg1 string
+		arg1 k8s.Name
 	}{arg1})
 	stub := fake.SetNameStub
 	fakeReturns := fake.setNameReturns
@@ -369,13 +369,13 @@ func (fake *K8sJobBuilder) SetNameCallCount() int {
 	return len(fake.setNameArgsForCall)
 }
 
-func (fake *K8sJobBuilder) SetNameCalls(stub func(string) k8s.JobBuilder) {
+func (fake *K8sJobBuilder) SetNameCalls(stub func(k8s.Name) k8s.JobBuilder) {
 	fake.setNameMutex.Lock()
 	defer fake.setNameMutex.Unlock()
 	fake.SetNameStub = stub
 }
 
-func (fake *K8sJobBuilder) SetNameArgsForCall(i int) string {
+func (fake *K8sJobBuilder) SetNameArgsForCall(i int) k8s.Name {
 	fake.setNameMutex.RLock()
 	defer fake.setNameMutex.RUnlock()
 	argsForCall := fake.setNameArgsForCall[i]

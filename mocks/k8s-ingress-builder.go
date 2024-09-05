@@ -67,10 +67,10 @@ type K8sIngressBuilder struct {
 	setPathReturnsOnCall map[int]struct {
 		result1 k8s.IngressBuilder
 	}
-	SetServiceNameStub        func(string) k8s.IngressBuilder
+	SetServiceNameStub        func(k8s.Name) k8s.IngressBuilder
 	setServiceNameMutex       sync.RWMutex
 	setServiceNameArgsForCall []struct {
-		arg1 string
+		arg1 k8s.Name
 	}
 	setServiceNameReturns struct {
 		result1 k8s.IngressBuilder
@@ -390,11 +390,11 @@ func (fake *K8sIngressBuilder) SetPathReturnsOnCall(i int, result1 k8s.IngressBu
 	}{result1}
 }
 
-func (fake *K8sIngressBuilder) SetServiceName(arg1 string) k8s.IngressBuilder {
+func (fake *K8sIngressBuilder) SetServiceName(arg1 k8s.Name) k8s.IngressBuilder {
 	fake.setServiceNameMutex.Lock()
 	ret, specificReturn := fake.setServiceNameReturnsOnCall[len(fake.setServiceNameArgsForCall)]
 	fake.setServiceNameArgsForCall = append(fake.setServiceNameArgsForCall, struct {
-		arg1 string
+		arg1 k8s.Name
 	}{arg1})
 	stub := fake.SetServiceNameStub
 	fakeReturns := fake.setServiceNameReturns
@@ -415,13 +415,13 @@ func (fake *K8sIngressBuilder) SetServiceNameCallCount() int {
 	return len(fake.setServiceNameArgsForCall)
 }
 
-func (fake *K8sIngressBuilder) SetServiceNameCalls(stub func(string) k8s.IngressBuilder) {
+func (fake *K8sIngressBuilder) SetServiceNameCalls(stub func(k8s.Name) k8s.IngressBuilder) {
 	fake.setServiceNameMutex.Lock()
 	defer fake.setServiceNameMutex.Unlock()
 	fake.SetServiceNameStub = stub
 }
 
-func (fake *K8sIngressBuilder) SetServiceNameArgsForCall(i int) string {
+func (fake *K8sIngressBuilder) SetServiceNameArgsForCall(i int) k8s.Name {
 	fake.setServiceNameMutex.RLock()
 	defer fake.setServiceNameMutex.RUnlock()
 	argsForCall := fake.setServiceNameArgsForCall[i]

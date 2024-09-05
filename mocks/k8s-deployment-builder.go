@@ -68,10 +68,10 @@ type K8sDeploymentBuilder struct {
 	setContainersBuilderReturnsOnCall map[int]struct {
 		result1 k8s.DeploymentBuilder
 	}
-	SetNameStub        func(string) k8s.DeploymentBuilder
+	SetNameStub        func(k8s.Name) k8s.DeploymentBuilder
 	setNameMutex       sync.RWMutex
 	setNameArgsForCall []struct {
-		arg1 string
+		arg1 k8s.Name
 	}
 	setNameReturns struct {
 		result1 k8s.DeploymentBuilder
@@ -435,11 +435,11 @@ func (fake *K8sDeploymentBuilder) SetContainersBuilderReturnsOnCall(i int, resul
 	}{result1}
 }
 
-func (fake *K8sDeploymentBuilder) SetName(arg1 string) k8s.DeploymentBuilder {
+func (fake *K8sDeploymentBuilder) SetName(arg1 k8s.Name) k8s.DeploymentBuilder {
 	fake.setNameMutex.Lock()
 	ret, specificReturn := fake.setNameReturnsOnCall[len(fake.setNameArgsForCall)]
 	fake.setNameArgsForCall = append(fake.setNameArgsForCall, struct {
-		arg1 string
+		arg1 k8s.Name
 	}{arg1})
 	stub := fake.SetNameStub
 	fakeReturns := fake.setNameReturns
@@ -460,13 +460,13 @@ func (fake *K8sDeploymentBuilder) SetNameCallCount() int {
 	return len(fake.setNameArgsForCall)
 }
 
-func (fake *K8sDeploymentBuilder) SetNameCalls(stub func(string) k8s.DeploymentBuilder) {
+func (fake *K8sDeploymentBuilder) SetNameCalls(stub func(k8s.Name) k8s.DeploymentBuilder) {
 	fake.setNameMutex.Lock()
 	defer fake.setNameMutex.Unlock()
 	fake.SetNameStub = stub
 }
 
-func (fake *K8sDeploymentBuilder) SetNameArgsForCall(i int) string {
+func (fake *K8sDeploymentBuilder) SetNameArgsForCall(i int) k8s.Name {
 	fake.setNameMutex.RLock()
 	defer fake.setNameMutex.RUnlock()
 	argsForCall := fake.setNameArgsForCall[i]
