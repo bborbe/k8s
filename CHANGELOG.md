@@ -8,6 +8,11 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## 1.3.0
+
+- update to k8s v0.31.0
+- go mod update
+
 ## v1.2.0
 
 - add Name type

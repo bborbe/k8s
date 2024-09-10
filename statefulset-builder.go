@@ -168,7 +168,7 @@ func (s *statefulSetBuilder) Build(ctx context.Context) (*appsv1.StatefulSet, er
 						AccessModes: []corev1.PersistentVolumeAccessMode{
 							corev1.ReadWriteOnce,
 						},
-						Resources: corev1.ResourceRequirements{
+						Resources: corev1.VolumeResourceRequirements{
 							Requests: map[corev1.ResourceName]resource.Quantity{
 								"storage": resource.MustParse(s.datadirSize),
 							},
