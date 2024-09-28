@@ -31,6 +31,7 @@ type ContainerBuilder interface {
 	SetMemoryRequest(memoryRequest string) ContainerBuilder
 	SetLivenessProbe(livenessProbe corev1.Probe) ContainerBuilder
 	SetReadinessProbe(readinessProbe corev1.Probe) ContainerBuilder
+	SetRestartPolicy(restartPolicy corev1.ContainerRestartPolicy) ContainerBuilder
 }
 
 func NewContainerBuilder() ContainerBuilder {
@@ -57,6 +58,12 @@ type containerBuilder struct {
 	memoryRequest  string
 	livenessProbe  *corev1.Probe
 	readinessProbe *corev1.Probe
+	restartPolicy  *corev1.ContainerRestartPolicy
+}
+
+func (c *containerBuilder) SetRestartPolicy(restartPolicy corev1.ContainerRestartPolicy) ContainerBuilder {
+	c.restartPolicy = &restartPolicy
+	return c
 }
 
 func (c *containerBuilder) SetLivenessProbe(livenessProbe corev1.Probe) ContainerBuilder {
@@ -167,5 +174,6 @@ func (c *containerBuilder) Build(ctx context.Context) (*corev1.Container, error)
 		ImagePullPolicy: corev1.PullAlways,
 		LivenessProbe:   c.livenessProbe,
 		ReadinessProbe:  c.readinessProbe,
+		RestartPolicy:   c.restartPolicy,
 	}, nil
 }

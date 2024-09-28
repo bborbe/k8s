@@ -166,6 +166,17 @@ type K8sContainerBuilder struct {
 	setReadinessProbeReturnsOnCall map[int]struct {
 		result1 k8s.ContainerBuilder
 	}
+	SetRestartPolicyStub        func(v1.ContainerRestartPolicy) k8s.ContainerBuilder
+	setRestartPolicyMutex       sync.RWMutex
+	setRestartPolicyArgsForCall []struct {
+		arg1 v1.ContainerRestartPolicy
+	}
+	setRestartPolicyReturns struct {
+		result1 k8s.ContainerBuilder
+	}
+	setRestartPolicyReturnsOnCall map[int]struct {
+		result1 k8s.ContainerBuilder
+	}
 	SetVolumeMountsStub        func([]v1.VolumeMount) k8s.ContainerBuilder
 	setVolumeMountsMutex       sync.RWMutex
 	setVolumeMountsArgsForCall []struct {
@@ -1064,6 +1075,67 @@ func (fake *K8sContainerBuilder) SetReadinessProbeReturnsOnCall(i int, result1 k
 	}{result1}
 }
 
+func (fake *K8sContainerBuilder) SetRestartPolicy(arg1 v1.ContainerRestartPolicy) k8s.ContainerBuilder {
+	fake.setRestartPolicyMutex.Lock()
+	ret, specificReturn := fake.setRestartPolicyReturnsOnCall[len(fake.setRestartPolicyArgsForCall)]
+	fake.setRestartPolicyArgsForCall = append(fake.setRestartPolicyArgsForCall, struct {
+		arg1 v1.ContainerRestartPolicy
+	}{arg1})
+	stub := fake.SetRestartPolicyStub
+	fakeReturns := fake.setRestartPolicyReturns
+	fake.recordInvocation("SetRestartPolicy", []interface{}{arg1})
+	fake.setRestartPolicyMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sContainerBuilder) SetRestartPolicyCallCount() int {
+	fake.setRestartPolicyMutex.RLock()
+	defer fake.setRestartPolicyMutex.RUnlock()
+	return len(fake.setRestartPolicyArgsForCall)
+}
+
+func (fake *K8sContainerBuilder) SetRestartPolicyCalls(stub func(v1.ContainerRestartPolicy) k8s.ContainerBuilder) {
+	fake.setRestartPolicyMutex.Lock()
+	defer fake.setRestartPolicyMutex.Unlock()
+	fake.SetRestartPolicyStub = stub
+}
+
+func (fake *K8sContainerBuilder) SetRestartPolicyArgsForCall(i int) v1.ContainerRestartPolicy {
+	fake.setRestartPolicyMutex.RLock()
+	defer fake.setRestartPolicyMutex.RUnlock()
+	argsForCall := fake.setRestartPolicyArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sContainerBuilder) SetRestartPolicyReturns(result1 k8s.ContainerBuilder) {
+	fake.setRestartPolicyMutex.Lock()
+	defer fake.setRestartPolicyMutex.Unlock()
+	fake.SetRestartPolicyStub = nil
+	fake.setRestartPolicyReturns = struct {
+		result1 k8s.ContainerBuilder
+	}{result1}
+}
+
+func (fake *K8sContainerBuilder) SetRestartPolicyReturnsOnCall(i int, result1 k8s.ContainerBuilder) {
+	fake.setRestartPolicyMutex.Lock()
+	defer fake.setRestartPolicyMutex.Unlock()
+	fake.SetRestartPolicyStub = nil
+	if fake.setRestartPolicyReturnsOnCall == nil {
+		fake.setRestartPolicyReturnsOnCall = make(map[int]struct {
+			result1 k8s.ContainerBuilder
+		})
+	}
+	fake.setRestartPolicyReturnsOnCall[i] = struct {
+		result1 k8s.ContainerBuilder
+	}{result1}
+}
+
 func (fake *K8sContainerBuilder) SetVolumeMounts(arg1 []v1.VolumeMount) k8s.ContainerBuilder {
 	var arg1Copy []v1.VolumeMount
 	if arg1 != nil {
@@ -1222,6 +1294,8 @@ func (fake *K8sContainerBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setPortsMutex.RUnlock()
 	fake.setReadinessProbeMutex.RLock()
 	defer fake.setReadinessProbeMutex.RUnlock()
+	fake.setRestartPolicyMutex.RLock()
+	defer fake.setRestartPolicyMutex.RUnlock()
 	fake.setVolumeMountsMutex.RLock()
 	defer fake.setVolumeMountsMutex.RUnlock()
 	fake.validateMutex.RLock()
