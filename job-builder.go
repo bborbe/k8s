@@ -7,6 +7,7 @@ package k8s
 import (
 	"context"
 
+	"github.com/bborbe/collection"
 	"github.com/bborbe/errors"
 	"github.com/bborbe/validation"
 	batchv1 "k8s.io/api/batch/v1"
@@ -95,6 +96,12 @@ func (j *jobBuilder) Build(ctx context.Context) (*batchv1.Job, error) {
 				},
 				Spec: j.podSpec,
 			},
+			TTLSecondsAfterFinished: collection.Ptr(int32(600)),
+			BackoffLimit:            collection.Ptr(int32(4)),
+			CompletionMode:          collection.Ptr(batchv1.NonIndexedCompletion),
+			Completions:             collection.Ptr(int32(1)),
+			Parallelism:             collection.Ptr(int32(1)),
+			PodReplacementPolicy:    collection.Ptr(batchv1.TerminatingOrFailed),
 		},
 	}, nil
 }
