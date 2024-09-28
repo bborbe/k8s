@@ -23,6 +23,17 @@ type K8sPodSpecBuilder struct {
 		result1 *v1.PodSpec
 		result2 error
 	}
+	SetAffinityStub        func(v1.Affinity) k8s.PodSpecBuilder
+	setAffinityMutex       sync.RWMutex
+	setAffinityArgsForCall []struct {
+		arg1 v1.Affinity
+	}
+	setAffinityReturns struct {
+		result1 k8s.PodSpecBuilder
+	}
+	setAffinityReturnsOnCall map[int]struct {
+		result1 k8s.PodSpecBuilder
+	}
 	SetContainersStub        func([]v1.Container) k8s.PodSpecBuilder
 	setContainersMutex       sync.RWMutex
 	setContainersArgsForCall []struct {
@@ -122,6 +133,67 @@ func (fake *K8sPodSpecBuilder) BuildReturnsOnCall(i int, result1 *v1.PodSpec, re
 		result1 *v1.PodSpec
 		result2 error
 	}{result1, result2}
+}
+
+func (fake *K8sPodSpecBuilder) SetAffinity(arg1 v1.Affinity) k8s.PodSpecBuilder {
+	fake.setAffinityMutex.Lock()
+	ret, specificReturn := fake.setAffinityReturnsOnCall[len(fake.setAffinityArgsForCall)]
+	fake.setAffinityArgsForCall = append(fake.setAffinityArgsForCall, struct {
+		arg1 v1.Affinity
+	}{arg1})
+	stub := fake.SetAffinityStub
+	fakeReturns := fake.setAffinityReturns
+	fake.recordInvocation("SetAffinity", []interface{}{arg1})
+	fake.setAffinityMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sPodSpecBuilder) SetAffinityCallCount() int {
+	fake.setAffinityMutex.RLock()
+	defer fake.setAffinityMutex.RUnlock()
+	return len(fake.setAffinityArgsForCall)
+}
+
+func (fake *K8sPodSpecBuilder) SetAffinityCalls(stub func(v1.Affinity) k8s.PodSpecBuilder) {
+	fake.setAffinityMutex.Lock()
+	defer fake.setAffinityMutex.Unlock()
+	fake.SetAffinityStub = stub
+}
+
+func (fake *K8sPodSpecBuilder) SetAffinityArgsForCall(i int) v1.Affinity {
+	fake.setAffinityMutex.RLock()
+	defer fake.setAffinityMutex.RUnlock()
+	argsForCall := fake.setAffinityArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sPodSpecBuilder) SetAffinityReturns(result1 k8s.PodSpecBuilder) {
+	fake.setAffinityMutex.Lock()
+	defer fake.setAffinityMutex.Unlock()
+	fake.SetAffinityStub = nil
+	fake.setAffinityReturns = struct {
+		result1 k8s.PodSpecBuilder
+	}{result1}
+}
+
+func (fake *K8sPodSpecBuilder) SetAffinityReturnsOnCall(i int, result1 k8s.PodSpecBuilder) {
+	fake.setAffinityMutex.Lock()
+	defer fake.setAffinityMutex.Unlock()
+	fake.SetAffinityStub = nil
+	if fake.setAffinityReturnsOnCall == nil {
+		fake.setAffinityReturnsOnCall = make(map[int]struct {
+			result1 k8s.PodSpecBuilder
+		})
+	}
+	fake.setAffinityReturnsOnCall[i] = struct {
+		result1 k8s.PodSpecBuilder
+	}{result1}
 }
 
 func (fake *K8sPodSpecBuilder) SetContainers(arg1 []v1.Container) k8s.PodSpecBuilder {
@@ -322,6 +394,8 @@ func (fake *K8sPodSpecBuilder) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.buildMutex.RLock()
 	defer fake.buildMutex.RUnlock()
+	fake.setAffinityMutex.RLock()
+	defer fake.setAffinityMutex.RUnlock()
 	fake.setContainersMutex.RLock()
 	defer fake.setContainersMutex.RUnlock()
 	fake.setRestartPolicyMutex.RLock()

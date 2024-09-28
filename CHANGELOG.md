@@ -8,9 +8,13 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## 1.3.2
+
+- allow set affinity in podSpec
+
 ## 1.3.1
 
-- allow set restartPolicy on containerBuilder 
+- allow set restartPolicy on containerBuilder
 - go mod update
 
 ## 1.3.0
