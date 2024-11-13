@@ -7,8 +7,28 @@ package k8s_test
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/bborbe/k8s"
+)
+
+func createTestPod(name string, labels map[string]string) corev1.Pod {
+	return corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   name,
+			Labels: labels,
+		},
+	}
+}
+
+var _ = DescribeTable("NameFromPod",
+	func(pod corev1.Pod, expectedName k8s.Name) {
+		name := k8s.NameFromPod(pod)
+		Expect(name).To(Equal(expectedName))
+	},
+	Entry("deployment", createTestPod("raw-fetcher-646d746df5-tdzls", map[string]string{"pod-template-hash": "646d746df5"}), k8s.Name("raw-fetcher")),
+	Entry("statefulset", createTestPod("raw-fetcher-0", map[string]string{}), k8s.Name("raw-fetcher")),
 )
 
 var _ = DescribeTable("BuildName",
