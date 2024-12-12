@@ -43,3 +43,17 @@ var _ = DescribeTable("BuildName",
 	Entry("leading dash", []string{"---my-valid-name"}, k8s.Name("my-valid-name")),
 	Entry("following dash", []string{"my-valid-name---"}, k8s.Name("my-valid-name")),
 )
+
+var _ = DescribeTable("BuildName",
+	func(parts []string, expectedName k8s.Name) {
+		name := k8s.BuildName(parts...)
+		Expect(name).To(Equal(expectedName))
+	},
+	Entry("simple", []string{"my-valid-name"}, k8s.Name("my-valid-name")),
+	Entry("toLower", []string{"my-VALID-name"}, k8s.Name("my-valid-name")),
+	Entry("replace invalid chart with dash", []string{"my!valid_name"}, k8s.Name("my-valid-name")),
+	Entry("multidash", []string{"my-----valid-----name"}, k8s.Name("my-valid-name")),
+	Entry("leading dash", []string{"---my-valid-name"}, k8s.Name("my-valid-name")),
+	Entry("following dash", []string{"my-valid-name---"}, k8s.Name("my-valid-name")),
+	Entry("with number", []string{"my-valid-name-f16"}, k8s.Name("my-valid-name-f16")),
+)

@@ -16,7 +16,7 @@ import (
 
 var nameWithoutSuffixNumber = regexp.MustCompile(`(.*)-\d+$`)
 var replaceLeading = regexp.MustCompile(`^[0-9-]+`)
-var replaceFolling = regexp.MustCompile(`[0-9-]+$`)
+var replaceFolling = regexp.MustCompile(`[-]+$`)
 var replaceIllegalCharacters = regexp.MustCompile(`[^a-z0-9-]+`)
 var replaceMultiDash = regexp.MustCompile(`-+`)
 
