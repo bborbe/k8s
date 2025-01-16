@@ -36,7 +36,7 @@ type configmapDeployer struct {
 func (s *configmapDeployer) Get(ctx context.Context, namespace Namespace, name Name) (*v1.ConfigMap, error) {
 	cm, err := s.clientset.CoreV1().ConfigMaps(namespace.String()).Get(ctx, name.String(), metav1.GetOptions{})
 	if err != nil {
-		return nil, errors.Wrap(ctx, err, "get failed")
+		return nil, errors.Wrapf(ctx, err, "get configmap(%s) in namespace(%s) failed", name, namespace)
 	}
 	return cm, nil
 }
