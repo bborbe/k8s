@@ -8,6 +8,10 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## 1.5.1
+
+- fix DeploymentBuilder and StatefulSetBuilder
+
 ## 1.5.0
 
 - allow define imagePullSecrets

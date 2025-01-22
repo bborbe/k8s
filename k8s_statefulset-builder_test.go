@@ -56,6 +56,16 @@ var _ = Describe("StatefulSet Builder", func() {
 				Expect(statefulSet.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(1))
 				Expect(statefulSet.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker"))
 			})
+			Context("SetImagePullSecrets", func() {
+				BeforeEach(func() {
+					statefulSetBuilder.SetImagePullSecrets([]string{"docker-registry"})
+				})
+				It("returns correct ImagePullSecrets", func() {
+					Expect(statefulSet).NotTo(BeNil())
+					Expect(statefulSet.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(1))
+					Expect(statefulSet.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker-registry"))
+				})
+			})
 		})
 		Context("without name", func() {
 			BeforeEach(func() {

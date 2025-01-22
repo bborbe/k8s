@@ -50,5 +50,15 @@ var _ = Describe("Deployment Builder", func() {
 			Expect(deployment.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(1))
 			Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker"))
 		})
+		Context("SetImagePullSecrets", func() {
+			BeforeEach(func() {
+				deploymentBuilder.SetImagePullSecrets([]string{"docker-registry"})
+			})
+			It("returns correct ImagePullSecrets", func() {
+				Expect(deployment).NotTo(BeNil())
+				Expect(deployment.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(1))
+				Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker-registry"))
+			})
+		})
 	})
 })

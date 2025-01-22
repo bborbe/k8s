@@ -11,6 +11,17 @@ import (
 )
 
 type K8sDeploymentBuilder struct {
+	AddImagePullSecretsStub        func(...string) k8s.DeploymentBuilder
+	addImagePullSecretsMutex       sync.RWMutex
+	addImagePullSecretsArgsForCall []struct {
+		arg1 []string
+	}
+	addImagePullSecretsReturns struct {
+		result1 k8s.DeploymentBuilder
+	}
+	addImagePullSecretsReturnsOnCall map[int]struct {
+		result1 k8s.DeploymentBuilder
+	}
 	AddVolumesStub        func(...v1.Volume) k8s.DeploymentBuilder
 	addVolumesMutex       sync.RWMutex
 	addVolumesArgsForCall []struct {
@@ -66,6 +77,17 @@ type K8sDeploymentBuilder struct {
 		result1 k8s.DeploymentBuilder
 	}
 	setContainersBuilderReturnsOnCall map[int]struct {
+		result1 k8s.DeploymentBuilder
+	}
+	SetImagePullSecretsStub        func([]string) k8s.DeploymentBuilder
+	setImagePullSecretsMutex       sync.RWMutex
+	setImagePullSecretsArgsForCall []struct {
+		arg1 []string
+	}
+	setImagePullSecretsReturns struct {
+		result1 k8s.DeploymentBuilder
+	}
+	setImagePullSecretsReturnsOnCall map[int]struct {
 		result1 k8s.DeploymentBuilder
 	}
 	SetNameStub        func(k8s.Name) k8s.DeploymentBuilder
@@ -125,6 +147,67 @@ type K8sDeploymentBuilder struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *K8sDeploymentBuilder) AddImagePullSecrets(arg1 ...string) k8s.DeploymentBuilder {
+	fake.addImagePullSecretsMutex.Lock()
+	ret, specificReturn := fake.addImagePullSecretsReturnsOnCall[len(fake.addImagePullSecretsArgsForCall)]
+	fake.addImagePullSecretsArgsForCall = append(fake.addImagePullSecretsArgsForCall, struct {
+		arg1 []string
+	}{arg1})
+	stub := fake.AddImagePullSecretsStub
+	fakeReturns := fake.addImagePullSecretsReturns
+	fake.recordInvocation("AddImagePullSecrets", []interface{}{arg1})
+	fake.addImagePullSecretsMutex.Unlock()
+	if stub != nil {
+		return stub(arg1...)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sDeploymentBuilder) AddImagePullSecretsCallCount() int {
+	fake.addImagePullSecretsMutex.RLock()
+	defer fake.addImagePullSecretsMutex.RUnlock()
+	return len(fake.addImagePullSecretsArgsForCall)
+}
+
+func (fake *K8sDeploymentBuilder) AddImagePullSecretsCalls(stub func(...string) k8s.DeploymentBuilder) {
+	fake.addImagePullSecretsMutex.Lock()
+	defer fake.addImagePullSecretsMutex.Unlock()
+	fake.AddImagePullSecretsStub = stub
+}
+
+func (fake *K8sDeploymentBuilder) AddImagePullSecretsArgsForCall(i int) []string {
+	fake.addImagePullSecretsMutex.RLock()
+	defer fake.addImagePullSecretsMutex.RUnlock()
+	argsForCall := fake.addImagePullSecretsArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sDeploymentBuilder) AddImagePullSecretsReturns(result1 k8s.DeploymentBuilder) {
+	fake.addImagePullSecretsMutex.Lock()
+	defer fake.addImagePullSecretsMutex.Unlock()
+	fake.AddImagePullSecretsStub = nil
+	fake.addImagePullSecretsReturns = struct {
+		result1 k8s.DeploymentBuilder
+	}{result1}
+}
+
+func (fake *K8sDeploymentBuilder) AddImagePullSecretsReturnsOnCall(i int, result1 k8s.DeploymentBuilder) {
+	fake.addImagePullSecretsMutex.Lock()
+	defer fake.addImagePullSecretsMutex.Unlock()
+	fake.AddImagePullSecretsStub = nil
+	if fake.addImagePullSecretsReturnsOnCall == nil {
+		fake.addImagePullSecretsReturnsOnCall = make(map[int]struct {
+			result1 k8s.DeploymentBuilder
+		})
+	}
+	fake.addImagePullSecretsReturnsOnCall[i] = struct {
+		result1 k8s.DeploymentBuilder
+	}{result1}
 }
 
 func (fake *K8sDeploymentBuilder) AddVolumes(arg1 ...v1.Volume) k8s.DeploymentBuilder {
@@ -431,6 +514,72 @@ func (fake *K8sDeploymentBuilder) SetContainersBuilderReturnsOnCall(i int, resul
 		})
 	}
 	fake.setContainersBuilderReturnsOnCall[i] = struct {
+		result1 k8s.DeploymentBuilder
+	}{result1}
+}
+
+func (fake *K8sDeploymentBuilder) SetImagePullSecrets(arg1 []string) k8s.DeploymentBuilder {
+	var arg1Copy []string
+	if arg1 != nil {
+		arg1Copy = make([]string, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.setImagePullSecretsMutex.Lock()
+	ret, specificReturn := fake.setImagePullSecretsReturnsOnCall[len(fake.setImagePullSecretsArgsForCall)]
+	fake.setImagePullSecretsArgsForCall = append(fake.setImagePullSecretsArgsForCall, struct {
+		arg1 []string
+	}{arg1Copy})
+	stub := fake.SetImagePullSecretsStub
+	fakeReturns := fake.setImagePullSecretsReturns
+	fake.recordInvocation("SetImagePullSecrets", []interface{}{arg1Copy})
+	fake.setImagePullSecretsMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sDeploymentBuilder) SetImagePullSecretsCallCount() int {
+	fake.setImagePullSecretsMutex.RLock()
+	defer fake.setImagePullSecretsMutex.RUnlock()
+	return len(fake.setImagePullSecretsArgsForCall)
+}
+
+func (fake *K8sDeploymentBuilder) SetImagePullSecretsCalls(stub func([]string) k8s.DeploymentBuilder) {
+	fake.setImagePullSecretsMutex.Lock()
+	defer fake.setImagePullSecretsMutex.Unlock()
+	fake.SetImagePullSecretsStub = stub
+}
+
+func (fake *K8sDeploymentBuilder) SetImagePullSecretsArgsForCall(i int) []string {
+	fake.setImagePullSecretsMutex.RLock()
+	defer fake.setImagePullSecretsMutex.RUnlock()
+	argsForCall := fake.setImagePullSecretsArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sDeploymentBuilder) SetImagePullSecretsReturns(result1 k8s.DeploymentBuilder) {
+	fake.setImagePullSecretsMutex.Lock()
+	defer fake.setImagePullSecretsMutex.Unlock()
+	fake.SetImagePullSecretsStub = nil
+	fake.setImagePullSecretsReturns = struct {
+		result1 k8s.DeploymentBuilder
+	}{result1}
+}
+
+func (fake *K8sDeploymentBuilder) SetImagePullSecretsReturnsOnCall(i int, result1 k8s.DeploymentBuilder) {
+	fake.setImagePullSecretsMutex.Lock()
+	defer fake.setImagePullSecretsMutex.Unlock()
+	fake.SetImagePullSecretsStub = nil
+	if fake.setImagePullSecretsReturnsOnCall == nil {
+		fake.setImagePullSecretsReturnsOnCall = make(map[int]struct {
+			result1 k8s.DeploymentBuilder
+		})
+	}
+	fake.setImagePullSecretsReturnsOnCall[i] = struct {
 		result1 k8s.DeploymentBuilder
 	}{result1}
 }
@@ -748,6 +897,8 @@ func (fake *K8sDeploymentBuilder) SetVolumesReturnsOnCall(i int, result1 k8s.Dep
 func (fake *K8sDeploymentBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.addImagePullSecretsMutex.RLock()
+	defer fake.addImagePullSecretsMutex.RUnlock()
 	fake.addVolumesMutex.RLock()
 	defer fake.addVolumesMutex.RUnlock()
 	fake.buildMutex.RLock()
@@ -758,6 +909,8 @@ func (fake *K8sDeploymentBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setComponentMutex.RUnlock()
 	fake.setContainersBuilderMutex.RLock()
 	defer fake.setContainersBuilderMutex.RUnlock()
+	fake.setImagePullSecretsMutex.RLock()
+	defer fake.setImagePullSecretsMutex.RUnlock()
 	fake.setNameMutex.RLock()
 	defer fake.setNameMutex.RUnlock()
 	fake.setObjectMetaBuilderMutex.RLock()

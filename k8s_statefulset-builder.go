@@ -27,6 +27,8 @@ type StatefulSetBuilder interface {
 	SetStorageClass(storageClass string) StatefulSetBuilder
 	AddVolumes(volumes ...corev1.Volume) StatefulSetBuilder
 	SetAffinity(affinity corev1.Affinity) StatefulSetBuilder
+	AddImagePullSecrets(imagePullSecrets ...string) StatefulSetBuilder
+	SetImagePullSecrets(imagePullSecrets []string) StatefulSetBuilder
 }
 
 func NewStatefulSetBuilder() StatefulSetBuilder {

@@ -11,6 +11,17 @@ import (
 )
 
 type K8sStatefulSetBuilder struct {
+	AddImagePullSecretsStub        func(...string) k8s.StatefulSetBuilder
+	addImagePullSecretsMutex       sync.RWMutex
+	addImagePullSecretsArgsForCall []struct {
+		arg1 []string
+	}
+	addImagePullSecretsReturns struct {
+		result1 k8s.StatefulSetBuilder
+	}
+	addImagePullSecretsReturnsOnCall map[int]struct {
+		result1 k8s.StatefulSetBuilder
+	}
 	AddLabelStub        func(string, string) k8s.StatefulSetBuilder
 	addLabelMutex       sync.RWMutex
 	addLabelArgsForCall []struct {
@@ -80,6 +91,17 @@ type K8sStatefulSetBuilder struct {
 	setDatadirSizeReturnsOnCall map[int]struct {
 		result1 k8s.StatefulSetBuilder
 	}
+	SetImagePullSecretsStub        func([]string) k8s.StatefulSetBuilder
+	setImagePullSecretsMutex       sync.RWMutex
+	setImagePullSecretsArgsForCall []struct {
+		arg1 []string
+	}
+	setImagePullSecretsReturns struct {
+		result1 k8s.StatefulSetBuilder
+	}
+	setImagePullSecretsReturnsOnCall map[int]struct {
+		result1 k8s.StatefulSetBuilder
+	}
 	SetNameStub        func(k8s.Name) k8s.StatefulSetBuilder
 	setNameMutex       sync.RWMutex
 	setNameArgsForCall []struct {
@@ -126,6 +148,67 @@ type K8sStatefulSetBuilder struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *K8sStatefulSetBuilder) AddImagePullSecrets(arg1 ...string) k8s.StatefulSetBuilder {
+	fake.addImagePullSecretsMutex.Lock()
+	ret, specificReturn := fake.addImagePullSecretsReturnsOnCall[len(fake.addImagePullSecretsArgsForCall)]
+	fake.addImagePullSecretsArgsForCall = append(fake.addImagePullSecretsArgsForCall, struct {
+		arg1 []string
+	}{arg1})
+	stub := fake.AddImagePullSecretsStub
+	fakeReturns := fake.addImagePullSecretsReturns
+	fake.recordInvocation("AddImagePullSecrets", []interface{}{arg1})
+	fake.addImagePullSecretsMutex.Unlock()
+	if stub != nil {
+		return stub(arg1...)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sStatefulSetBuilder) AddImagePullSecretsCallCount() int {
+	fake.addImagePullSecretsMutex.RLock()
+	defer fake.addImagePullSecretsMutex.RUnlock()
+	return len(fake.addImagePullSecretsArgsForCall)
+}
+
+func (fake *K8sStatefulSetBuilder) AddImagePullSecretsCalls(stub func(...string) k8s.StatefulSetBuilder) {
+	fake.addImagePullSecretsMutex.Lock()
+	defer fake.addImagePullSecretsMutex.Unlock()
+	fake.AddImagePullSecretsStub = stub
+}
+
+func (fake *K8sStatefulSetBuilder) AddImagePullSecretsArgsForCall(i int) []string {
+	fake.addImagePullSecretsMutex.RLock()
+	defer fake.addImagePullSecretsMutex.RUnlock()
+	argsForCall := fake.addImagePullSecretsArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sStatefulSetBuilder) AddImagePullSecretsReturns(result1 k8s.StatefulSetBuilder) {
+	fake.addImagePullSecretsMutex.Lock()
+	defer fake.addImagePullSecretsMutex.Unlock()
+	fake.AddImagePullSecretsStub = nil
+	fake.addImagePullSecretsReturns = struct {
+		result1 k8s.StatefulSetBuilder
+	}{result1}
+}
+
+func (fake *K8sStatefulSetBuilder) AddImagePullSecretsReturnsOnCall(i int, result1 k8s.StatefulSetBuilder) {
+	fake.addImagePullSecretsMutex.Lock()
+	defer fake.addImagePullSecretsMutex.Unlock()
+	fake.AddImagePullSecretsStub = nil
+	if fake.addImagePullSecretsReturnsOnCall == nil {
+		fake.addImagePullSecretsReturnsOnCall = make(map[int]struct {
+			result1 k8s.StatefulSetBuilder
+		})
+	}
+	fake.addImagePullSecretsReturnsOnCall[i] = struct {
+		result1 k8s.StatefulSetBuilder
+	}{result1}
 }
 
 func (fake *K8sStatefulSetBuilder) AddLabel(arg1 string, arg2 string) k8s.StatefulSetBuilder {
@@ -498,6 +581,72 @@ func (fake *K8sStatefulSetBuilder) SetDatadirSizeReturnsOnCall(i int, result1 k8
 	}{result1}
 }
 
+func (fake *K8sStatefulSetBuilder) SetImagePullSecrets(arg1 []string) k8s.StatefulSetBuilder {
+	var arg1Copy []string
+	if arg1 != nil {
+		arg1Copy = make([]string, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.setImagePullSecretsMutex.Lock()
+	ret, specificReturn := fake.setImagePullSecretsReturnsOnCall[len(fake.setImagePullSecretsArgsForCall)]
+	fake.setImagePullSecretsArgsForCall = append(fake.setImagePullSecretsArgsForCall, struct {
+		arg1 []string
+	}{arg1Copy})
+	stub := fake.SetImagePullSecretsStub
+	fakeReturns := fake.setImagePullSecretsReturns
+	fake.recordInvocation("SetImagePullSecrets", []interface{}{arg1Copy})
+	fake.setImagePullSecretsMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sStatefulSetBuilder) SetImagePullSecretsCallCount() int {
+	fake.setImagePullSecretsMutex.RLock()
+	defer fake.setImagePullSecretsMutex.RUnlock()
+	return len(fake.setImagePullSecretsArgsForCall)
+}
+
+func (fake *K8sStatefulSetBuilder) SetImagePullSecretsCalls(stub func([]string) k8s.StatefulSetBuilder) {
+	fake.setImagePullSecretsMutex.Lock()
+	defer fake.setImagePullSecretsMutex.Unlock()
+	fake.SetImagePullSecretsStub = stub
+}
+
+func (fake *K8sStatefulSetBuilder) SetImagePullSecretsArgsForCall(i int) []string {
+	fake.setImagePullSecretsMutex.RLock()
+	defer fake.setImagePullSecretsMutex.RUnlock()
+	argsForCall := fake.setImagePullSecretsArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sStatefulSetBuilder) SetImagePullSecretsReturns(result1 k8s.StatefulSetBuilder) {
+	fake.setImagePullSecretsMutex.Lock()
+	defer fake.setImagePullSecretsMutex.Unlock()
+	fake.SetImagePullSecretsStub = nil
+	fake.setImagePullSecretsReturns = struct {
+		result1 k8s.StatefulSetBuilder
+	}{result1}
+}
+
+func (fake *K8sStatefulSetBuilder) SetImagePullSecretsReturnsOnCall(i int, result1 k8s.StatefulSetBuilder) {
+	fake.setImagePullSecretsMutex.Lock()
+	defer fake.setImagePullSecretsMutex.Unlock()
+	fake.SetImagePullSecretsStub = nil
+	if fake.setImagePullSecretsReturnsOnCall == nil {
+		fake.setImagePullSecretsReturnsOnCall = make(map[int]struct {
+			result1 k8s.StatefulSetBuilder
+		})
+	}
+	fake.setImagePullSecretsReturnsOnCall[i] = struct {
+		result1 k8s.StatefulSetBuilder
+	}{result1}
+}
+
 func (fake *K8sStatefulSetBuilder) SetName(arg1 k8s.Name) k8s.StatefulSetBuilder {
 	fake.setNameMutex.Lock()
 	ret, specificReturn := fake.setNameReturnsOnCall[len(fake.setNameArgsForCall)]
@@ -745,6 +894,8 @@ func (fake *K8sStatefulSetBuilder) SetStorageClassReturnsOnCall(i int, result1 k
 func (fake *K8sStatefulSetBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.addImagePullSecretsMutex.RLock()
+	defer fake.addImagePullSecretsMutex.RUnlock()
 	fake.addLabelMutex.RLock()
 	defer fake.addLabelMutex.RUnlock()
 	fake.addVolumesMutex.RLock()
@@ -757,6 +908,8 @@ func (fake *K8sStatefulSetBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setContainersBuilderMutex.RUnlock()
 	fake.setDatadirSizeMutex.RLock()
 	defer fake.setDatadirSizeMutex.RUnlock()
+	fake.setImagePullSecretsMutex.RLock()
+	defer fake.setImagePullSecretsMutex.RUnlock()
 	fake.setNameMutex.RLock()
 	defer fake.setNameMutex.RUnlock()
 	fake.setObjectMetaBuilderMutex.RLock()

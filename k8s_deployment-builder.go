@@ -27,6 +27,8 @@ type DeploymentBuilder interface {
 	AddVolumes(volumes ...corev1.Volume) DeploymentBuilder
 	SetVolumes(volumes []corev1.Volume) DeploymentBuilder
 	SetAffinity(affinity corev1.Affinity) DeploymentBuilder
+	AddImagePullSecrets(imagePullSecrets ...string) DeploymentBuilder
+	SetImagePullSecrets(imagePullSecrets []string) DeploymentBuilder
 }
 
 func NewDeploymentBuilder() DeploymentBuilder {
