@@ -7,11 +7,10 @@ package k8s_test
 import (
 	"context"
 
+	"github.com/bborbe/k8s"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"k8s.io/api/networking/v1"
-
-	"github.com/bborbe/k8s"
 )
 
 var _ = Describe("Ingress Builder", func() {

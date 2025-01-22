@@ -5,12 +5,11 @@
 package k8s_test
 
 import (
+	"github.com/bborbe/k8s"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	"github.com/bborbe/k8s"
 )
 
 func createTestPod(name string, labels map[string]string) corev1.Pod {

@@ -31,13 +31,13 @@ type StatefulSetBuilder interface {
 
 func NewStatefulSetBuilder() StatefulSetBuilder {
 	return &statefulSetBuilder{
-		replicas:     1,
-		labels:       map[string]string{},
-		datadirSize:  "2Gi",
-		storageClass: "standard",
-		volumes:      []corev1.Volume{},
+		replicas:         1,
+		labels:           map[string]string{},
+		datadirSize:      "2Gi",
+		storageClass:     "standard",
+		volumes:          []corev1.Volume{},
+		imagePullSecrets: []string{"docker"},
 	}
-
 }
 
 type statefulSetBuilder struct {
@@ -50,6 +50,7 @@ type statefulSetBuilder struct {
 	objectMetaBuilder ObjectMetaBuilder
 	containersBuilder ContainersBuilder
 	affinity          *corev1.Affinity
+	imagePullSecrets  []string
 }
 
 func (s *statefulSetBuilder) SetAffinity(affinity corev1.Affinity) StatefulSetBuilder {
@@ -64,6 +65,16 @@ func (s *statefulSetBuilder) SetContainersBuilder(containersBuilder ContainersBu
 
 func (s *statefulSetBuilder) AddVolumes(volumes ...corev1.Volume) StatefulSetBuilder {
 	s.volumes = append(s.volumes, volumes...)
+	return s
+}
+
+func (s *statefulSetBuilder) AddImagePullSecrets(imagePullSecrets ...string) StatefulSetBuilder {
+	s.imagePullSecrets = append(s.imagePullSecrets, imagePullSecrets...)
+	return s
+}
+
+func (s *statefulSetBuilder) SetImagePullSecrets(imagePullSecrets []string) StatefulSetBuilder {
+	s.imagePullSecrets = imagePullSecrets
 	return s
 }
 
@@ -145,14 +156,10 @@ func (s *statefulSetBuilder) Build(ctx context.Context) (*appsv1.StatefulSet, er
 					Labels: s.labels,
 				},
 				Spec: corev1.PodSpec{
-					ImagePullSecrets: []corev1.LocalObjectReference{
-						{
-							Name: "docker",
-						},
-					},
-					Affinity:   s.affinity,
-					Containers: containers,
-					Volumes:    s.volumes,
+					ImagePullSecrets: s.createImagePullSecrets(),
+					Affinity:         s.affinity,
+					Containers:       containers,
+					Volumes:          s.volumes,
 				},
 			},
 			UpdateStrategy: appsv1.StatefulSetUpdateStrategy{
@@ -178,4 +185,12 @@ func (s *statefulSetBuilder) Build(ctx context.Context) (*appsv1.StatefulSet, er
 			},
 		},
 	}, nil
+}
+
+func (s *statefulSetBuilder) createImagePullSecrets() []corev1.LocalObjectReference {
+	result := make([]corev1.LocalObjectReference, 0, len(s.imagePullSecrets))
+	for _, imagePullSecret := range s.imagePullSecrets {
+		result = append(result, corev1.LocalObjectReference{Name: imagePullSecret})
+	}
+	return result
 }

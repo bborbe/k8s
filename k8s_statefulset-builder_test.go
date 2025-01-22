@@ -7,11 +7,10 @@ package k8s_test
 import (
 	"context"
 
+	"github.com/bborbe/k8s"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
-
-	"github.com/bborbe/k8s"
 )
 
 var _ = Describe("StatefulSet Builder", func() {
@@ -46,9 +45,16 @@ var _ = Describe("StatefulSet Builder", func() {
 			})
 			It("returns statefulSet", func() {
 				Expect(statefulSet).NotTo(BeNil())
+			})
+			It("returns correct VolumeClaimTemplates", func() {
 				Expect(statefulSet).NotTo(BeNil())
 				Expect(statefulSet.Spec.VolumeClaimTemplates).To(HaveLen(1))
 				Expect(*statefulSet.Spec.VolumeClaimTemplates[0].Spec.StorageClassName).To(Equal("standard"))
+			})
+			It("returns correct ImagePullSecrets", func() {
+				Expect(statefulSet).NotTo(BeNil())
+				Expect(statefulSet.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(1))
+				Expect(statefulSet.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker"))
 			})
 		})
 		Context("without name", func() {

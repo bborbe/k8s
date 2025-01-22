@@ -61,6 +61,7 @@ func (i *ingressBuilder) SetPath(path string) IngressBuilder {
 	i.path = path
 	return i
 }
+
 func (i *ingressBuilder) SetPathType(pathType v1.PathType) IngressBuilder {
 	i.pathType = pathType
 	return i

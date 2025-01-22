@@ -31,7 +31,8 @@ type DeploymentBuilder interface {
 
 func NewDeploymentBuilder() DeploymentBuilder {
 	return &deploymentBuilder{
-		replicas: 1,
+		replicas:         1,
+		imagePullSecrets: []string{"docker"},
 	}
 }
 
@@ -44,6 +45,7 @@ type deploymentBuilder struct {
 	volumes            []corev1.Volume
 	containersBuilder  ContainersBuilder
 	affinity           *corev1.Affinity
+	imagePullSecrets   []string
 }
 
 func (d *deploymentBuilder) SetAffinity(affinity corev1.Affinity) DeploymentBuilder {
@@ -63,6 +65,16 @@ func (d *deploymentBuilder) AddVolumes(volumes ...corev1.Volume) DeploymentBuild
 
 func (d *deploymentBuilder) SetVolumes(volumes []corev1.Volume) DeploymentBuilder {
 	d.volumes = volumes
+	return d
+}
+
+func (d *deploymentBuilder) AddImagePullSecrets(imagePullSecrets ...string) DeploymentBuilder {
+	d.imagePullSecrets = append(d.imagePullSecrets, imagePullSecrets...)
+	return d
+}
+
+func (d *deploymentBuilder) SetImagePullSecrets(imagePullSecrets []string) DeploymentBuilder {
+	d.imagePullSecrets = imagePullSecrets
 	return d
 }
 
@@ -152,14 +164,18 @@ func (d *deploymentBuilder) Build(ctx context.Context) (*appsv1.Deployment, erro
 					Affinity:           d.affinity,
 					Containers:         containers,
 					ServiceAccountName: d.serviceAccountName,
-					ImagePullSecrets: []corev1.LocalObjectReference{
-						{
-							Name: "docker",
-						},
-					},
-					Volumes: d.volumes,
+					ImagePullSecrets:   d.createImagePullSecrets(),
+					Volumes:            d.volumes,
 				},
 			},
 		},
 	}, nil
+}
+
+func (d *deploymentBuilder) createImagePullSecrets() []corev1.LocalObjectReference {
+	result := make([]corev1.LocalObjectReference, 0, len(d.imagePullSecrets))
+	for _, imagePullSecret := range d.imagePullSecrets {
+		result = append(result, corev1.LocalObjectReference{Name: imagePullSecret})
+	}
+	return result
 }

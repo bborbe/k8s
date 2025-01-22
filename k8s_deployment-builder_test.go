@@ -7,11 +7,10 @@ package k8s_test
 import (
 	"context"
 
+	"github.com/bborbe/k8s"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
-
-	"github.com/bborbe/k8s"
 )
 
 var _ = Describe("Deployment Builder", func() {
@@ -45,6 +44,11 @@ var _ = Describe("Deployment Builder", func() {
 		})
 		It("returns deployment", func() {
 			Expect(deployment).NotTo(BeNil())
+		})
+		It("returns correct ImagePullSecrets", func() {
+			Expect(deployment).NotTo(BeNil())
+			Expect(deployment.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(1))
+			Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker"))
 		})
 	})
 })

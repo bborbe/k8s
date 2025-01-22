@@ -8,13 +8,12 @@ import (
 	"context"
 	stderrors "errors"
 
+	"github.com/bborbe/k8s"
+	"github.com/bborbe/k8s/mocks"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	"github.com/bborbe/k8s"
-	"github.com/bborbe/k8s/mocks"
 )
 
 var _ = Describe("IngressDeployer", func() {
