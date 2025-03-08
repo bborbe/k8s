@@ -21,6 +21,8 @@ var _ = Describe("PodSpec Builder", func() {
 	BeforeEach(func() {
 		ctx = context.Background()
 		podSpecBuilder = k8s.NewPodSpecBuilder()
+	})
+	JustBeforeEach(func() {
 		podSpec, err = podSpecBuilder.Build(ctx)
 	})
 	It("returns no error", func() {
@@ -28,5 +30,17 @@ var _ = Describe("PodSpec Builder", func() {
 	})
 	It("returns podSpec", func() {
 		Expect(podSpec).NotTo(BeNil())
+		Expect(podSpec.ImagePullSecrets).To(HaveLen(1))
+		Expect(podSpec.ImagePullSecrets[0].Name).To(Equal("docker"))
+	})
+	Context("custom pull secret", func() {
+		BeforeEach(func() {
+			podSpecBuilder.SetImagePullSecrets([]string{"docker-test"})
+		})
+		It("returns podSpec", func() {
+			Expect(podSpec).NotTo(BeNil())
+			Expect(podSpec.ImagePullSecrets).To(HaveLen(1))
+			Expect(podSpec.ImagePullSecrets[0].Name).To(Equal("docker-test"))
+		})
 	})
 })

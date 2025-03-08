@@ -45,6 +45,17 @@ type K8sPodSpecBuilder struct {
 	setContainersReturnsOnCall map[int]struct {
 		result1 k8s.PodSpecBuilder
 	}
+	SetImagePullSecretsStub        func([]string) k8s.PodSpecBuilder
+	setImagePullSecretsMutex       sync.RWMutex
+	setImagePullSecretsArgsForCall []struct {
+		arg1 []string
+	}
+	setImagePullSecretsReturns struct {
+		result1 k8s.PodSpecBuilder
+	}
+	setImagePullSecretsReturnsOnCall map[int]struct {
+		result1 k8s.PodSpecBuilder
+	}
 	SetRestartPolicyStub        func(v1.RestartPolicy) k8s.PodSpecBuilder
 	setRestartPolicyMutex       sync.RWMutex
 	setRestartPolicyArgsForCall []struct {
@@ -262,6 +273,72 @@ func (fake *K8sPodSpecBuilder) SetContainersReturnsOnCall(i int, result1 k8s.Pod
 	}{result1}
 }
 
+func (fake *K8sPodSpecBuilder) SetImagePullSecrets(arg1 []string) k8s.PodSpecBuilder {
+	var arg1Copy []string
+	if arg1 != nil {
+		arg1Copy = make([]string, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.setImagePullSecretsMutex.Lock()
+	ret, specificReturn := fake.setImagePullSecretsReturnsOnCall[len(fake.setImagePullSecretsArgsForCall)]
+	fake.setImagePullSecretsArgsForCall = append(fake.setImagePullSecretsArgsForCall, struct {
+		arg1 []string
+	}{arg1Copy})
+	stub := fake.SetImagePullSecretsStub
+	fakeReturns := fake.setImagePullSecretsReturns
+	fake.recordInvocation("SetImagePullSecrets", []interface{}{arg1Copy})
+	fake.setImagePullSecretsMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sPodSpecBuilder) SetImagePullSecretsCallCount() int {
+	fake.setImagePullSecretsMutex.RLock()
+	defer fake.setImagePullSecretsMutex.RUnlock()
+	return len(fake.setImagePullSecretsArgsForCall)
+}
+
+func (fake *K8sPodSpecBuilder) SetImagePullSecretsCalls(stub func([]string) k8s.PodSpecBuilder) {
+	fake.setImagePullSecretsMutex.Lock()
+	defer fake.setImagePullSecretsMutex.Unlock()
+	fake.SetImagePullSecretsStub = stub
+}
+
+func (fake *K8sPodSpecBuilder) SetImagePullSecretsArgsForCall(i int) []string {
+	fake.setImagePullSecretsMutex.RLock()
+	defer fake.setImagePullSecretsMutex.RUnlock()
+	argsForCall := fake.setImagePullSecretsArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sPodSpecBuilder) SetImagePullSecretsReturns(result1 k8s.PodSpecBuilder) {
+	fake.setImagePullSecretsMutex.Lock()
+	defer fake.setImagePullSecretsMutex.Unlock()
+	fake.SetImagePullSecretsStub = nil
+	fake.setImagePullSecretsReturns = struct {
+		result1 k8s.PodSpecBuilder
+	}{result1}
+}
+
+func (fake *K8sPodSpecBuilder) SetImagePullSecretsReturnsOnCall(i int, result1 k8s.PodSpecBuilder) {
+	fake.setImagePullSecretsMutex.Lock()
+	defer fake.setImagePullSecretsMutex.Unlock()
+	fake.SetImagePullSecretsStub = nil
+	if fake.setImagePullSecretsReturnsOnCall == nil {
+		fake.setImagePullSecretsReturnsOnCall = make(map[int]struct {
+			result1 k8s.PodSpecBuilder
+		})
+	}
+	fake.setImagePullSecretsReturnsOnCall[i] = struct {
+		result1 k8s.PodSpecBuilder
+	}{result1}
+}
+
 func (fake *K8sPodSpecBuilder) SetRestartPolicy(arg1 v1.RestartPolicy) k8s.PodSpecBuilder {
 	fake.setRestartPolicyMutex.Lock()
 	ret, specificReturn := fake.setRestartPolicyReturnsOnCall[len(fake.setRestartPolicyArgsForCall)]
@@ -398,6 +475,8 @@ func (fake *K8sPodSpecBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setAffinityMutex.RUnlock()
 	fake.setContainersMutex.RLock()
 	defer fake.setContainersMutex.RUnlock()
+	fake.setImagePullSecretsMutex.RLock()
+	defer fake.setImagePullSecretsMutex.RUnlock()
 	fake.setRestartPolicyMutex.RLock()
 	defer fake.setRestartPolicyMutex.RUnlock()
 	fake.setVolumesMutex.RLock()

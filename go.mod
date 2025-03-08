@@ -1,6 +1,6 @@
 module github.com/bborbe/k8s
 
-go 1.23.4
+go 1.24.0
 
 require (
 	github.com/actgardner/gogen-avro/v9 v9.2.0
