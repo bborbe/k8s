@@ -11,6 +11,7 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 ## 1.5.2
 
 - add SetImagePullSecrets to PodSpecBuilder 
+- go mod update
 
 ## 1.5.1
 
