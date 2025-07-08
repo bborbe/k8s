@@ -45,6 +45,17 @@ type K8sPodSpecBuilder struct {
 	setContainersReturnsOnCall map[int]struct {
 		result1 k8s.PodSpecBuilder
 	}
+	SetContainersBuilderStub        func(k8s.HasBuildContainers) k8s.PodSpecBuilder
+	setContainersBuilderMutex       sync.RWMutex
+	setContainersBuilderArgsForCall []struct {
+		arg1 k8s.HasBuildContainers
+	}
+	setContainersBuilderReturns struct {
+		result1 k8s.PodSpecBuilder
+	}
+	setContainersBuilderReturnsOnCall map[int]struct {
+		result1 k8s.PodSpecBuilder
+	}
 	SetImagePullSecretsStub        func([]string) k8s.PodSpecBuilder
 	setImagePullSecretsMutex       sync.RWMutex
 	setImagePullSecretsArgsForCall []struct {
@@ -88,6 +99,17 @@ type K8sPodSpecBuilder struct {
 	}
 	setVolumesReturnsOnCall map[int]struct {
 		result1 k8s.PodSpecBuilder
+	}
+	ValidateStub        func(context.Context) error
+	validateMutex       sync.RWMutex
+	validateArgsForCall []struct {
+		arg1 context.Context
+	}
+	validateReturns struct {
+		result1 error
+	}
+	validateReturnsOnCall map[int]struct {
+		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -280,6 +302,67 @@ func (fake *K8sPodSpecBuilder) SetContainersReturnsOnCall(i int, result1 k8s.Pod
 		})
 	}
 	fake.setContainersReturnsOnCall[i] = struct {
+		result1 k8s.PodSpecBuilder
+	}{result1}
+}
+
+func (fake *K8sPodSpecBuilder) SetContainersBuilder(arg1 k8s.HasBuildContainers) k8s.PodSpecBuilder {
+	fake.setContainersBuilderMutex.Lock()
+	ret, specificReturn := fake.setContainersBuilderReturnsOnCall[len(fake.setContainersBuilderArgsForCall)]
+	fake.setContainersBuilderArgsForCall = append(fake.setContainersBuilderArgsForCall, struct {
+		arg1 k8s.HasBuildContainers
+	}{arg1})
+	stub := fake.SetContainersBuilderStub
+	fakeReturns := fake.setContainersBuilderReturns
+	fake.recordInvocation("SetContainersBuilder", []interface{}{arg1})
+	fake.setContainersBuilderMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sPodSpecBuilder) SetContainersBuilderCallCount() int {
+	fake.setContainersBuilderMutex.RLock()
+	defer fake.setContainersBuilderMutex.RUnlock()
+	return len(fake.setContainersBuilderArgsForCall)
+}
+
+func (fake *K8sPodSpecBuilder) SetContainersBuilderCalls(stub func(k8s.HasBuildContainers) k8s.PodSpecBuilder) {
+	fake.setContainersBuilderMutex.Lock()
+	defer fake.setContainersBuilderMutex.Unlock()
+	fake.SetContainersBuilderStub = stub
+}
+
+func (fake *K8sPodSpecBuilder) SetContainersBuilderArgsForCall(i int) k8s.HasBuildContainers {
+	fake.setContainersBuilderMutex.RLock()
+	defer fake.setContainersBuilderMutex.RUnlock()
+	argsForCall := fake.setContainersBuilderArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sPodSpecBuilder) SetContainersBuilderReturns(result1 k8s.PodSpecBuilder) {
+	fake.setContainersBuilderMutex.Lock()
+	defer fake.setContainersBuilderMutex.Unlock()
+	fake.SetContainersBuilderStub = nil
+	fake.setContainersBuilderReturns = struct {
+		result1 k8s.PodSpecBuilder
+	}{result1}
+}
+
+func (fake *K8sPodSpecBuilder) SetContainersBuilderReturnsOnCall(i int, result1 k8s.PodSpecBuilder) {
+	fake.setContainersBuilderMutex.Lock()
+	defer fake.setContainersBuilderMutex.Unlock()
+	fake.SetContainersBuilderStub = nil
+	if fake.setContainersBuilderReturnsOnCall == nil {
+		fake.setContainersBuilderReturnsOnCall = make(map[int]struct {
+			result1 k8s.PodSpecBuilder
+		})
+	}
+	fake.setContainersBuilderReturnsOnCall[i] = struct {
 		result1 k8s.PodSpecBuilder
 	}{result1}
 }
@@ -538,6 +621,67 @@ func (fake *K8sPodSpecBuilder) SetVolumesReturnsOnCall(i int, result1 k8s.PodSpe
 	}{result1}
 }
 
+func (fake *K8sPodSpecBuilder) Validate(arg1 context.Context) error {
+	fake.validateMutex.Lock()
+	ret, specificReturn := fake.validateReturnsOnCall[len(fake.validateArgsForCall)]
+	fake.validateArgsForCall = append(fake.validateArgsForCall, struct {
+		arg1 context.Context
+	}{arg1})
+	stub := fake.ValidateStub
+	fakeReturns := fake.validateReturns
+	fake.recordInvocation("Validate", []interface{}{arg1})
+	fake.validateMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sPodSpecBuilder) ValidateCallCount() int {
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
+	return len(fake.validateArgsForCall)
+}
+
+func (fake *K8sPodSpecBuilder) ValidateCalls(stub func(context.Context) error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = stub
+}
+
+func (fake *K8sPodSpecBuilder) ValidateArgsForCall(i int) context.Context {
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
+	argsForCall := fake.validateArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sPodSpecBuilder) ValidateReturns(result1 error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = nil
+	fake.validateReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *K8sPodSpecBuilder) ValidateReturnsOnCall(i int, result1 error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = nil
+	if fake.validateReturnsOnCall == nil {
+		fake.validateReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.validateReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
 func (fake *K8sPodSpecBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -547,6 +691,8 @@ func (fake *K8sPodSpecBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setAffinityMutex.RUnlock()
 	fake.setContainersMutex.RLock()
 	defer fake.setContainersMutex.RUnlock()
+	fake.setContainersBuilderMutex.RLock()
+	defer fake.setContainersBuilderMutex.RUnlock()
 	fake.setImagePullSecretsMutex.RLock()
 	defer fake.setImagePullSecretsMutex.RUnlock()
 	fake.setPriorityClassNameMutex.RLock()
@@ -555,6 +701,8 @@ func (fake *K8sPodSpecBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setRestartPolicyMutex.RUnlock()
 	fake.setVolumesMutex.RLock()
 	defer fake.setVolumesMutex.RUnlock()
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

@@ -28,7 +28,9 @@ func (f HasBuildServiceFunc) Build(ctx context.Context) (*corev1.Service, error)
 //counterfeiter:generate -o mocks/k8s-service-builder.go --fake-name K8sServiceBuilder . ServiceBuilder
 type ServiceBuilder interface {
 	HasBuildService
-	SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) ServiceBuilder
+	validation.HasValidation
+	SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) ServiceBuilder
+	SetObjectMeta(objectMeta metav1.ObjectMeta) ServiceBuilder
 	SetName(name Name) ServiceBuilder
 	SetServicePortName(servicePortName string) ServiceBuilder
 	SetServicePortNumber(servicePortNumber int32) ServiceBuilder
@@ -43,14 +45,20 @@ func NewServiceBuilder() ServiceBuilder {
 
 type serviceBuilder struct {
 	name              Name
-	objectMetaBuilder ObjectMetaBuilder
+	objectMetaBuilder HasBuildObjectMeta
 	servicePortNumber int32
 	servicePortName   string
 }
 
-func (s *serviceBuilder) SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) ServiceBuilder {
+func (s *serviceBuilder) SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) ServiceBuilder {
 	s.objectMetaBuilder = objectMetaBuilder
 	return s
+}
+
+func (s *serviceBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) ServiceBuilder {
+	return s.SetObjectMetaBuilder(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+		return &objectMeta, nil
+	}))
 }
 
 func (s *serviceBuilder) SetName(name Name) ServiceBuilder {
@@ -71,7 +79,7 @@ func (s *serviceBuilder) SetServicePortName(servicePortName string) ServiceBuild
 func (s *serviceBuilder) Validate(ctx context.Context) error {
 	return validation.All{
 		validation.Name("Name", validation.NotEmptyString(s.name)),
-		validation.Name("ObjectMetaBuilder", validation.NotNilAndValid(s.objectMetaBuilder)),
+		validation.Name("ObjectMetaBuilder", validation.NotNil(s.objectMetaBuilder)),
 	}.Validate(ctx)
 }
 

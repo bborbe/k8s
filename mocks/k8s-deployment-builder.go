@@ -8,6 +8,7 @@ import (
 	"github.com/bborbe/k8s"
 	v1a "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	v1b "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type K8sDeploymentBuilder struct {
@@ -68,10 +69,21 @@ type K8sDeploymentBuilder struct {
 	setComponentReturnsOnCall map[int]struct {
 		result1 k8s.DeploymentBuilder
 	}
-	SetContainersBuilderStub        func(k8s.ContainersBuilder) k8s.DeploymentBuilder
+	SetContainersStub        func([]v1.Container) k8s.DeploymentBuilder
+	setContainersMutex       sync.RWMutex
+	setContainersArgsForCall []struct {
+		arg1 []v1.Container
+	}
+	setContainersReturns struct {
+		result1 k8s.DeploymentBuilder
+	}
+	setContainersReturnsOnCall map[int]struct {
+		result1 k8s.DeploymentBuilder
+	}
+	SetContainersBuilderStub        func(k8s.HasBuildContainers) k8s.DeploymentBuilder
 	setContainersBuilderMutex       sync.RWMutex
 	setContainersBuilderArgsForCall []struct {
-		arg1 k8s.ContainersBuilder
+		arg1 k8s.HasBuildContainers
 	}
 	setContainersBuilderReturns struct {
 		result1 k8s.DeploymentBuilder
@@ -101,10 +113,21 @@ type K8sDeploymentBuilder struct {
 	setNameReturnsOnCall map[int]struct {
 		result1 k8s.DeploymentBuilder
 	}
-	SetObjectMetaBuilderStub        func(k8s.ObjectMetaBuilder) k8s.DeploymentBuilder
+	SetObjectMetaStub        func(v1b.ObjectMeta) k8s.DeploymentBuilder
+	setObjectMetaMutex       sync.RWMutex
+	setObjectMetaArgsForCall []struct {
+		arg1 v1b.ObjectMeta
+	}
+	setObjectMetaReturns struct {
+		result1 k8s.DeploymentBuilder
+	}
+	setObjectMetaReturnsOnCall map[int]struct {
+		result1 k8s.DeploymentBuilder
+	}
+	SetObjectMetaBuilderStub        func(k8s.HasBuildObjectMeta) k8s.DeploymentBuilder
 	setObjectMetaBuilderMutex       sync.RWMutex
 	setObjectMetaBuilderArgsForCall []struct {
-		arg1 k8s.ObjectMetaBuilder
+		arg1 k8s.HasBuildObjectMeta
 	}
 	setObjectMetaBuilderReturns struct {
 		result1 k8s.DeploymentBuilder
@@ -144,6 +167,17 @@ type K8sDeploymentBuilder struct {
 	}
 	setVolumesReturnsOnCall map[int]struct {
 		result1 k8s.DeploymentBuilder
+	}
+	ValidateStub        func(context.Context) error
+	validateMutex       sync.RWMutex
+	validateArgsForCall []struct {
+		arg1 context.Context
+	}
+	validateReturns struct {
+		result1 error
+	}
+	validateReturnsOnCall map[int]struct {
+		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -457,11 +491,77 @@ func (fake *K8sDeploymentBuilder) SetComponentReturnsOnCall(i int, result1 k8s.D
 	}{result1}
 }
 
-func (fake *K8sDeploymentBuilder) SetContainersBuilder(arg1 k8s.ContainersBuilder) k8s.DeploymentBuilder {
+func (fake *K8sDeploymentBuilder) SetContainers(arg1 []v1.Container) k8s.DeploymentBuilder {
+	var arg1Copy []v1.Container
+	if arg1 != nil {
+		arg1Copy = make([]v1.Container, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.setContainersMutex.Lock()
+	ret, specificReturn := fake.setContainersReturnsOnCall[len(fake.setContainersArgsForCall)]
+	fake.setContainersArgsForCall = append(fake.setContainersArgsForCall, struct {
+		arg1 []v1.Container
+	}{arg1Copy})
+	stub := fake.SetContainersStub
+	fakeReturns := fake.setContainersReturns
+	fake.recordInvocation("SetContainers", []interface{}{arg1Copy})
+	fake.setContainersMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sDeploymentBuilder) SetContainersCallCount() int {
+	fake.setContainersMutex.RLock()
+	defer fake.setContainersMutex.RUnlock()
+	return len(fake.setContainersArgsForCall)
+}
+
+func (fake *K8sDeploymentBuilder) SetContainersCalls(stub func([]v1.Container) k8s.DeploymentBuilder) {
+	fake.setContainersMutex.Lock()
+	defer fake.setContainersMutex.Unlock()
+	fake.SetContainersStub = stub
+}
+
+func (fake *K8sDeploymentBuilder) SetContainersArgsForCall(i int) []v1.Container {
+	fake.setContainersMutex.RLock()
+	defer fake.setContainersMutex.RUnlock()
+	argsForCall := fake.setContainersArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sDeploymentBuilder) SetContainersReturns(result1 k8s.DeploymentBuilder) {
+	fake.setContainersMutex.Lock()
+	defer fake.setContainersMutex.Unlock()
+	fake.SetContainersStub = nil
+	fake.setContainersReturns = struct {
+		result1 k8s.DeploymentBuilder
+	}{result1}
+}
+
+func (fake *K8sDeploymentBuilder) SetContainersReturnsOnCall(i int, result1 k8s.DeploymentBuilder) {
+	fake.setContainersMutex.Lock()
+	defer fake.setContainersMutex.Unlock()
+	fake.SetContainersStub = nil
+	if fake.setContainersReturnsOnCall == nil {
+		fake.setContainersReturnsOnCall = make(map[int]struct {
+			result1 k8s.DeploymentBuilder
+		})
+	}
+	fake.setContainersReturnsOnCall[i] = struct {
+		result1 k8s.DeploymentBuilder
+	}{result1}
+}
+
+func (fake *K8sDeploymentBuilder) SetContainersBuilder(arg1 k8s.HasBuildContainers) k8s.DeploymentBuilder {
 	fake.setContainersBuilderMutex.Lock()
 	ret, specificReturn := fake.setContainersBuilderReturnsOnCall[len(fake.setContainersBuilderArgsForCall)]
 	fake.setContainersBuilderArgsForCall = append(fake.setContainersBuilderArgsForCall, struct {
-		arg1 k8s.ContainersBuilder
+		arg1 k8s.HasBuildContainers
 	}{arg1})
 	stub := fake.SetContainersBuilderStub
 	fakeReturns := fake.setContainersBuilderReturns
@@ -482,13 +582,13 @@ func (fake *K8sDeploymentBuilder) SetContainersBuilderCallCount() int {
 	return len(fake.setContainersBuilderArgsForCall)
 }
 
-func (fake *K8sDeploymentBuilder) SetContainersBuilderCalls(stub func(k8s.ContainersBuilder) k8s.DeploymentBuilder) {
+func (fake *K8sDeploymentBuilder) SetContainersBuilderCalls(stub func(k8s.HasBuildContainers) k8s.DeploymentBuilder) {
 	fake.setContainersBuilderMutex.Lock()
 	defer fake.setContainersBuilderMutex.Unlock()
 	fake.SetContainersBuilderStub = stub
 }
 
-func (fake *K8sDeploymentBuilder) SetContainersBuilderArgsForCall(i int) k8s.ContainersBuilder {
+func (fake *K8sDeploymentBuilder) SetContainersBuilderArgsForCall(i int) k8s.HasBuildContainers {
 	fake.setContainersBuilderMutex.RLock()
 	defer fake.setContainersBuilderMutex.RUnlock()
 	argsForCall := fake.setContainersBuilderArgsForCall[i]
@@ -645,11 +745,72 @@ func (fake *K8sDeploymentBuilder) SetNameReturnsOnCall(i int, result1 k8s.Deploy
 	}{result1}
 }
 
-func (fake *K8sDeploymentBuilder) SetObjectMetaBuilder(arg1 k8s.ObjectMetaBuilder) k8s.DeploymentBuilder {
+func (fake *K8sDeploymentBuilder) SetObjectMeta(arg1 v1b.ObjectMeta) k8s.DeploymentBuilder {
+	fake.setObjectMetaMutex.Lock()
+	ret, specificReturn := fake.setObjectMetaReturnsOnCall[len(fake.setObjectMetaArgsForCall)]
+	fake.setObjectMetaArgsForCall = append(fake.setObjectMetaArgsForCall, struct {
+		arg1 v1b.ObjectMeta
+	}{arg1})
+	stub := fake.SetObjectMetaStub
+	fakeReturns := fake.setObjectMetaReturns
+	fake.recordInvocation("SetObjectMeta", []interface{}{arg1})
+	fake.setObjectMetaMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sDeploymentBuilder) SetObjectMetaCallCount() int {
+	fake.setObjectMetaMutex.RLock()
+	defer fake.setObjectMetaMutex.RUnlock()
+	return len(fake.setObjectMetaArgsForCall)
+}
+
+func (fake *K8sDeploymentBuilder) SetObjectMetaCalls(stub func(v1b.ObjectMeta) k8s.DeploymentBuilder) {
+	fake.setObjectMetaMutex.Lock()
+	defer fake.setObjectMetaMutex.Unlock()
+	fake.SetObjectMetaStub = stub
+}
+
+func (fake *K8sDeploymentBuilder) SetObjectMetaArgsForCall(i int) v1b.ObjectMeta {
+	fake.setObjectMetaMutex.RLock()
+	defer fake.setObjectMetaMutex.RUnlock()
+	argsForCall := fake.setObjectMetaArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sDeploymentBuilder) SetObjectMetaReturns(result1 k8s.DeploymentBuilder) {
+	fake.setObjectMetaMutex.Lock()
+	defer fake.setObjectMetaMutex.Unlock()
+	fake.SetObjectMetaStub = nil
+	fake.setObjectMetaReturns = struct {
+		result1 k8s.DeploymentBuilder
+	}{result1}
+}
+
+func (fake *K8sDeploymentBuilder) SetObjectMetaReturnsOnCall(i int, result1 k8s.DeploymentBuilder) {
+	fake.setObjectMetaMutex.Lock()
+	defer fake.setObjectMetaMutex.Unlock()
+	fake.SetObjectMetaStub = nil
+	if fake.setObjectMetaReturnsOnCall == nil {
+		fake.setObjectMetaReturnsOnCall = make(map[int]struct {
+			result1 k8s.DeploymentBuilder
+		})
+	}
+	fake.setObjectMetaReturnsOnCall[i] = struct {
+		result1 k8s.DeploymentBuilder
+	}{result1}
+}
+
+func (fake *K8sDeploymentBuilder) SetObjectMetaBuilder(arg1 k8s.HasBuildObjectMeta) k8s.DeploymentBuilder {
 	fake.setObjectMetaBuilderMutex.Lock()
 	ret, specificReturn := fake.setObjectMetaBuilderReturnsOnCall[len(fake.setObjectMetaBuilderArgsForCall)]
 	fake.setObjectMetaBuilderArgsForCall = append(fake.setObjectMetaBuilderArgsForCall, struct {
-		arg1 k8s.ObjectMetaBuilder
+		arg1 k8s.HasBuildObjectMeta
 	}{arg1})
 	stub := fake.SetObjectMetaBuilderStub
 	fakeReturns := fake.setObjectMetaBuilderReturns
@@ -670,13 +831,13 @@ func (fake *K8sDeploymentBuilder) SetObjectMetaBuilderCallCount() int {
 	return len(fake.setObjectMetaBuilderArgsForCall)
 }
 
-func (fake *K8sDeploymentBuilder) SetObjectMetaBuilderCalls(stub func(k8s.ObjectMetaBuilder) k8s.DeploymentBuilder) {
+func (fake *K8sDeploymentBuilder) SetObjectMetaBuilderCalls(stub func(k8s.HasBuildObjectMeta) k8s.DeploymentBuilder) {
 	fake.setObjectMetaBuilderMutex.Lock()
 	defer fake.setObjectMetaBuilderMutex.Unlock()
 	fake.SetObjectMetaBuilderStub = stub
 }
 
-func (fake *K8sDeploymentBuilder) SetObjectMetaBuilderArgsForCall(i int) k8s.ObjectMetaBuilder {
+func (fake *K8sDeploymentBuilder) SetObjectMetaBuilderArgsForCall(i int) k8s.HasBuildObjectMeta {
 	fake.setObjectMetaBuilderMutex.RLock()
 	defer fake.setObjectMetaBuilderMutex.RUnlock()
 	argsForCall := fake.setObjectMetaBuilderArgsForCall[i]
@@ -894,6 +1055,67 @@ func (fake *K8sDeploymentBuilder) SetVolumesReturnsOnCall(i int, result1 k8s.Dep
 	}{result1}
 }
 
+func (fake *K8sDeploymentBuilder) Validate(arg1 context.Context) error {
+	fake.validateMutex.Lock()
+	ret, specificReturn := fake.validateReturnsOnCall[len(fake.validateArgsForCall)]
+	fake.validateArgsForCall = append(fake.validateArgsForCall, struct {
+		arg1 context.Context
+	}{arg1})
+	stub := fake.ValidateStub
+	fakeReturns := fake.validateReturns
+	fake.recordInvocation("Validate", []interface{}{arg1})
+	fake.validateMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sDeploymentBuilder) ValidateCallCount() int {
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
+	return len(fake.validateArgsForCall)
+}
+
+func (fake *K8sDeploymentBuilder) ValidateCalls(stub func(context.Context) error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = stub
+}
+
+func (fake *K8sDeploymentBuilder) ValidateArgsForCall(i int) context.Context {
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
+	argsForCall := fake.validateArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sDeploymentBuilder) ValidateReturns(result1 error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = nil
+	fake.validateReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *K8sDeploymentBuilder) ValidateReturnsOnCall(i int, result1 error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = nil
+	if fake.validateReturnsOnCall == nil {
+		fake.validateReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.validateReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
 func (fake *K8sDeploymentBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -907,12 +1129,16 @@ func (fake *K8sDeploymentBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setAffinityMutex.RUnlock()
 	fake.setComponentMutex.RLock()
 	defer fake.setComponentMutex.RUnlock()
+	fake.setContainersMutex.RLock()
+	defer fake.setContainersMutex.RUnlock()
 	fake.setContainersBuilderMutex.RLock()
 	defer fake.setContainersBuilderMutex.RUnlock()
 	fake.setImagePullSecretsMutex.RLock()
 	defer fake.setImagePullSecretsMutex.RUnlock()
 	fake.setNameMutex.RLock()
 	defer fake.setNameMutex.RUnlock()
+	fake.setObjectMetaMutex.RLock()
+	defer fake.setObjectMetaMutex.RUnlock()
 	fake.setObjectMetaBuilderMutex.RLock()
 	defer fake.setObjectMetaBuilderMutex.RUnlock()
 	fake.setReplicasMutex.RLock()
@@ -921,6 +1147,8 @@ func (fake *K8sDeploymentBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setServiceAccountNameMutex.RUnlock()
 	fake.setVolumesMutex.RLock()
 	defer fake.setVolumesMutex.RUnlock()
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

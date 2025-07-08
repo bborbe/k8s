@@ -29,7 +29,6 @@ type EnvBuilder interface {
 	Add(name, value string) EnvBuilder
 	AddSecret(name, secret, key string) EnvBuilder
 	AddFieldRef(name string, apiVersion string, fieldPath string) EnvBuilder
-	Validate(ctx context.Context) error
 }
 
 func NewEnvBuilder() EnvBuilder {

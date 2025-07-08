@@ -7,6 +7,7 @@ package k8s
 import (
 	"context"
 
+	"github.com/bborbe/collection"
 	"github.com/bborbe/errors"
 	"github.com/bborbe/validation"
 	corev1 "k8s.io/api/core/v1"
@@ -27,10 +28,10 @@ func (f HasBuildContainersFunc) Build(ctx context.Context) ([]corev1.Container, 
 //counterfeiter:generate -o mocks/k8s-container-builder.go --fake-name K8sContainerBuilder . ContainerBuilder
 type ContainersBuilder interface {
 	HasBuildContainers
-	Build(ctx context.Context) ([]corev1.Container, error)
-	AddContainerBuilder(containerBuilder ContainerBuilder) ContainersBuilder
-	SetContainerBuilder(containerBuilders []ContainerBuilder) ContainersBuilder
-	Validate(ctx context.Context) error
+	validation.HasValidation
+	AddContainerBuilder(containersBuilder HasBuildContainer) ContainersBuilder
+	SetContainerBuilders(containersBuilders []HasBuildContainer) ContainersBuilder
+	SetContainers(containers []corev1.Container) ContainersBuilder
 }
 
 func NewContainersBuilder() ContainersBuilder {
@@ -38,22 +39,32 @@ func NewContainersBuilder() ContainersBuilder {
 }
 
 type containersBuilder struct {
-	containerBuilders []ContainerBuilder
+	containersBuilders []HasBuildContainer
 }
 
-func (c *containersBuilder) AddContainerBuilder(containerBuilder ContainerBuilder) ContainersBuilder {
-	c.containerBuilders = append(c.containerBuilders, containerBuilder)
+func (c *containersBuilder) AddContainerBuilder(containersBuilder HasBuildContainer) ContainersBuilder {
+	c.containersBuilders = append(c.containersBuilders, containersBuilder)
 	return c
 }
 
-func (c *containersBuilder) SetContainerBuilder(containerBuilders []ContainerBuilder) ContainersBuilder {
-	c.containerBuilders = containerBuilders
+func (c *containersBuilder) SetContainerBuilders(containersBuilders []HasBuildContainer) ContainersBuilder {
+	c.containersBuilders = containersBuilders
 	return c
+}
+
+func (c *containersBuilder) SetContainers(containers []corev1.Container) ContainersBuilder {
+	containerBuilders := make([]HasBuildContainer, len(containers))
+	for i, c := range containers {
+		containerBuilders[i] = HasBuildContainerFunc(func(ctx context.Context) (*corev1.Container, error) {
+			return collection.Ptr(c), nil
+		})
+	}
+	return c.SetContainerBuilders(containerBuilders)
 }
 
 func (c *containersBuilder) Validate(ctx context.Context) error {
 	return validation.All{
-		validation.Name("ContainerBuilders", validation.NotEmptySlice(c.containerBuilders)),
+		validation.Name("ContainerBuilders", validation.NotEmptySlice(c.containersBuilders)),
 	}.Validate(ctx)
 }
 
@@ -62,7 +73,7 @@ func (c *containersBuilder) Build(ctx context.Context) ([]corev1.Container, erro
 		return nil, errors.Wrapf(ctx, err, "validate containersBuilder failed")
 	}
 	var result []corev1.Container
-	for _, containerBuilder := range c.containerBuilders {
+	for _, containerBuilder := range c.containersBuilders {
 		container, err := containerBuilder.Build(ctx)
 		if err != nil {
 			return nil, errors.Wrapf(ctx, err, "build container failed")

@@ -28,8 +28,10 @@ func (f HasBuildPodSpecFunc) Build(ctx context.Context) (*corev1.PodSpec, error)
 //counterfeiter:generate -o mocks/k8s-podspec-builder.go --fake-name K8sPodSpecBuilder . PodSpecBuilder
 type PodSpecBuilder interface {
 	HasBuildPodSpec
-	SetAffinity(affinity corev1.Affinity) PodSpecBuilder
+	validation.HasValidation
+	SetContainersBuilder(hasBuildContainers HasBuildContainers) PodSpecBuilder
 	SetContainers(containers []corev1.Container) PodSpecBuilder
+	SetAffinity(affinity corev1.Affinity) PodSpecBuilder
 	SetImagePullSecrets(imagePullSecrets []string) PodSpecBuilder
 	SetRestartPolicy(restartPolicy corev1.RestartPolicy) PodSpecBuilder
 	SetVolumes(volumes []corev1.Volume) PodSpecBuilder
@@ -46,12 +48,23 @@ func NewPodSpecBuilder() PodSpecBuilder {
 type podSpecBuilder struct {
 	name              string
 	objectMeta        metav1.ObjectMeta
-	containers        []corev1.Container
 	volumes           []corev1.Volume
 	restartPolicy     corev1.RestartPolicy
 	affinity          *corev1.Affinity
 	imagePullSecrets  []string
 	priorityClassName string
+	containersBuilder HasBuildContainers
+}
+
+func (p *podSpecBuilder) SetContainersBuilder(hasBuildContainers HasBuildContainers) PodSpecBuilder {
+	p.containersBuilder = hasBuildContainers
+	return p
+}
+
+func (p *podSpecBuilder) SetContainers(containers []corev1.Container) PodSpecBuilder {
+	return p.SetContainersBuilder(HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
+		return containers, nil
+	}))
 }
 
 func (p *podSpecBuilder) SetPriorityClassName(priorityClassName string) PodSpecBuilder {
@@ -74,27 +87,30 @@ func (p *podSpecBuilder) SetAffinity(affinity corev1.Affinity) PodSpecBuilder {
 	return p
 }
 
-func (p *podSpecBuilder) SetContainers(containers []corev1.Container) PodSpecBuilder {
-	p.containers = containers
-	return p
-}
-
 func (p *podSpecBuilder) SetVolumes(volumes []corev1.Volume) PodSpecBuilder {
 	p.volumes = volumes
 	return p
 }
 
 func (p *podSpecBuilder) Validate(ctx context.Context) error {
-	return validation.All{}.Validate(ctx)
+	return validation.All{
+		validation.Name("ContainersBuilder", validation.NotNil(p.containersBuilder)),
+	}.Validate(ctx)
 }
 
 func (p *podSpecBuilder) Build(ctx context.Context) (*corev1.PodSpec, error) {
 	if err := p.Validate(ctx); err != nil {
-		return nil, errors.Wrapf(ctx, err, "validate ingressBuilder failed")
+		return nil, errors.Wrapf(ctx, err, "validate podSpecBuilder failed")
 	}
+
+	containers, err := p.containersBuilder.Build(ctx)
+	if err != nil {
+		return nil, errors.Wrapf(ctx, err, "build containers failed")
+	}
+
 	return &corev1.PodSpec{
 		Volumes:           p.volumes,
-		Containers:        p.containers,
+		Containers:        containers,
 		RestartPolicy:     p.restartPolicy,
 		ImagePullSecrets:  p.createImagePullSecrets(),
 		Affinity:          p.affinity,

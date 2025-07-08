@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	"github.com/bborbe/errors"
+	"github.com/bborbe/validation"
 	"github.com/golang/glog"
 )
 
@@ -21,8 +22,8 @@ func (f Identifier) String() string {
 
 type Type interface {
 	Equal(other Type) bool
-	Validate(ctx context.Context) error
 	Identifier() Identifier
+	validation.HasValidation
 	fmt.Stringer
 }
 
@@ -101,9 +102,7 @@ func (e *eventHandlerAlert[T]) OnDelete(ctx context.Context, obj T) error {
 }
 
 func (e *eventHandlerAlert[T]) add(ctx context.Context, obj T) error {
-	if err := obj.Validate(ctx); err != nil {
-		return errors.Wrapf(ctx, err, "validate '%s' failed", obj)
-	}
+
 	e.data[obj.Identifier()] = obj
 	return nil
 }

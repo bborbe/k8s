@@ -15,11 +15,26 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
+type HasBuildDeployment interface {
+	Build(ctx context.Context) (*appsv1.Deployment, error)
+}
+
+var _ HasBuildDeployment = HasBuildDeploymentFunc(nil)
+
+type HasBuildDeploymentFunc func(ctx context.Context) (*appsv1.Deployment, error)
+
+func (f HasBuildDeploymentFunc) Build(ctx context.Context) (*appsv1.Deployment, error) {
+	return f(ctx)
+}
+
 //counterfeiter:generate -o mocks/k8s-deployment-builder.go --fake-name K8sDeploymentBuilder . DeploymentBuilder
 type DeploymentBuilder interface {
-	Build(ctx context.Context) (*appsv1.Deployment, error)
-	SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) DeploymentBuilder
-	SetContainersBuilder(containersBuilder ContainersBuilder) DeploymentBuilder
+	HasBuildDeployment
+	validation.HasValidation
+	SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) DeploymentBuilder
+	SetObjectMeta(objectMeta metav1.ObjectMeta) DeploymentBuilder
+	SetContainersBuilder(hasBuildContainers HasBuildContainers) DeploymentBuilder
+	SetContainers(containers []corev1.Container) DeploymentBuilder
 	SetName(name Name) DeploymentBuilder
 	SetReplicas(replicas int32) DeploymentBuilder
 	SetComponent(component string) DeploymentBuilder
@@ -41,22 +56,39 @@ func NewDeploymentBuilder() DeploymentBuilder {
 type deploymentBuilder struct {
 	component          string
 	name               Name
-	objectMetaBuilder  ObjectMetaBuilder
+	objectMetaBuilder  HasBuildObjectMeta
 	replicas           int32
 	serviceAccountName string
 	volumes            []corev1.Volume
-	containersBuilder  ContainersBuilder
+	containersBuilder  HasBuildContainers
 	affinity           *corev1.Affinity
 	imagePullSecrets   []string
 }
 
-func (d *deploymentBuilder) SetAffinity(affinity corev1.Affinity) DeploymentBuilder {
-	d.affinity = &affinity
-	return d
+func (s *deploymentBuilder) SetContainersBuilder(hasBuildContainers HasBuildContainers) DeploymentBuilder {
+	s.containersBuilder = hasBuildContainers
+	return s
 }
 
-func (d *deploymentBuilder) SetContainersBuilder(containersBuilder ContainersBuilder) DeploymentBuilder {
-	d.containersBuilder = containersBuilder
+func (s *deploymentBuilder) SetContainers(containers []corev1.Container) DeploymentBuilder {
+	return s.SetContainersBuilder(HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
+		return containers, nil
+	}))
+}
+
+func (s *deploymentBuilder) SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) DeploymentBuilder {
+	s.objectMetaBuilder = objectMetaBuilder
+	return s
+}
+
+func (s *deploymentBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) DeploymentBuilder {
+	return s.SetObjectMetaBuilder(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+		return &objectMeta, nil
+	}))
+}
+
+func (d *deploymentBuilder) SetAffinity(affinity corev1.Affinity) DeploymentBuilder {
+	d.affinity = &affinity
 	return d
 }
 
@@ -85,11 +117,6 @@ func (d *deploymentBuilder) SetServiceAccountName(serviceAccountName string) Dep
 	return d
 }
 
-func (d *deploymentBuilder) SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) DeploymentBuilder {
-	d.objectMetaBuilder = objectMetaBuilder
-	return d
-}
-
 func (d *deploymentBuilder) SetName(name Name) DeploymentBuilder {
 	d.name = name
 	return d
@@ -107,8 +134,8 @@ func (d *deploymentBuilder) SetComponent(component string) DeploymentBuilder {
 
 func (d *deploymentBuilder) Validate(ctx context.Context) error {
 	return validation.All{
-		validation.Name("ObjectMeta", validation.NotNilAndValid(d.objectMetaBuilder)),
-		validation.Name("ContainersBuilder", validation.NotNilAndValid(d.containersBuilder)),
+		validation.Name("ObjectMeta", validation.NotNil(d.objectMetaBuilder)),
+		validation.Name("ContainersBuilder", validation.NotNil(d.containersBuilder)),
 	}.Validate(ctx)
 }
 

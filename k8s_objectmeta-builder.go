@@ -27,6 +27,7 @@ func (f HasBuildObjectMetaFunc) Build(ctx context.Context) (*metav1.ObjectMeta, 
 //counterfeiter:generate -o mocks/k8s-objectmeta-builder.go --fake-name K8sObjectMetaBuilder . ObjectMetaBuilder
 type ObjectMetaBuilder interface {
 	HasBuildObjectMeta
+	validation.HasValidation
 	SetGenerateName(generateName string) ObjectMetaBuilder
 	SetName(name Name) ObjectMetaBuilder
 	SetNamespace(namespace Namespace) ObjectMetaBuilder
@@ -34,7 +35,6 @@ type ObjectMetaBuilder interface {
 	AddLabel(key, value string) ObjectMetaBuilder
 	AddAnnotation(key, value string) ObjectMetaBuilder
 	SetFinalizers(finalizers []string) ObjectMetaBuilder
-	Validate(ctx context.Context) error
 }
 
 func NewObjectMetaBuilder() ObjectMetaBuilder {

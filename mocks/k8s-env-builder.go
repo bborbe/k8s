@@ -61,17 +61,6 @@ type K8sEnvBuilder struct {
 		result1 []v1.EnvVar
 		result2 error
 	}
-	ValidateStub        func(context.Context) error
-	validateMutex       sync.RWMutex
-	validateArgsForCall []struct {
-		arg1 context.Context
-	}
-	validateReturns struct {
-		result1 error
-	}
-	validateReturnsOnCall map[int]struct {
-		result1 error
-	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -328,67 +317,6 @@ func (fake *K8sEnvBuilder) BuildReturnsOnCall(i int, result1 []v1.EnvVar, result
 	}{result1, result2}
 }
 
-func (fake *K8sEnvBuilder) Validate(arg1 context.Context) error {
-	fake.validateMutex.Lock()
-	ret, specificReturn := fake.validateReturnsOnCall[len(fake.validateArgsForCall)]
-	fake.validateArgsForCall = append(fake.validateArgsForCall, struct {
-		arg1 context.Context
-	}{arg1})
-	stub := fake.ValidateStub
-	fakeReturns := fake.validateReturns
-	fake.recordInvocation("Validate", []interface{}{arg1})
-	fake.validateMutex.Unlock()
-	if stub != nil {
-		return stub(arg1)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fakeReturns.result1
-}
-
-func (fake *K8sEnvBuilder) ValidateCallCount() int {
-	fake.validateMutex.RLock()
-	defer fake.validateMutex.RUnlock()
-	return len(fake.validateArgsForCall)
-}
-
-func (fake *K8sEnvBuilder) ValidateCalls(stub func(context.Context) error) {
-	fake.validateMutex.Lock()
-	defer fake.validateMutex.Unlock()
-	fake.ValidateStub = stub
-}
-
-func (fake *K8sEnvBuilder) ValidateArgsForCall(i int) context.Context {
-	fake.validateMutex.RLock()
-	defer fake.validateMutex.RUnlock()
-	argsForCall := fake.validateArgsForCall[i]
-	return argsForCall.arg1
-}
-
-func (fake *K8sEnvBuilder) ValidateReturns(result1 error) {
-	fake.validateMutex.Lock()
-	defer fake.validateMutex.Unlock()
-	fake.ValidateStub = nil
-	fake.validateReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *K8sEnvBuilder) ValidateReturnsOnCall(i int, result1 error) {
-	fake.validateMutex.Lock()
-	defer fake.validateMutex.Unlock()
-	fake.ValidateStub = nil
-	if fake.validateReturnsOnCall == nil {
-		fake.validateReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.validateReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
-}
-
 func (fake *K8sEnvBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -400,8 +328,6 @@ func (fake *K8sEnvBuilder) Invocations() map[string][][]interface{} {
 	defer fake.addSecretMutex.RUnlock()
 	fake.buildMutex.RLock()
 	defer fake.buildMutex.RUnlock()
-	fake.validateMutex.RLock()
-	defer fake.validateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

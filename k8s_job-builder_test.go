@@ -21,52 +21,59 @@ var _ = Describe("Job Builder", func() {
 	var job *batchv1.Job
 	var err error
 	var ctx context.Context
-
+	var objectMetaBuilder k8s.ObjectMetaBuilder
+	var podSpecBuilder k8s.PodSpecBuilder
+	var containersBuilder k8s.ContainersBuilder
 	BeforeEach(func() {
 		ctx = context.Background()
+
+		objectMetaBuilder = k8s.NewObjectMetaBuilder()
+		objectMetaBuilder.SetName("my-object")
+		objectMetaBuilder.SetNamespace("my-namespace")
+
+		containersBuilder = k8s.NewContainersBuilder()
+		containersBuilder.SetContainers([]corev1.Container{
+			{
+				Name: "service",
+			},
+		})
+
+		podSpecBuilder = k8s.NewPodSpecBuilder()
+		podSpecBuilder.SetContainersBuilder(containersBuilder)
+
 		jobBuilder = k8s.NewJobBuilder()
+		jobBuilder.SetObjectMetaBuild(objectMetaBuilder)
+		jobBuilder.SetPodSpecBuilder(podSpecBuilder)
 	})
 
 	Context("Build", func() {
 		JustBeforeEach(func() {
 			job, err = jobBuilder.Build(ctx)
 		})
-
-		Context("with minimal configuration", func() {
-			BeforeEach(func() {
-				objectMeta := metav1.ObjectMeta{
-					Name:      "test-job",
-					Namespace: "default",
-				}
-				jobBuilder.SetObjectMeta(objectMeta)
-			})
-
-			It("returns no error", func() {
-				Expect(err).To(BeNil())
-			})
-
-			It("returns job", func() {
-				Expect(job).NotTo(BeNil())
-			})
-
-			It("sets correct TypeMeta", func() {
-				Expect(job.TypeMeta.Kind).To(Equal("Job"))
-				Expect(job.TypeMeta.APIVersion).To(Equal("batch/v1"))
-			})
-
-			It("sets correct ObjectMeta", func() {
-				Expect(job.ObjectMeta.Name).To(Equal("test-job"))
-				Expect(job.ObjectMeta.Namespace).To(Equal("default"))
-			})
-
-			It("sets default values", func() {
-				Expect(*job.Spec.BackoffLimit).To(Equal(int32(4)))
-				Expect(*job.Spec.Completions).To(Equal(int32(1)))
-				Expect(*job.Spec.Parallelism).To(Equal(int32(1)))
-				Expect(*job.Spec.TTLSecondsAfterFinished).To(Equal(int32(600)))
-				Expect(*job.Spec.CompletionMode).To(Equal(batchv1.NonIndexedCompletion))
-				Expect(*job.Spec.PodReplacementPolicy).To(Equal(batchv1.TerminatingOrFailed))
-			})
+		It("returns no error", func() {
+			Expect(err).To(BeNil())
+		})
+		It("returns job", func() {
+			Expect(job).NotTo(BeNil())
+		})
+		It("sets correct TypeMeta", func() {
+			Expect(job).NotTo(BeNil())
+			Expect(job.TypeMeta.Kind).To(Equal("Job"))
+			Expect(job.TypeMeta.APIVersion).To(Equal("batch/v1"))
+		})
+		It("sets correct ObjectMeta", func() {
+			Expect(job).NotTo(BeNil())
+			Expect(job.ObjectMeta.Name).To(Equal("my-object"))
+			Expect(job.ObjectMeta.Namespace).To(Equal("my-namespace"))
+		})
+		It("sets default values", func() {
+			Expect(job).NotTo(BeNil())
+			Expect(*job.Spec.BackoffLimit).To(Equal(int32(4)))
+			Expect(*job.Spec.Completions).To(Equal(int32(1)))
+			Expect(*job.Spec.Parallelism).To(Equal(int32(1)))
+			Expect(*job.Spec.TTLSecondsAfterFinished).To(Equal(int32(600)))
+			Expect(*job.Spec.CompletionMode).To(Equal(batchv1.NonIndexedCompletion))
+			Expect(*job.Spec.PodReplacementPolicy).To(Equal(batchv1.TerminatingOrFailed))
 		})
 
 		Context("with custom configuration", func() {
@@ -100,18 +107,22 @@ var _ = Describe("Job Builder", func() {
 			})
 
 			It("sets custom backoff limit", func() {
+				Expect(job).NotTo(BeNil())
 				Expect(*job.Spec.BackoffLimit).To(Equal(int32(6)))
 			})
 
 			It("sets custom completions", func() {
+				Expect(job).NotTo(BeNil())
 				Expect(*job.Spec.Completions).To(Equal(int32(3)))
 			})
 
 			It("sets custom parallelism", func() {
+				Expect(job).NotTo(BeNil())
 				Expect(*job.Spec.Parallelism).To(Equal(int32(2)))
 			})
 
 			It("sets custom pod spec", func() {
+				Expect(job).NotTo(BeNil())
 				Expect(job.Spec.Template.Spec.Containers).To(HaveLen(1))
 				Expect(job.Spec.Template.Spec.Containers[0].Name).To(Equal("test-container"))
 				Expect(job.Spec.Template.Spec.Containers[0].Image).To(Equal("test-image:latest"))
@@ -119,6 +130,7 @@ var _ = Describe("Job Builder", func() {
 			})
 
 			It("sets custom labels", func() {
+				Expect(job).NotTo(BeNil())
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("component", "worker"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("environment", "test"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("version", "v1.0.0"))
@@ -140,27 +152,31 @@ var _ = Describe("Job Builder", func() {
 				jobBuilder.SetObjectMeta(objectMeta)
 				jobBuilder.SetLabels(labels)
 			})
-
 			It("returns no error", func() {
 				Expect(err).To(BeNil())
 			})
-
 			It("sets all labels including app label", func() {
+				Expect(job).NotTo(BeNil())
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("team", "platform"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("environment", "production"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("tier", "backend"))
 			})
 		})
+	})
 
-		Context("validation", func() {
-			Context("without ObjectMeta", func() {
-				It("returns validation error", func() {
-					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("validate jobBuilder failed"))
-				})
-				It("returns nil job", func() {
-					Expect(job).To(BeNil())
-				})
+	Context("validation", func() {
+		JustBeforeEach(func() {
+			err = jobBuilder.Validate(ctx)
+		})
+		It("returns no error", func() {
+			Expect(err).To(BeNil())
+		})
+		Context("without ObjectMeta", func() {
+			BeforeEach(func() {
+				jobBuilder.SetObjectMetaBuild(nil)
+			})
+			It("returns validation error", func() {
+				Expect(err).NotTo(BeNil())
 			})
 		})
 	})

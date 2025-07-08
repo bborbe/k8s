@@ -28,8 +28,9 @@ func (f HasBuildContainerFunc) Build(ctx context.Context) (*corev1.Container, er
 //counterfeiter:generate -o mocks/k8s-container-builder.go --fake-name K8sContainerBuilder . ContainerBuilder
 type ContainerBuilder interface {
 	HasBuildContainer
-	Validate(ctx context.Context) error
-	SetEnvBuilder(envBuilder EnvBuilder) ContainerBuilder
+	validation.HasValidation
+	SetEnv(env []corev1.EnvVar) ContainerBuilder
+	SetEnvBuilder(envBuilder HasBuildEnv) ContainerBuilder
 	SetImage(image string) ContainerBuilder
 	SetName(name Name) ContainerBuilder
 	SetCommand(command []string) ContainerBuilder
@@ -57,7 +58,7 @@ func NewContainerBuilder() ContainerBuilder {
 }
 
 type containerBuilder struct {
-	envBuilder     EnvBuilder
+	envBuilder     HasBuildEnv
 	name           Name
 	image          string
 	args           []string
@@ -71,6 +72,12 @@ type containerBuilder struct {
 	livenessProbe  *corev1.Probe
 	readinessProbe *corev1.Probe
 	restartPolicy  *corev1.ContainerRestartPolicy
+}
+
+func (c *containerBuilder) SetEnv(env []corev1.EnvVar) ContainerBuilder {
+	return c.SetEnvBuilder(HasBuildEnvFunc(func(ctx context.Context) ([]corev1.EnvVar, error) {
+		return env, nil
+	}))
 }
 
 func (c *containerBuilder) SetRestartPolicy(restartPolicy corev1.ContainerRestartPolicy) ContainerBuilder {
@@ -133,7 +140,7 @@ func (c *containerBuilder) SetArgs(args []string) ContainerBuilder {
 	return c
 }
 
-func (c *containerBuilder) SetEnvBuilder(envBuilder EnvBuilder) ContainerBuilder {
+func (c *containerBuilder) SetEnvBuilder(envBuilder HasBuildEnv) ContainerBuilder {
 	c.envBuilder = envBuilder
 	return c
 }
@@ -151,7 +158,7 @@ func (c *containerBuilder) SetImage(image string) ContainerBuilder {
 func (c *containerBuilder) Validate(ctx context.Context) error {
 	return validation.All{
 		validation.Name("Name", validation.NotEmptyString(c.name)),
-		validation.Name("EnvBuilder", validation.NotNilAndValid(c.envBuilder)),
+		validation.Name("EnvBuilder", validation.NotNil(c.envBuilder)),
 	}.Validate(ctx)
 }
 

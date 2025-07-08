@@ -103,6 +103,17 @@ type K8sJobBuilder struct {
 	setObjectMetaReturnsOnCall map[int]struct {
 		result1 k8s.JobBuilder
 	}
+	SetObjectMetaBuildStub        func(k8s.HasBuildObjectMeta) k8s.JobBuilder
+	setObjectMetaBuildMutex       sync.RWMutex
+	setObjectMetaBuildArgsForCall []struct {
+		arg1 k8s.HasBuildObjectMeta
+	}
+	setObjectMetaBuildReturns struct {
+		result1 k8s.JobBuilder
+	}
+	setObjectMetaBuildReturnsOnCall map[int]struct {
+		result1 k8s.JobBuilder
+	}
 	SetParallelismStub        func(int32) k8s.JobBuilder
 	setParallelismMutex       sync.RWMutex
 	setParallelismArgsForCall []struct {
@@ -124,6 +135,28 @@ type K8sJobBuilder struct {
 	}
 	setPodSpecReturnsOnCall map[int]struct {
 		result1 k8s.JobBuilder
+	}
+	SetPodSpecBuilderStub        func(k8s.HasBuildPodSpec) k8s.JobBuilder
+	setPodSpecBuilderMutex       sync.RWMutex
+	setPodSpecBuilderArgsForCall []struct {
+		arg1 k8s.HasBuildPodSpec
+	}
+	setPodSpecBuilderReturns struct {
+		result1 k8s.JobBuilder
+	}
+	setPodSpecBuilderReturnsOnCall map[int]struct {
+		result1 k8s.JobBuilder
+	}
+	ValidateStub        func(context.Context) error
+	validateMutex       sync.RWMutex
+	validateArgsForCall []struct {
+		arg1 context.Context
+	}
+	validateReturns struct {
+		result1 error
+	}
+	validateReturnsOnCall map[int]struct {
+		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -621,6 +654,67 @@ func (fake *K8sJobBuilder) SetObjectMetaReturnsOnCall(i int, result1 k8s.JobBuil
 	}{result1}
 }
 
+func (fake *K8sJobBuilder) SetObjectMetaBuild(arg1 k8s.HasBuildObjectMeta) k8s.JobBuilder {
+	fake.setObjectMetaBuildMutex.Lock()
+	ret, specificReturn := fake.setObjectMetaBuildReturnsOnCall[len(fake.setObjectMetaBuildArgsForCall)]
+	fake.setObjectMetaBuildArgsForCall = append(fake.setObjectMetaBuildArgsForCall, struct {
+		arg1 k8s.HasBuildObjectMeta
+	}{arg1})
+	stub := fake.SetObjectMetaBuildStub
+	fakeReturns := fake.setObjectMetaBuildReturns
+	fake.recordInvocation("SetObjectMetaBuild", []interface{}{arg1})
+	fake.setObjectMetaBuildMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sJobBuilder) SetObjectMetaBuildCallCount() int {
+	fake.setObjectMetaBuildMutex.RLock()
+	defer fake.setObjectMetaBuildMutex.RUnlock()
+	return len(fake.setObjectMetaBuildArgsForCall)
+}
+
+func (fake *K8sJobBuilder) SetObjectMetaBuildCalls(stub func(k8s.HasBuildObjectMeta) k8s.JobBuilder) {
+	fake.setObjectMetaBuildMutex.Lock()
+	defer fake.setObjectMetaBuildMutex.Unlock()
+	fake.SetObjectMetaBuildStub = stub
+}
+
+func (fake *K8sJobBuilder) SetObjectMetaBuildArgsForCall(i int) k8s.HasBuildObjectMeta {
+	fake.setObjectMetaBuildMutex.RLock()
+	defer fake.setObjectMetaBuildMutex.RUnlock()
+	argsForCall := fake.setObjectMetaBuildArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sJobBuilder) SetObjectMetaBuildReturns(result1 k8s.JobBuilder) {
+	fake.setObjectMetaBuildMutex.Lock()
+	defer fake.setObjectMetaBuildMutex.Unlock()
+	fake.SetObjectMetaBuildStub = nil
+	fake.setObjectMetaBuildReturns = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
+func (fake *K8sJobBuilder) SetObjectMetaBuildReturnsOnCall(i int, result1 k8s.JobBuilder) {
+	fake.setObjectMetaBuildMutex.Lock()
+	defer fake.setObjectMetaBuildMutex.Unlock()
+	fake.SetObjectMetaBuildStub = nil
+	if fake.setObjectMetaBuildReturnsOnCall == nil {
+		fake.setObjectMetaBuildReturnsOnCall = make(map[int]struct {
+			result1 k8s.JobBuilder
+		})
+	}
+	fake.setObjectMetaBuildReturnsOnCall[i] = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
 func (fake *K8sJobBuilder) SetParallelism(arg1 int32) k8s.JobBuilder {
 	fake.setParallelismMutex.Lock()
 	ret, specificReturn := fake.setParallelismReturnsOnCall[len(fake.setParallelismArgsForCall)]
@@ -743,6 +837,128 @@ func (fake *K8sJobBuilder) SetPodSpecReturnsOnCall(i int, result1 k8s.JobBuilder
 	}{result1}
 }
 
+func (fake *K8sJobBuilder) SetPodSpecBuilder(arg1 k8s.HasBuildPodSpec) k8s.JobBuilder {
+	fake.setPodSpecBuilderMutex.Lock()
+	ret, specificReturn := fake.setPodSpecBuilderReturnsOnCall[len(fake.setPodSpecBuilderArgsForCall)]
+	fake.setPodSpecBuilderArgsForCall = append(fake.setPodSpecBuilderArgsForCall, struct {
+		arg1 k8s.HasBuildPodSpec
+	}{arg1})
+	stub := fake.SetPodSpecBuilderStub
+	fakeReturns := fake.setPodSpecBuilderReturns
+	fake.recordInvocation("SetPodSpecBuilder", []interface{}{arg1})
+	fake.setPodSpecBuilderMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sJobBuilder) SetPodSpecBuilderCallCount() int {
+	fake.setPodSpecBuilderMutex.RLock()
+	defer fake.setPodSpecBuilderMutex.RUnlock()
+	return len(fake.setPodSpecBuilderArgsForCall)
+}
+
+func (fake *K8sJobBuilder) SetPodSpecBuilderCalls(stub func(k8s.HasBuildPodSpec) k8s.JobBuilder) {
+	fake.setPodSpecBuilderMutex.Lock()
+	defer fake.setPodSpecBuilderMutex.Unlock()
+	fake.SetPodSpecBuilderStub = stub
+}
+
+func (fake *K8sJobBuilder) SetPodSpecBuilderArgsForCall(i int) k8s.HasBuildPodSpec {
+	fake.setPodSpecBuilderMutex.RLock()
+	defer fake.setPodSpecBuilderMutex.RUnlock()
+	argsForCall := fake.setPodSpecBuilderArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sJobBuilder) SetPodSpecBuilderReturns(result1 k8s.JobBuilder) {
+	fake.setPodSpecBuilderMutex.Lock()
+	defer fake.setPodSpecBuilderMutex.Unlock()
+	fake.SetPodSpecBuilderStub = nil
+	fake.setPodSpecBuilderReturns = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
+func (fake *K8sJobBuilder) SetPodSpecBuilderReturnsOnCall(i int, result1 k8s.JobBuilder) {
+	fake.setPodSpecBuilderMutex.Lock()
+	defer fake.setPodSpecBuilderMutex.Unlock()
+	fake.SetPodSpecBuilderStub = nil
+	if fake.setPodSpecBuilderReturnsOnCall == nil {
+		fake.setPodSpecBuilderReturnsOnCall = make(map[int]struct {
+			result1 k8s.JobBuilder
+		})
+	}
+	fake.setPodSpecBuilderReturnsOnCall[i] = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
+func (fake *K8sJobBuilder) Validate(arg1 context.Context) error {
+	fake.validateMutex.Lock()
+	ret, specificReturn := fake.validateReturnsOnCall[len(fake.validateArgsForCall)]
+	fake.validateArgsForCall = append(fake.validateArgsForCall, struct {
+		arg1 context.Context
+	}{arg1})
+	stub := fake.ValidateStub
+	fakeReturns := fake.validateReturns
+	fake.recordInvocation("Validate", []interface{}{arg1})
+	fake.validateMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sJobBuilder) ValidateCallCount() int {
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
+	return len(fake.validateArgsForCall)
+}
+
+func (fake *K8sJobBuilder) ValidateCalls(stub func(context.Context) error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = stub
+}
+
+func (fake *K8sJobBuilder) ValidateArgsForCall(i int) context.Context {
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
+	argsForCall := fake.validateArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sJobBuilder) ValidateReturns(result1 error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = nil
+	fake.validateReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *K8sJobBuilder) ValidateReturnsOnCall(i int, result1 error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = nil
+	if fake.validateReturnsOnCall == nil {
+		fake.validateReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.validateReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
 func (fake *K8sJobBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -762,10 +978,16 @@ func (fake *K8sJobBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setLabelsMutex.RUnlock()
 	fake.setObjectMetaMutex.RLock()
 	defer fake.setObjectMetaMutex.RUnlock()
+	fake.setObjectMetaBuildMutex.RLock()
+	defer fake.setObjectMetaBuildMutex.RUnlock()
 	fake.setParallelismMutex.RLock()
 	defer fake.setParallelismMutex.RUnlock()
 	fake.setPodSpecMutex.RLock()
 	defer fake.setPodSpecMutex.RUnlock()
+	fake.setPodSpecBuilderMutex.RLock()
+	defer fake.setPodSpecBuilderMutex.RUnlock()
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

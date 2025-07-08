@@ -19,9 +19,19 @@ var _ = Describe("PodSpec Builder", func() {
 	var podSpec *corev1.PodSpec
 	var err error
 	var ctx context.Context
+	var containersBuilder k8s.ContainersBuilder
 	BeforeEach(func() {
 		ctx = context.Background()
+
+		containersBuilder = k8s.NewContainersBuilder()
+		containersBuilder.SetContainers([]corev1.Container{
+			{
+				ImagePullPolicy: "docker",
+			},
+		})
+
 		podSpecBuilder = k8s.NewPodSpecBuilder()
+		podSpecBuilder.SetContainersBuilder(containersBuilder)
 	})
 	JustBeforeEach(func() {
 		podSpec, err = podSpecBuilder.Build(ctx)

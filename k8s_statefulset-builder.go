@@ -30,8 +30,11 @@ func (f HasBuildStatefulSetFunc) Build(ctx context.Context) (*appsv1.StatefulSet
 //counterfeiter:generate -o mocks/k8s-statefulset-builder.go --fake-name K8sStatefulSetBuilder . StatefulSetBuilder
 type StatefulSetBuilder interface {
 	HasBuildStatefulSet
-	SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) StatefulSetBuilder
-	SetContainersBuilder(containersBuilder ContainersBuilder) StatefulSetBuilder
+	validation.HasValidation
+	SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) StatefulSetBuilder
+	SetObjectMeta(objectMeta metav1.ObjectMeta) StatefulSetBuilder
+	SetContainersBuilder(hasBuildContainers HasBuildContainers) StatefulSetBuilder
+	SetContainers(containers []corev1.Container) StatefulSetBuilder
 	AddLabel(key, value string) StatefulSetBuilder
 	SetName(name Name) StatefulSetBuilder
 	SetReplicas(replicas int32) StatefulSetBuilder
@@ -61,19 +64,36 @@ type statefulSetBuilder struct {
 	datadirSize       string
 	storageClass      string
 	volumes           []corev1.Volume
-	objectMetaBuilder ObjectMetaBuilder
-	containersBuilder ContainersBuilder
+	objectMetaBuilder HasBuildObjectMeta
+	containersBuilder HasBuildContainers
 	affinity          *corev1.Affinity
 	imagePullSecrets  []string
 }
 
-func (s *statefulSetBuilder) SetAffinity(affinity corev1.Affinity) StatefulSetBuilder {
-	s.affinity = &affinity
+func (s *statefulSetBuilder) SetContainersBuilder(hasBuildContainers HasBuildContainers) StatefulSetBuilder {
+	s.containersBuilder = hasBuildContainers
 	return s
 }
 
-func (s *statefulSetBuilder) SetContainersBuilder(containersBuilder ContainersBuilder) StatefulSetBuilder {
-	s.containersBuilder = containersBuilder
+func (s *statefulSetBuilder) SetContainers(containers []corev1.Container) StatefulSetBuilder {
+	return s.SetContainersBuilder(HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
+		return containers, nil
+	}))
+}
+
+func (s *statefulSetBuilder) SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) StatefulSetBuilder {
+	s.objectMetaBuilder = objectMetaBuilder
+	return s
+}
+
+func (s *statefulSetBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) StatefulSetBuilder {
+	return s.SetObjectMetaBuilder(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+		return &objectMeta, nil
+	}))
+}
+
+func (s *statefulSetBuilder) SetAffinity(affinity corev1.Affinity) StatefulSetBuilder {
+	s.affinity = &affinity
 	return s
 }
 
@@ -102,11 +122,6 @@ func (s *statefulSetBuilder) SetDatadirSize(datadirSize string) StatefulSetBuild
 	return s
 }
 
-func (s *statefulSetBuilder) SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) StatefulSetBuilder {
-	s.objectMetaBuilder = objectMetaBuilder
-	return s
-}
-
 func (s *statefulSetBuilder) SetName(name Name) StatefulSetBuilder {
 	s.name = name
 	return s.AddLabel("app", name.String())
@@ -125,8 +140,8 @@ func (s *statefulSetBuilder) AddLabel(key, value string) StatefulSetBuilder {
 func (s *statefulSetBuilder) Validate(ctx context.Context) error {
 	return validation.All{
 		validation.Name("Name", validation.NotEmptyString(s.name)),
-		validation.Name("ObjectMetaBuilder", validation.NotNilAndValid(s.objectMetaBuilder)),
-		validation.Name("ContainersBuilder", validation.NotNilAndValid(s.containersBuilder)),
+		validation.Name("ObjectMetaBuilder", validation.NotNil(s.objectMetaBuilder)),
+		validation.Name("ContainersBuilder", validation.NotNil(s.containersBuilder)),
 	}.Validate(ctx)
 }
 

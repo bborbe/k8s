@@ -78,10 +78,21 @@ type K8sContainerBuilder struct {
 	setCpuRequestReturnsOnCall map[int]struct {
 		result1 k8s.ContainerBuilder
 	}
-	SetEnvBuilderStub        func(k8s.EnvBuilder) k8s.ContainerBuilder
+	SetEnvStub        func([]v1.EnvVar) k8s.ContainerBuilder
+	setEnvMutex       sync.RWMutex
+	setEnvArgsForCall []struct {
+		arg1 []v1.EnvVar
+	}
+	setEnvReturns struct {
+		result1 k8s.ContainerBuilder
+	}
+	setEnvReturnsOnCall map[int]struct {
+		result1 k8s.ContainerBuilder
+	}
+	SetEnvBuilderStub        func(k8s.HasBuildEnv) k8s.ContainerBuilder
 	setEnvBuilderMutex       sync.RWMutex
 	setEnvBuilderArgsForCall []struct {
-		arg1 k8s.EnvBuilder
+		arg1 k8s.HasBuildEnv
 	}
 	setEnvBuilderReturns struct {
 		result1 k8s.ContainerBuilder
@@ -582,11 +593,77 @@ func (fake *K8sContainerBuilder) SetCpuRequestReturnsOnCall(i int, result1 k8s.C
 	}{result1}
 }
 
-func (fake *K8sContainerBuilder) SetEnvBuilder(arg1 k8s.EnvBuilder) k8s.ContainerBuilder {
+func (fake *K8sContainerBuilder) SetEnv(arg1 []v1.EnvVar) k8s.ContainerBuilder {
+	var arg1Copy []v1.EnvVar
+	if arg1 != nil {
+		arg1Copy = make([]v1.EnvVar, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.setEnvMutex.Lock()
+	ret, specificReturn := fake.setEnvReturnsOnCall[len(fake.setEnvArgsForCall)]
+	fake.setEnvArgsForCall = append(fake.setEnvArgsForCall, struct {
+		arg1 []v1.EnvVar
+	}{arg1Copy})
+	stub := fake.SetEnvStub
+	fakeReturns := fake.setEnvReturns
+	fake.recordInvocation("SetEnv", []interface{}{arg1Copy})
+	fake.setEnvMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sContainerBuilder) SetEnvCallCount() int {
+	fake.setEnvMutex.RLock()
+	defer fake.setEnvMutex.RUnlock()
+	return len(fake.setEnvArgsForCall)
+}
+
+func (fake *K8sContainerBuilder) SetEnvCalls(stub func([]v1.EnvVar) k8s.ContainerBuilder) {
+	fake.setEnvMutex.Lock()
+	defer fake.setEnvMutex.Unlock()
+	fake.SetEnvStub = stub
+}
+
+func (fake *K8sContainerBuilder) SetEnvArgsForCall(i int) []v1.EnvVar {
+	fake.setEnvMutex.RLock()
+	defer fake.setEnvMutex.RUnlock()
+	argsForCall := fake.setEnvArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sContainerBuilder) SetEnvReturns(result1 k8s.ContainerBuilder) {
+	fake.setEnvMutex.Lock()
+	defer fake.setEnvMutex.Unlock()
+	fake.SetEnvStub = nil
+	fake.setEnvReturns = struct {
+		result1 k8s.ContainerBuilder
+	}{result1}
+}
+
+func (fake *K8sContainerBuilder) SetEnvReturnsOnCall(i int, result1 k8s.ContainerBuilder) {
+	fake.setEnvMutex.Lock()
+	defer fake.setEnvMutex.Unlock()
+	fake.SetEnvStub = nil
+	if fake.setEnvReturnsOnCall == nil {
+		fake.setEnvReturnsOnCall = make(map[int]struct {
+			result1 k8s.ContainerBuilder
+		})
+	}
+	fake.setEnvReturnsOnCall[i] = struct {
+		result1 k8s.ContainerBuilder
+	}{result1}
+}
+
+func (fake *K8sContainerBuilder) SetEnvBuilder(arg1 k8s.HasBuildEnv) k8s.ContainerBuilder {
 	fake.setEnvBuilderMutex.Lock()
 	ret, specificReturn := fake.setEnvBuilderReturnsOnCall[len(fake.setEnvBuilderArgsForCall)]
 	fake.setEnvBuilderArgsForCall = append(fake.setEnvBuilderArgsForCall, struct {
-		arg1 k8s.EnvBuilder
+		arg1 k8s.HasBuildEnv
 	}{arg1})
 	stub := fake.SetEnvBuilderStub
 	fakeReturns := fake.setEnvBuilderReturns
@@ -607,13 +684,13 @@ func (fake *K8sContainerBuilder) SetEnvBuilderCallCount() int {
 	return len(fake.setEnvBuilderArgsForCall)
 }
 
-func (fake *K8sContainerBuilder) SetEnvBuilderCalls(stub func(k8s.EnvBuilder) k8s.ContainerBuilder) {
+func (fake *K8sContainerBuilder) SetEnvBuilderCalls(stub func(k8s.HasBuildEnv) k8s.ContainerBuilder) {
 	fake.setEnvBuilderMutex.Lock()
 	defer fake.setEnvBuilderMutex.Unlock()
 	fake.SetEnvBuilderStub = stub
 }
 
-func (fake *K8sContainerBuilder) SetEnvBuilderArgsForCall(i int) k8s.EnvBuilder {
+func (fake *K8sContainerBuilder) SetEnvBuilderArgsForCall(i int) k8s.HasBuildEnv {
 	fake.setEnvBuilderMutex.RLock()
 	defer fake.setEnvBuilderMutex.RUnlock()
 	argsForCall := fake.setEnvBuilderArgsForCall[i]
@@ -1278,6 +1355,8 @@ func (fake *K8sContainerBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setCpuLimitMutex.RUnlock()
 	fake.setCpuRequestMutex.RLock()
 	defer fake.setCpuRequestMutex.RUnlock()
+	fake.setEnvMutex.RLock()
+	defer fake.setEnvMutex.RUnlock()
 	fake.setEnvBuilderMutex.RLock()
 	defer fake.setEnvBuilderMutex.RUnlock()
 	fake.setImageMutex.RLock()

@@ -7,6 +7,7 @@ import (
 
 	"github.com/bborbe/k8s"
 	v1 "k8s.io/api/networking/v1"
+	v1a "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type K8sIngressBuilder struct {
@@ -45,10 +46,21 @@ type K8sIngressBuilder struct {
 	setIngressClassNameReturnsOnCall map[int]struct {
 		result1 k8s.IngressBuilder
 	}
-	SetObjectMetaBuilderStub        func(k8s.ObjectMetaBuilder) k8s.IngressBuilder
+	SetObjectMetaStub        func(v1a.ObjectMeta) k8s.IngressBuilder
+	setObjectMetaMutex       sync.RWMutex
+	setObjectMetaArgsForCall []struct {
+		arg1 v1a.ObjectMeta
+	}
+	setObjectMetaReturns struct {
+		result1 k8s.IngressBuilder
+	}
+	setObjectMetaReturnsOnCall map[int]struct {
+		result1 k8s.IngressBuilder
+	}
+	SetObjectMetaBuilderStub        func(k8s.HasBuildObjectMeta) k8s.IngressBuilder
 	setObjectMetaBuilderMutex       sync.RWMutex
 	setObjectMetaBuilderArgsForCall []struct {
-		arg1 k8s.ObjectMetaBuilder
+		arg1 k8s.HasBuildObjectMeta
 	}
 	setObjectMetaBuilderReturns struct {
 		result1 k8s.IngressBuilder
@@ -77,6 +89,17 @@ type K8sIngressBuilder struct {
 	}
 	setServiceNameReturnsOnCall map[int]struct {
 		result1 k8s.IngressBuilder
+	}
+	ValidateStub        func(context.Context) error
+	validateMutex       sync.RWMutex
+	validateArgsForCall []struct {
+		arg1 context.Context
+	}
+	validateReturns struct {
+		result1 error
+	}
+	validateReturnsOnCall map[int]struct {
+		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -268,11 +291,72 @@ func (fake *K8sIngressBuilder) SetIngressClassNameReturnsOnCall(i int, result1 k
 	}{result1}
 }
 
-func (fake *K8sIngressBuilder) SetObjectMetaBuilder(arg1 k8s.ObjectMetaBuilder) k8s.IngressBuilder {
+func (fake *K8sIngressBuilder) SetObjectMeta(arg1 v1a.ObjectMeta) k8s.IngressBuilder {
+	fake.setObjectMetaMutex.Lock()
+	ret, specificReturn := fake.setObjectMetaReturnsOnCall[len(fake.setObjectMetaArgsForCall)]
+	fake.setObjectMetaArgsForCall = append(fake.setObjectMetaArgsForCall, struct {
+		arg1 v1a.ObjectMeta
+	}{arg1})
+	stub := fake.SetObjectMetaStub
+	fakeReturns := fake.setObjectMetaReturns
+	fake.recordInvocation("SetObjectMeta", []interface{}{arg1})
+	fake.setObjectMetaMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sIngressBuilder) SetObjectMetaCallCount() int {
+	fake.setObjectMetaMutex.RLock()
+	defer fake.setObjectMetaMutex.RUnlock()
+	return len(fake.setObjectMetaArgsForCall)
+}
+
+func (fake *K8sIngressBuilder) SetObjectMetaCalls(stub func(v1a.ObjectMeta) k8s.IngressBuilder) {
+	fake.setObjectMetaMutex.Lock()
+	defer fake.setObjectMetaMutex.Unlock()
+	fake.SetObjectMetaStub = stub
+}
+
+func (fake *K8sIngressBuilder) SetObjectMetaArgsForCall(i int) v1a.ObjectMeta {
+	fake.setObjectMetaMutex.RLock()
+	defer fake.setObjectMetaMutex.RUnlock()
+	argsForCall := fake.setObjectMetaArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sIngressBuilder) SetObjectMetaReturns(result1 k8s.IngressBuilder) {
+	fake.setObjectMetaMutex.Lock()
+	defer fake.setObjectMetaMutex.Unlock()
+	fake.SetObjectMetaStub = nil
+	fake.setObjectMetaReturns = struct {
+		result1 k8s.IngressBuilder
+	}{result1}
+}
+
+func (fake *K8sIngressBuilder) SetObjectMetaReturnsOnCall(i int, result1 k8s.IngressBuilder) {
+	fake.setObjectMetaMutex.Lock()
+	defer fake.setObjectMetaMutex.Unlock()
+	fake.SetObjectMetaStub = nil
+	if fake.setObjectMetaReturnsOnCall == nil {
+		fake.setObjectMetaReturnsOnCall = make(map[int]struct {
+			result1 k8s.IngressBuilder
+		})
+	}
+	fake.setObjectMetaReturnsOnCall[i] = struct {
+		result1 k8s.IngressBuilder
+	}{result1}
+}
+
+func (fake *K8sIngressBuilder) SetObjectMetaBuilder(arg1 k8s.HasBuildObjectMeta) k8s.IngressBuilder {
 	fake.setObjectMetaBuilderMutex.Lock()
 	ret, specificReturn := fake.setObjectMetaBuilderReturnsOnCall[len(fake.setObjectMetaBuilderArgsForCall)]
 	fake.setObjectMetaBuilderArgsForCall = append(fake.setObjectMetaBuilderArgsForCall, struct {
-		arg1 k8s.ObjectMetaBuilder
+		arg1 k8s.HasBuildObjectMeta
 	}{arg1})
 	stub := fake.SetObjectMetaBuilderStub
 	fakeReturns := fake.setObjectMetaBuilderReturns
@@ -293,13 +377,13 @@ func (fake *K8sIngressBuilder) SetObjectMetaBuilderCallCount() int {
 	return len(fake.setObjectMetaBuilderArgsForCall)
 }
 
-func (fake *K8sIngressBuilder) SetObjectMetaBuilderCalls(stub func(k8s.ObjectMetaBuilder) k8s.IngressBuilder) {
+func (fake *K8sIngressBuilder) SetObjectMetaBuilderCalls(stub func(k8s.HasBuildObjectMeta) k8s.IngressBuilder) {
 	fake.setObjectMetaBuilderMutex.Lock()
 	defer fake.setObjectMetaBuilderMutex.Unlock()
 	fake.SetObjectMetaBuilderStub = stub
 }
 
-func (fake *K8sIngressBuilder) SetObjectMetaBuilderArgsForCall(i int) k8s.ObjectMetaBuilder {
+func (fake *K8sIngressBuilder) SetObjectMetaBuilderArgsForCall(i int) k8s.HasBuildObjectMeta {
 	fake.setObjectMetaBuilderMutex.RLock()
 	defer fake.setObjectMetaBuilderMutex.RUnlock()
 	argsForCall := fake.setObjectMetaBuilderArgsForCall[i]
@@ -451,6 +535,67 @@ func (fake *K8sIngressBuilder) SetServiceNameReturnsOnCall(i int, result1 k8s.In
 	}{result1}
 }
 
+func (fake *K8sIngressBuilder) Validate(arg1 context.Context) error {
+	fake.validateMutex.Lock()
+	ret, specificReturn := fake.validateReturnsOnCall[len(fake.validateArgsForCall)]
+	fake.validateArgsForCall = append(fake.validateArgsForCall, struct {
+		arg1 context.Context
+	}{arg1})
+	stub := fake.ValidateStub
+	fakeReturns := fake.validateReturns
+	fake.recordInvocation("Validate", []interface{}{arg1})
+	fake.validateMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sIngressBuilder) ValidateCallCount() int {
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
+	return len(fake.validateArgsForCall)
+}
+
+func (fake *K8sIngressBuilder) ValidateCalls(stub func(context.Context) error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = stub
+}
+
+func (fake *K8sIngressBuilder) ValidateArgsForCall(i int) context.Context {
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
+	argsForCall := fake.validateArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sIngressBuilder) ValidateReturns(result1 error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = nil
+	fake.validateReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *K8sIngressBuilder) ValidateReturnsOnCall(i int, result1 error) {
+	fake.validateMutex.Lock()
+	defer fake.validateMutex.Unlock()
+	fake.ValidateStub = nil
+	if fake.validateReturnsOnCall == nil {
+		fake.validateReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.validateReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
 func (fake *K8sIngressBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -460,12 +605,16 @@ func (fake *K8sIngressBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setHostMutex.RUnlock()
 	fake.setIngressClassNameMutex.RLock()
 	defer fake.setIngressClassNameMutex.RUnlock()
+	fake.setObjectMetaMutex.RLock()
+	defer fake.setObjectMetaMutex.RUnlock()
 	fake.setObjectMetaBuilderMutex.RLock()
 	defer fake.setObjectMetaBuilderMutex.RUnlock()
 	fake.setPathMutex.RLock()
 	defer fake.setPathMutex.RUnlock()
 	fake.setServiceNameMutex.RLock()
 	defer fake.setServiceNameMutex.RUnlock()
+	fake.validateMutex.RLock()
+	defer fake.validateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

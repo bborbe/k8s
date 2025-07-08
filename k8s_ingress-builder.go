@@ -28,7 +28,9 @@ func (f HasBuildIngressFunc) Build(ctx context.Context) (*v1.Ingress, error) {
 //counterfeiter:generate -o mocks/k8s-ingress-builder.go --fake-name K8sIngressBuilder . IngressBuilder
 type IngressBuilder interface {
 	HasBuildIngress
-	SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) IngressBuilder
+	validation.HasValidation
+	SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) IngressBuilder
+	SetObjectMeta(objectMeta metav1.ObjectMeta) IngressBuilder
 	SetHost(host string) IngressBuilder
 	SetServiceName(serviceName Name) IngressBuilder
 	SetPath(path string) IngressBuilder
@@ -51,7 +53,18 @@ type ingressBuilder struct {
 	serverPortName    string
 	pathType          v1.PathType
 	path              string
-	objectMetaBuilder ObjectMetaBuilder
+	objectMetaBuilder HasBuildObjectMeta
+}
+
+func (i *ingressBuilder) SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) IngressBuilder {
+	i.objectMetaBuilder = objectMetaBuilder
+	return i
+}
+
+func (i *ingressBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) IngressBuilder {
+	return i.SetObjectMetaBuilder(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+		return &objectMeta, nil
+	}))
 }
 
 func (i *ingressBuilder) SetHost(host string) IngressBuilder {
@@ -79,11 +92,6 @@ func (i *ingressBuilder) SetPathType(pathType v1.PathType) IngressBuilder {
 	return i
 }
 
-func (i *ingressBuilder) SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) IngressBuilder {
-	i.objectMetaBuilder = objectMetaBuilder
-	return i
-}
-
 func (i *ingressBuilder) SetIngressClassName(ingressClassName string) IngressBuilder {
 	i.ingressClassName = ingressClassName
 	return i
@@ -96,7 +104,7 @@ func (i *ingressBuilder) Validate(ctx context.Context) error {
 		validation.Name("Path", validation.NotEmptyString(i.path)),
 		validation.Name("ServerPortName", validation.NotEmptyString(i.serverPortName)),
 		validation.Name("ServiceName", i.serviceName),
-		validation.Name("ObjectMetaBuilder", validation.NotNilAndValid(i.objectMetaBuilder)),
+		validation.Name("ObjectMetaBuilder", validation.NotNil(i.objectMetaBuilder)),
 	}.Validate(ctx)
 }
 
