@@ -15,9 +15,21 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type HasBuildJob interface {
+	Build(ctx context.Context) (*batchv1.Job, error)
+}
+
+var _ HasBuildJob = HasBuildJobFunc(nil)
+
+type HasBuildJobFunc func(ctx context.Context) (*batchv1.Job, error)
+
+func (f HasBuildJobFunc) Build(ctx context.Context) (*batchv1.Job, error) {
+	return f(ctx)
+}
+
 //counterfeiter:generate -o mocks/k8s-job-builder.go --fake-name K8sJobBuilder . JobBuilder
 type JobBuilder interface {
-	Build(ctx context.Context) (*batchv1.Job, error)
+	HasBuildJob
 	SetBackoffLimit(backoffLimit int32) JobBuilder
 	SetComponent(component string) JobBuilder
 	SetCompletions(completions int32) JobBuilder

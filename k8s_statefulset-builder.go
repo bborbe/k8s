@@ -15,9 +15,21 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type HasBuildStatefulSet interface {
+	Build(ctx context.Context) (*appsv1.StatefulSet, error)
+}
+
+var _ HasBuildStatefulSet = HasBuildStatefulSetFunc(nil)
+
+type HasBuildStatefulSetFunc func(ctx context.Context) (*appsv1.StatefulSet, error)
+
+func (f HasBuildStatefulSetFunc) Build(ctx context.Context) (*appsv1.StatefulSet, error) {
+	return f(ctx)
+}
+
 //counterfeiter:generate -o mocks/k8s-statefulset-builder.go --fake-name K8sStatefulSetBuilder . StatefulSetBuilder
 type StatefulSetBuilder interface {
-	Build(ctx context.Context) (*appsv1.StatefulSet, error)
+	HasBuildStatefulSet
 	SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) StatefulSetBuilder
 	SetContainersBuilder(containersBuilder ContainersBuilder) StatefulSetBuilder
 	AddLabel(key, value string) StatefulSetBuilder

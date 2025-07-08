@@ -12,8 +12,21 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
+type HasBuildContainers interface {
+	Build(ctx context.Context) ([]corev1.Container, error)
+}
+
+var _ HasBuildContainers = HasBuildContainersFunc(nil)
+
+type HasBuildContainersFunc func(ctx context.Context) ([]corev1.Container, error)
+
+func (f HasBuildContainersFunc) Build(ctx context.Context) ([]corev1.Container, error) {
+	return f(ctx)
+}
+
 //counterfeiter:generate -o mocks/k8s-container-builder.go --fake-name K8sContainerBuilder . ContainerBuilder
 type ContainersBuilder interface {
+	HasBuildContainers
 	Build(ctx context.Context) ([]corev1.Container, error)
 	AddContainerBuilder(containerBuilder ContainerBuilder) ContainersBuilder
 	SetContainerBuilder(containerBuilders []ContainerBuilder) ContainersBuilder

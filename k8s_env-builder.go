@@ -11,11 +11,23 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
+type HasBuildEnv interface {
+	Build(ctx context.Context) ([]corev1.EnvVar, error)
+}
+
+var _ HasBuildEnv = HasBuildEnvFunc(nil)
+
+type HasBuildEnvFunc func(ctx context.Context) ([]corev1.EnvVar, error)
+
+func (f HasBuildEnvFunc) Build(ctx context.Context) ([]corev1.EnvVar, error) {
+	return f(ctx)
+}
+
 //counterfeiter:generate -o mocks/k8s-env-builder.go --fake-name K8sEnvBuilder . EnvBuilder
 type EnvBuilder interface {
+	HasBuildEnv
 	Add(name, value string) EnvBuilder
 	AddSecret(name, secret, key string) EnvBuilder
-	Build(ctx context.Context) ([]corev1.EnvVar, error)
 	AddFieldRef(name string, apiVersion string, fieldPath string) EnvBuilder
 	Validate(ctx context.Context) error
 }

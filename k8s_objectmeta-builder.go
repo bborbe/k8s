@@ -12,9 +12,21 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type HasBuildObjectMeta interface {
+	Build(ctx context.Context) (*metav1.ObjectMeta, error)
+}
+
+var _ HasBuildObjectMeta = HasBuildObjectMetaFunc(nil)
+
+type HasBuildObjectMetaFunc func(ctx context.Context) (*metav1.ObjectMeta, error)
+
+func (f HasBuildObjectMetaFunc) Build(ctx context.Context) (*metav1.ObjectMeta, error) {
+	return f(ctx)
+}
+
 //counterfeiter:generate -o mocks/k8s-objectmeta-builder.go --fake-name K8sObjectMetaBuilder . ObjectMetaBuilder
 type ObjectMetaBuilder interface {
-	Build(ctx context.Context) (*metav1.ObjectMeta, error)
+	HasBuildObjectMeta
 	SetGenerateName(generateName string) ObjectMetaBuilder
 	SetName(name Name) ObjectMetaBuilder
 	SetNamespace(namespace Namespace) ObjectMetaBuilder

@@ -13,9 +13,21 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type HasBuildPodSpec interface {
+	Build(ctx context.Context) (*corev1.PodSpec, error)
+}
+
+var _ HasBuildPodSpec = HasBuildPodSpecFunc(nil)
+
+type HasBuildPodSpecFunc func(ctx context.Context) (*corev1.PodSpec, error)
+
+func (f HasBuildPodSpecFunc) Build(ctx context.Context) (*corev1.PodSpec, error) {
+	return f(ctx)
+}
+
 //counterfeiter:generate -o mocks/k8s-podspec-builder.go --fake-name K8sPodSpecBuilder . PodSpecBuilder
 type PodSpecBuilder interface {
-	Build(ctx context.Context) (*corev1.PodSpec, error)
+	HasBuildPodSpec
 	SetAffinity(affinity corev1.Affinity) PodSpecBuilder
 	SetContainers(containers []corev1.Container) PodSpecBuilder
 	SetImagePullSecrets(imagePullSecrets []string) PodSpecBuilder

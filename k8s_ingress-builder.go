@@ -13,9 +13,21 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type HasBuildIngress interface {
+	Build(ctx context.Context) (*v1.Ingress, error)
+}
+
+var _ HasBuildIngress = HasBuildIngressFunc(nil)
+
+type HasBuildIngressFunc func(ctx context.Context) (*v1.Ingress, error)
+
+func (f HasBuildIngressFunc) Build(ctx context.Context) (*v1.Ingress, error) {
+	return f(ctx)
+}
+
 //counterfeiter:generate -o mocks/k8s-ingress-builder.go --fake-name K8sIngressBuilder . IngressBuilder
 type IngressBuilder interface {
-	Build(ctx context.Context) (*v1.Ingress, error)
+	HasBuildIngress
 	SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) IngressBuilder
 	SetHost(host string) IngressBuilder
 	SetServiceName(serviceName Name) IngressBuilder

@@ -13,9 +13,21 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type HasBuildService interface {
+	Build(ctx context.Context) (*corev1.Service, error)
+}
+
+var _ HasBuildService = HasBuildServiceFunc(nil)
+
+type HasBuildServiceFunc func(ctx context.Context) (*corev1.Service, error)
+
+func (f HasBuildServiceFunc) Build(ctx context.Context) (*corev1.Service, error) {
+	return f(ctx)
+}
+
 //counterfeiter:generate -o mocks/k8s-service-builder.go --fake-name K8sServiceBuilder . ServiceBuilder
 type ServiceBuilder interface {
-	Build(ctx context.Context) (*corev1.Service, error)
+	HasBuildService
 	SetObjectMetaBuilder(objectMetaBuilder ObjectMetaBuilder) ServiceBuilder
 	SetName(name Name) ServiceBuilder
 	SetServicePortName(servicePortName string) ServiceBuilder
