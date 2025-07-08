@@ -39,7 +39,6 @@ var _ = Describe("Job Builder", func() {
 					Namespace: "default",
 				}
 				jobBuilder.SetObjectMeta(objectMeta)
-				jobBuilder.SetName("test-job")
 			})
 
 			It("returns no error", func() {
@@ -68,10 +67,6 @@ var _ = Describe("Job Builder", func() {
 				Expect(*job.Spec.CompletionMode).To(Equal(batchv1.NonIndexedCompletion))
 				Expect(*job.Spec.PodReplacementPolicy).To(Equal(batchv1.TerminatingOrFailed))
 			})
-
-			It("sets app label", func() {
-				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("app", "test-job"))
-			})
 		})
 
 		Context("with custom configuration", func() {
@@ -91,7 +86,6 @@ var _ = Describe("Job Builder", func() {
 				}
 
 				jobBuilder.SetObjectMeta(objectMeta)
-				jobBuilder.SetName("custom-job")
 				jobBuilder.SetPodSpec(podSpec)
 				jobBuilder.SetBackoffLimit(6)
 				jobBuilder.SetCompletions(3)
@@ -125,7 +119,6 @@ var _ = Describe("Job Builder", func() {
 			})
 
 			It("sets custom labels", func() {
-				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("app", "custom-job"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("component", "worker"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("environment", "test"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("version", "v1.0.0"))
@@ -145,7 +138,6 @@ var _ = Describe("Job Builder", func() {
 				}
 
 				jobBuilder.SetObjectMeta(objectMeta)
-				jobBuilder.SetName("labels-job")
 				jobBuilder.SetLabels(labels)
 			})
 
@@ -154,7 +146,6 @@ var _ = Describe("Job Builder", func() {
 			})
 
 			It("sets all labels including app label", func() {
-				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("app", "labels-job"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("team", "platform"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("environment", "production"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("tier", "backend"))
@@ -163,15 +154,10 @@ var _ = Describe("Job Builder", func() {
 
 		Context("validation", func() {
 			Context("without ObjectMeta", func() {
-				BeforeEach(func() {
-					jobBuilder.SetName("no-meta-job")
-				})
-
 				It("returns validation error", func() {
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("validate jobBuilder failed"))
 				})
-
 				It("returns nil job", func() {
 					Expect(job).To(BeNil())
 				})
@@ -196,7 +182,6 @@ var _ = Describe("Job Builder", func() {
 
 			job, err := k8s.NewJobBuilder().
 				SetObjectMeta(objectMeta).
-				SetName("chain-job").
 				SetPodSpec(podSpec).
 				SetBackoffLimit(10).
 				SetCompletions(5).

@@ -23,7 +23,7 @@ type JobBuilder interface {
 	SetCompletions(completions int32) JobBuilder
 	AddLabel(key, value string) JobBuilder
 	SetLabels(labels map[string]string) JobBuilder
-	SetName(name Name) JobBuilder
+	SetApp(app string) JobBuilder
 	SetObjectMeta(objectMeta metav1.ObjectMeta) JobBuilder
 	SetParallelism(parallelism int32) JobBuilder
 	SetPodSpec(podSpec corev1.PodSpec) JobBuilder
@@ -39,7 +39,6 @@ func NewJobBuilder() JobBuilder {
 }
 
 type jobBuilder struct {
-	name         Name
 	objectMeta   metav1.ObjectMeta
 	component    string
 	labels       map[string]string
@@ -59,9 +58,8 @@ func (j *jobBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) JobBuilder {
 	return j
 }
 
-func (j *jobBuilder) SetName(name Name) JobBuilder {
-	j.name = name
-	return j
+func (j *jobBuilder) SetApp(app string) JobBuilder {
+	return j.AddLabel("app", app)
 }
 
 func (j *jobBuilder) SetComponent(component string) JobBuilder {
@@ -103,8 +101,6 @@ func (j *jobBuilder) Build(ctx context.Context) (*batchv1.Job, error) {
 	if err := j.Validate(ctx); err != nil {
 		return nil, errors.Wrapf(ctx, err, "validate jobBuilder failed")
 	}
-
-	j.AddLabel("app", j.name.String())
 
 	return &batchv1.Job{
 		TypeMeta: metav1.TypeMeta{
