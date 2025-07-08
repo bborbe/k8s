@@ -109,7 +109,7 @@ func (j *jobBuilder) Build(ctx context.Context) (*batchv1.Job, error) {
 	return &batchv1.Job{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Job",
-			APIVersion: "v1",
+			APIVersion: "batch/v1",
 		},
 		ObjectMeta: j.objectMeta,
 		Spec: batchv1.JobSpec{

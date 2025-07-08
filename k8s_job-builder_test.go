@@ -52,7 +52,7 @@ var _ = Describe("Job Builder", func() {
 
 			It("sets correct TypeMeta", func() {
 				Expect(job.TypeMeta.Kind).To(Equal("Job"))
-				Expect(job.TypeMeta.APIVersion).To(Equal("v1"))
+				Expect(job.TypeMeta.APIVersion).To(Equal("batch/v1"))
 			})
 
 			It("sets correct ObjectMeta", func() {
