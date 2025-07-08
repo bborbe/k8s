@@ -10,6 +10,16 @@ import (
 )
 
 type K8sNetworkingV1Interface struct {
+	IPAddressesStub        func() v1.IPAddressInterface
+	iPAddressesMutex       sync.RWMutex
+	iPAddressesArgsForCall []struct {
+	}
+	iPAddressesReturns struct {
+		result1 v1.IPAddressInterface
+	}
+	iPAddressesReturnsOnCall map[int]struct {
+		result1 v1.IPAddressInterface
+	}
 	IngressClassesStub        func() v1.IngressClassInterface
 	ingressClassesMutex       sync.RWMutex
 	ingressClassesArgsForCall []struct {
@@ -52,8 +62,71 @@ type K8sNetworkingV1Interface struct {
 	rESTClientReturnsOnCall map[int]struct {
 		result1 rest.Interface
 	}
+	ServiceCIDRsStub        func() v1.ServiceCIDRInterface
+	serviceCIDRsMutex       sync.RWMutex
+	serviceCIDRsArgsForCall []struct {
+	}
+	serviceCIDRsReturns struct {
+		result1 v1.ServiceCIDRInterface
+	}
+	serviceCIDRsReturnsOnCall map[int]struct {
+		result1 v1.ServiceCIDRInterface
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *K8sNetworkingV1Interface) IPAddresses() v1.IPAddressInterface {
+	fake.iPAddressesMutex.Lock()
+	ret, specificReturn := fake.iPAddressesReturnsOnCall[len(fake.iPAddressesArgsForCall)]
+	fake.iPAddressesArgsForCall = append(fake.iPAddressesArgsForCall, struct {
+	}{})
+	stub := fake.IPAddressesStub
+	fakeReturns := fake.iPAddressesReturns
+	fake.recordInvocation("IPAddresses", []interface{}{})
+	fake.iPAddressesMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sNetworkingV1Interface) IPAddressesCallCount() int {
+	fake.iPAddressesMutex.RLock()
+	defer fake.iPAddressesMutex.RUnlock()
+	return len(fake.iPAddressesArgsForCall)
+}
+
+func (fake *K8sNetworkingV1Interface) IPAddressesCalls(stub func() v1.IPAddressInterface) {
+	fake.iPAddressesMutex.Lock()
+	defer fake.iPAddressesMutex.Unlock()
+	fake.IPAddressesStub = stub
+}
+
+func (fake *K8sNetworkingV1Interface) IPAddressesReturns(result1 v1.IPAddressInterface) {
+	fake.iPAddressesMutex.Lock()
+	defer fake.iPAddressesMutex.Unlock()
+	fake.IPAddressesStub = nil
+	fake.iPAddressesReturns = struct {
+		result1 v1.IPAddressInterface
+	}{result1}
+}
+
+func (fake *K8sNetworkingV1Interface) IPAddressesReturnsOnCall(i int, result1 v1.IPAddressInterface) {
+	fake.iPAddressesMutex.Lock()
+	defer fake.iPAddressesMutex.Unlock()
+	fake.IPAddressesStub = nil
+	if fake.iPAddressesReturnsOnCall == nil {
+		fake.iPAddressesReturnsOnCall = make(map[int]struct {
+			result1 v1.IPAddressInterface
+		})
+	}
+	fake.iPAddressesReturnsOnCall[i] = struct {
+		result1 v1.IPAddressInterface
+	}{result1}
 }
 
 func (fake *K8sNetworkingV1Interface) IngressClasses() v1.IngressClassInterface {
@@ -284,9 +357,64 @@ func (fake *K8sNetworkingV1Interface) RESTClientReturnsOnCall(i int, result1 res
 	}{result1}
 }
 
+func (fake *K8sNetworkingV1Interface) ServiceCIDRs() v1.ServiceCIDRInterface {
+	fake.serviceCIDRsMutex.Lock()
+	ret, specificReturn := fake.serviceCIDRsReturnsOnCall[len(fake.serviceCIDRsArgsForCall)]
+	fake.serviceCIDRsArgsForCall = append(fake.serviceCIDRsArgsForCall, struct {
+	}{})
+	stub := fake.ServiceCIDRsStub
+	fakeReturns := fake.serviceCIDRsReturns
+	fake.recordInvocation("ServiceCIDRs", []interface{}{})
+	fake.serviceCIDRsMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sNetworkingV1Interface) ServiceCIDRsCallCount() int {
+	fake.serviceCIDRsMutex.RLock()
+	defer fake.serviceCIDRsMutex.RUnlock()
+	return len(fake.serviceCIDRsArgsForCall)
+}
+
+func (fake *K8sNetworkingV1Interface) ServiceCIDRsCalls(stub func() v1.ServiceCIDRInterface) {
+	fake.serviceCIDRsMutex.Lock()
+	defer fake.serviceCIDRsMutex.Unlock()
+	fake.ServiceCIDRsStub = stub
+}
+
+func (fake *K8sNetworkingV1Interface) ServiceCIDRsReturns(result1 v1.ServiceCIDRInterface) {
+	fake.serviceCIDRsMutex.Lock()
+	defer fake.serviceCIDRsMutex.Unlock()
+	fake.ServiceCIDRsStub = nil
+	fake.serviceCIDRsReturns = struct {
+		result1 v1.ServiceCIDRInterface
+	}{result1}
+}
+
+func (fake *K8sNetworkingV1Interface) ServiceCIDRsReturnsOnCall(i int, result1 v1.ServiceCIDRInterface) {
+	fake.serviceCIDRsMutex.Lock()
+	defer fake.serviceCIDRsMutex.Unlock()
+	fake.ServiceCIDRsStub = nil
+	if fake.serviceCIDRsReturnsOnCall == nil {
+		fake.serviceCIDRsReturnsOnCall = make(map[int]struct {
+			result1 v1.ServiceCIDRInterface
+		})
+	}
+	fake.serviceCIDRsReturnsOnCall[i] = struct {
+		result1 v1.ServiceCIDRInterface
+	}{result1}
+}
+
 func (fake *K8sNetworkingV1Interface) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.iPAddressesMutex.RLock()
+	defer fake.iPAddressesMutex.RUnlock()
 	fake.ingressClassesMutex.RLock()
 	defer fake.ingressClassesMutex.RUnlock()
 	fake.ingressesMutex.RLock()
@@ -295,6 +423,8 @@ func (fake *K8sNetworkingV1Interface) Invocations() map[string][][]interface{} {
 	defer fake.networkPoliciesMutex.RUnlock()
 	fake.rESTClientMutex.RLock()
 	defer fake.rESTClientMutex.RUnlock()
+	fake.serviceCIDRsMutex.RLock()
+	defer fake.serviceCIDRsMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

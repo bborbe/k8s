@@ -53,6 +53,7 @@ import (
 	v1beta1n "k8s.io/client-go/kubernetes/typed/rbac/v1beta1"
 	"k8s.io/client-go/kubernetes/typed/resource/v1alpha3"
 	v1beta1o "k8s.io/client-go/kubernetes/typed/resource/v1beta1"
+	v1beta2b "k8s.io/client-go/kubernetes/typed/resource/v1beta2"
 	v1p "k8s.io/client-go/kubernetes/typed/scheduling/v1"
 	v1alpha1g "k8s.io/client-go/kubernetes/typed/scheduling/v1alpha1"
 	v1beta1p "k8s.io/client-go/kubernetes/typed/scheduling/v1beta1"
@@ -542,6 +543,16 @@ type K8sInterface struct {
 	}
 	resourceV1beta1ReturnsOnCall map[int]struct {
 		result1 v1beta1o.ResourceV1beta1Interface
+	}
+	ResourceV1beta2Stub        func() v1beta2b.ResourceV1beta2Interface
+	resourceV1beta2Mutex       sync.RWMutex
+	resourceV1beta2ArgsForCall []struct {
+	}
+	resourceV1beta2Returns struct {
+		result1 v1beta2b.ResourceV1beta2Interface
+	}
+	resourceV1beta2ReturnsOnCall map[int]struct {
+		result1 v1beta2b.ResourceV1beta2Interface
 	}
 	SchedulingV1Stub        func() v1p.SchedulingV1Interface
 	schedulingV1Mutex       sync.RWMutex
@@ -3161,6 +3172,59 @@ func (fake *K8sInterface) ResourceV1beta1ReturnsOnCall(i int, result1 v1beta1o.R
 	}{result1}
 }
 
+func (fake *K8sInterface) ResourceV1beta2() v1beta2b.ResourceV1beta2Interface {
+	fake.resourceV1beta2Mutex.Lock()
+	ret, specificReturn := fake.resourceV1beta2ReturnsOnCall[len(fake.resourceV1beta2ArgsForCall)]
+	fake.resourceV1beta2ArgsForCall = append(fake.resourceV1beta2ArgsForCall, struct {
+	}{})
+	stub := fake.ResourceV1beta2Stub
+	fakeReturns := fake.resourceV1beta2Returns
+	fake.recordInvocation("ResourceV1beta2", []interface{}{})
+	fake.resourceV1beta2Mutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sInterface) ResourceV1beta2CallCount() int {
+	fake.resourceV1beta2Mutex.RLock()
+	defer fake.resourceV1beta2Mutex.RUnlock()
+	return len(fake.resourceV1beta2ArgsForCall)
+}
+
+func (fake *K8sInterface) ResourceV1beta2Calls(stub func() v1beta2b.ResourceV1beta2Interface) {
+	fake.resourceV1beta2Mutex.Lock()
+	defer fake.resourceV1beta2Mutex.Unlock()
+	fake.ResourceV1beta2Stub = stub
+}
+
+func (fake *K8sInterface) ResourceV1beta2Returns(result1 v1beta2b.ResourceV1beta2Interface) {
+	fake.resourceV1beta2Mutex.Lock()
+	defer fake.resourceV1beta2Mutex.Unlock()
+	fake.ResourceV1beta2Stub = nil
+	fake.resourceV1beta2Returns = struct {
+		result1 v1beta2b.ResourceV1beta2Interface
+	}{result1}
+}
+
+func (fake *K8sInterface) ResourceV1beta2ReturnsOnCall(i int, result1 v1beta2b.ResourceV1beta2Interface) {
+	fake.resourceV1beta2Mutex.Lock()
+	defer fake.resourceV1beta2Mutex.Unlock()
+	fake.ResourceV1beta2Stub = nil
+	if fake.resourceV1beta2ReturnsOnCall == nil {
+		fake.resourceV1beta2ReturnsOnCall = make(map[int]struct {
+			result1 v1beta2b.ResourceV1beta2Interface
+		})
+	}
+	fake.resourceV1beta2ReturnsOnCall[i] = struct {
+		result1 v1beta2b.ResourceV1beta2Interface
+	}{result1}
+}
+
 func (fake *K8sInterface) SchedulingV1() v1p.SchedulingV1Interface {
 	fake.schedulingV1Mutex.Lock()
 	ret, specificReturn := fake.schedulingV1ReturnsOnCall[len(fake.schedulingV1ArgsForCall)]
@@ -3631,6 +3695,8 @@ func (fake *K8sInterface) Invocations() map[string][][]interface{} {
 	defer fake.resourceV1alpha3Mutex.RUnlock()
 	fake.resourceV1beta1Mutex.RLock()
 	defer fake.resourceV1beta1Mutex.RUnlock()
+	fake.resourceV1beta2Mutex.RLock()
+	defer fake.resourceV1beta2Mutex.RUnlock()
 	fake.schedulingV1Mutex.RLock()
 	defer fake.schedulingV1Mutex.RUnlock()
 	fake.schedulingV1alpha1Mutex.RLock()

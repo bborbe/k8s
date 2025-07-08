@@ -18,26 +18,35 @@ import (
 //counterfeiter:generate -o mocks/k8s-job-builder.go --fake-name K8sJobBuilder . JobBuilder
 type JobBuilder interface {
 	Build(ctx context.Context) (*batchv1.Job, error)
-	SetName(name Name) JobBuilder
-	SetObjectMeta(objectMeta metav1.ObjectMeta) JobBuilder
+	SetBackoffLimit(backoffLimit int32) JobBuilder
 	SetComponent(component string) JobBuilder
+	SetCompletions(completions int32) JobBuilder
 	AddLabel(key, value string) JobBuilder
 	SetLabels(labels map[string]string) JobBuilder
+	SetName(name Name) JobBuilder
+	SetObjectMeta(objectMeta metav1.ObjectMeta) JobBuilder
+	SetParallelism(parallelism int32) JobBuilder
 	SetPodSpec(podSpec corev1.PodSpec) JobBuilder
 }
 
 func NewJobBuilder() JobBuilder {
 	return &jobBuilder{
-		labels: map[string]string{},
+		labels:       map[string]string{},
+		backoffLimit: collection.Ptr(int32(4)),
+		completions:  collection.Ptr(int32(1)),
+		parallelism:  collection.Ptr(int32(1)),
 	}
 }
 
 type jobBuilder struct {
-	name       Name
-	objectMeta metav1.ObjectMeta
-	component  string
-	labels     map[string]string
-	podSpec    corev1.PodSpec
+	name         Name
+	objectMeta   metav1.ObjectMeta
+	component    string
+	labels       map[string]string
+	podSpec      corev1.PodSpec
+	backoffLimit *int32
+	completions  *int32
+	parallelism  *int32
 }
 
 func (j *jobBuilder) SetPodSpec(podSpec corev1.PodSpec) JobBuilder {
@@ -69,9 +78,24 @@ func (j *jobBuilder) AddLabel(key, value string) JobBuilder {
 	return j
 }
 
+func (j *jobBuilder) SetBackoffLimit(backoffLimit int32) JobBuilder {
+	j.backoffLimit = &backoffLimit
+	return j
+}
+
+func (j *jobBuilder) SetCompletions(completions int32) JobBuilder {
+	j.completions = &completions
+	return j
+}
+
+func (j *jobBuilder) SetParallelism(parallelism int32) JobBuilder {
+	j.parallelism = &parallelism
+	return j
+}
+
 func (j *jobBuilder) Validate(ctx context.Context) error {
 	return validation.All{
-		validation.Name("ObjectMeta", validation.NotNil(j.objectMeta)),
+		validation.Name("ObjectMeta", validation.NotEmptyString(j.objectMeta.Name)),
 	}.Validate(ctx)
 }
 
@@ -97,11 +121,11 @@ func (j *jobBuilder) Build(ctx context.Context) (*batchv1.Job, error) {
 				Spec: j.podSpec,
 			},
 			TTLSecondsAfterFinished: collection.Ptr(int32(600)),
-			BackoffLimit:            collection.Ptr(int32(4)),
 			CompletionMode:          collection.Ptr(batchv1.NonIndexedCompletion),
-			Completions:             collection.Ptr(int32(1)),
-			Parallelism:             collection.Ptr(int32(1)),
 			PodReplacementPolicy:    collection.Ptr(batchv1.TerminatingOrFailed),
+			BackoffLimit:            j.backoffLimit,
+			Completions:             j.completions,
+			Parallelism:             j.parallelism,
 		},
 	}, nil
 }
