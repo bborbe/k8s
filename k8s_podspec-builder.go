@@ -16,11 +16,12 @@ import (
 //counterfeiter:generate -o mocks/k8s-podspec-builder.go --fake-name K8sPodSpecBuilder . PodSpecBuilder
 type PodSpecBuilder interface {
 	Build(ctx context.Context) (*corev1.PodSpec, error)
-	SetContainers(containers []corev1.Container) PodSpecBuilder
-	SetVolumes(volumes []corev1.Volume) PodSpecBuilder
-	SetRestartPolicy(restartPolicy corev1.RestartPolicy) PodSpecBuilder
 	SetAffinity(affinity corev1.Affinity) PodSpecBuilder
+	SetContainers(containers []corev1.Container) PodSpecBuilder
 	SetImagePullSecrets(imagePullSecrets []string) PodSpecBuilder
+	SetRestartPolicy(restartPolicy corev1.RestartPolicy) PodSpecBuilder
+	SetVolumes(volumes []corev1.Volume) PodSpecBuilder
+	SetPriorityClassName(priorityClassName string) PodSpecBuilder
 }
 
 func NewPodSpecBuilder() PodSpecBuilder {
@@ -31,13 +32,19 @@ func NewPodSpecBuilder() PodSpecBuilder {
 }
 
 type podSpecBuilder struct {
-	name             string
-	objectMeta       metav1.ObjectMeta
-	containers       []corev1.Container
-	volumes          []corev1.Volume
-	restartPolicy    corev1.RestartPolicy
-	affinity         *corev1.Affinity
-	imagePullSecrets []string
+	name              string
+	objectMeta        metav1.ObjectMeta
+	containers        []corev1.Container
+	volumes           []corev1.Volume
+	restartPolicy     corev1.RestartPolicy
+	affinity          *corev1.Affinity
+	imagePullSecrets  []string
+	priorityClassName string
+}
+
+func (p *podSpecBuilder) SetPriorityClassName(priorityClassName string) PodSpecBuilder {
+	p.priorityClassName = priorityClassName
+	return p
 }
 
 func (p *podSpecBuilder) SetImagePullSecrets(imagePullSecrets []string) PodSpecBuilder {
@@ -74,11 +81,12 @@ func (p *podSpecBuilder) Build(ctx context.Context) (*corev1.PodSpec, error) {
 		return nil, errors.Wrapf(ctx, err, "validate ingressBuilder failed")
 	}
 	return &corev1.PodSpec{
-		Volumes:          p.volumes,
-		Containers:       p.containers,
-		RestartPolicy:    p.restartPolicy,
-		ImagePullSecrets: p.createImagePullSecrets(),
-		Affinity:         p.affinity,
+		Volumes:           p.volumes,
+		Containers:        p.containers,
+		RestartPolicy:     p.restartPolicy,
+		ImagePullSecrets:  p.createImagePullSecrets(),
+		Affinity:          p.affinity,
+		PriorityClassName: p.priorityClassName,
 	}, nil
 }
 

@@ -56,6 +56,17 @@ type K8sPodSpecBuilder struct {
 	setImagePullSecretsReturnsOnCall map[int]struct {
 		result1 k8s.PodSpecBuilder
 	}
+	SetPriorityClassNameStub        func(string) k8s.PodSpecBuilder
+	setPriorityClassNameMutex       sync.RWMutex
+	setPriorityClassNameArgsForCall []struct {
+		arg1 string
+	}
+	setPriorityClassNameReturns struct {
+		result1 k8s.PodSpecBuilder
+	}
+	setPriorityClassNameReturnsOnCall map[int]struct {
+		result1 k8s.PodSpecBuilder
+	}
 	SetRestartPolicyStub        func(v1.RestartPolicy) k8s.PodSpecBuilder
 	setRestartPolicyMutex       sync.RWMutex
 	setRestartPolicyArgsForCall []struct {
@@ -339,6 +350,67 @@ func (fake *K8sPodSpecBuilder) SetImagePullSecretsReturnsOnCall(i int, result1 k
 	}{result1}
 }
 
+func (fake *K8sPodSpecBuilder) SetPriorityClassName(arg1 string) k8s.PodSpecBuilder {
+	fake.setPriorityClassNameMutex.Lock()
+	ret, specificReturn := fake.setPriorityClassNameReturnsOnCall[len(fake.setPriorityClassNameArgsForCall)]
+	fake.setPriorityClassNameArgsForCall = append(fake.setPriorityClassNameArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	stub := fake.SetPriorityClassNameStub
+	fakeReturns := fake.setPriorityClassNameReturns
+	fake.recordInvocation("SetPriorityClassName", []interface{}{arg1})
+	fake.setPriorityClassNameMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sPodSpecBuilder) SetPriorityClassNameCallCount() int {
+	fake.setPriorityClassNameMutex.RLock()
+	defer fake.setPriorityClassNameMutex.RUnlock()
+	return len(fake.setPriorityClassNameArgsForCall)
+}
+
+func (fake *K8sPodSpecBuilder) SetPriorityClassNameCalls(stub func(string) k8s.PodSpecBuilder) {
+	fake.setPriorityClassNameMutex.Lock()
+	defer fake.setPriorityClassNameMutex.Unlock()
+	fake.SetPriorityClassNameStub = stub
+}
+
+func (fake *K8sPodSpecBuilder) SetPriorityClassNameArgsForCall(i int) string {
+	fake.setPriorityClassNameMutex.RLock()
+	defer fake.setPriorityClassNameMutex.RUnlock()
+	argsForCall := fake.setPriorityClassNameArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sPodSpecBuilder) SetPriorityClassNameReturns(result1 k8s.PodSpecBuilder) {
+	fake.setPriorityClassNameMutex.Lock()
+	defer fake.setPriorityClassNameMutex.Unlock()
+	fake.SetPriorityClassNameStub = nil
+	fake.setPriorityClassNameReturns = struct {
+		result1 k8s.PodSpecBuilder
+	}{result1}
+}
+
+func (fake *K8sPodSpecBuilder) SetPriorityClassNameReturnsOnCall(i int, result1 k8s.PodSpecBuilder) {
+	fake.setPriorityClassNameMutex.Lock()
+	defer fake.setPriorityClassNameMutex.Unlock()
+	fake.SetPriorityClassNameStub = nil
+	if fake.setPriorityClassNameReturnsOnCall == nil {
+		fake.setPriorityClassNameReturnsOnCall = make(map[int]struct {
+			result1 k8s.PodSpecBuilder
+		})
+	}
+	fake.setPriorityClassNameReturnsOnCall[i] = struct {
+		result1 k8s.PodSpecBuilder
+	}{result1}
+}
+
 func (fake *K8sPodSpecBuilder) SetRestartPolicy(arg1 v1.RestartPolicy) k8s.PodSpecBuilder {
 	fake.setRestartPolicyMutex.Lock()
 	ret, specificReturn := fake.setRestartPolicyReturnsOnCall[len(fake.setRestartPolicyArgsForCall)]
@@ -477,6 +549,8 @@ func (fake *K8sPodSpecBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setContainersMutex.RUnlock()
 	fake.setImagePullSecretsMutex.RLock()
 	defer fake.setImagePullSecretsMutex.RUnlock()
+	fake.setPriorityClassNameMutex.RLock()
+	defer fake.setPriorityClassNameMutex.RUnlock()
 	fake.setRestartPolicyMutex.RLock()
 	defer fake.setRestartPolicyMutex.RUnlock()
 	fake.setVolumesMutex.RLock()

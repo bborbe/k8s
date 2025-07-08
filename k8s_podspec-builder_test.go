@@ -44,4 +44,13 @@ var _ = Describe("PodSpec Builder", func() {
 			Expect(podSpec.ImagePullSecrets[0].Name).To(Equal("docker-test"))
 		})
 	})
+	Context("with priority class", func() {
+		BeforeEach(func() {
+			podSpecBuilder.SetPriorityClassName("my-class")
+		})
+		It("returns podSpec with priority class", func() {
+			Expect(podSpec).NotTo(BeNil())
+			Expect(podSpec.PriorityClassName).To(Equal("my-class"))
+		})
+	})
 })

@@ -8,6 +8,12 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.6.1
+ 
+- allow set PriorityClassName in PodSpec
+- allow set parallelism, completions and backoffLimit in JobBuilder
+- go mod update
+
 ## v1.6.0
 
 - remove vendor
