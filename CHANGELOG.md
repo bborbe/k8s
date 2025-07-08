@@ -8,6 +8,10 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.7.1
+
+- add ObjectMetaBuilder.SetLabels and ObjectMetaBuilder.SetAnnotations
+
 ## v1.7.0
 
 - add HasBuild interfaces and HasBuildFunc funcs

@@ -47,6 +47,17 @@ type K8sObjectMetaBuilder struct {
 		result1 *v1.ObjectMeta
 		result2 error
 	}
+	SetAnnotationsStub        func(map[string]string) k8s.ObjectMetaBuilder
+	setAnnotationsMutex       sync.RWMutex
+	setAnnotationsArgsForCall []struct {
+		arg1 map[string]string
+	}
+	setAnnotationsReturns struct {
+		result1 k8s.ObjectMetaBuilder
+	}
+	setAnnotationsReturnsOnCall map[int]struct {
+		result1 k8s.ObjectMetaBuilder
+	}
 	SetComponentStub        func(string) k8s.ObjectMetaBuilder
 	setComponentMutex       sync.RWMutex
 	setComponentArgsForCall []struct {
@@ -78,6 +89,17 @@ type K8sObjectMetaBuilder struct {
 		result1 k8s.ObjectMetaBuilder
 	}
 	setGenerateNameReturnsOnCall map[int]struct {
+		result1 k8s.ObjectMetaBuilder
+	}
+	SetLabelsStub        func(map[string]string) k8s.ObjectMetaBuilder
+	setLabelsMutex       sync.RWMutex
+	setLabelsArgsForCall []struct {
+		arg1 map[string]string
+	}
+	setLabelsReturns struct {
+		result1 k8s.ObjectMetaBuilder
+	}
+	setLabelsReturnsOnCall map[int]struct {
 		result1 k8s.ObjectMetaBuilder
 	}
 	SetNameStub        func(k8s.Name) k8s.ObjectMetaBuilder
@@ -305,6 +327,67 @@ func (fake *K8sObjectMetaBuilder) BuildReturnsOnCall(i int, result1 *v1.ObjectMe
 	}{result1, result2}
 }
 
+func (fake *K8sObjectMetaBuilder) SetAnnotations(arg1 map[string]string) k8s.ObjectMetaBuilder {
+	fake.setAnnotationsMutex.Lock()
+	ret, specificReturn := fake.setAnnotationsReturnsOnCall[len(fake.setAnnotationsArgsForCall)]
+	fake.setAnnotationsArgsForCall = append(fake.setAnnotationsArgsForCall, struct {
+		arg1 map[string]string
+	}{arg1})
+	stub := fake.SetAnnotationsStub
+	fakeReturns := fake.setAnnotationsReturns
+	fake.recordInvocation("SetAnnotations", []interface{}{arg1})
+	fake.setAnnotationsMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sObjectMetaBuilder) SetAnnotationsCallCount() int {
+	fake.setAnnotationsMutex.RLock()
+	defer fake.setAnnotationsMutex.RUnlock()
+	return len(fake.setAnnotationsArgsForCall)
+}
+
+func (fake *K8sObjectMetaBuilder) SetAnnotationsCalls(stub func(map[string]string) k8s.ObjectMetaBuilder) {
+	fake.setAnnotationsMutex.Lock()
+	defer fake.setAnnotationsMutex.Unlock()
+	fake.SetAnnotationsStub = stub
+}
+
+func (fake *K8sObjectMetaBuilder) SetAnnotationsArgsForCall(i int) map[string]string {
+	fake.setAnnotationsMutex.RLock()
+	defer fake.setAnnotationsMutex.RUnlock()
+	argsForCall := fake.setAnnotationsArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sObjectMetaBuilder) SetAnnotationsReturns(result1 k8s.ObjectMetaBuilder) {
+	fake.setAnnotationsMutex.Lock()
+	defer fake.setAnnotationsMutex.Unlock()
+	fake.SetAnnotationsStub = nil
+	fake.setAnnotationsReturns = struct {
+		result1 k8s.ObjectMetaBuilder
+	}{result1}
+}
+
+func (fake *K8sObjectMetaBuilder) SetAnnotationsReturnsOnCall(i int, result1 k8s.ObjectMetaBuilder) {
+	fake.setAnnotationsMutex.Lock()
+	defer fake.setAnnotationsMutex.Unlock()
+	fake.SetAnnotationsStub = nil
+	if fake.setAnnotationsReturnsOnCall == nil {
+		fake.setAnnotationsReturnsOnCall = make(map[int]struct {
+			result1 k8s.ObjectMetaBuilder
+		})
+	}
+	fake.setAnnotationsReturnsOnCall[i] = struct {
+		result1 k8s.ObjectMetaBuilder
+	}{result1}
+}
+
 func (fake *K8sObjectMetaBuilder) SetComponent(arg1 string) k8s.ObjectMetaBuilder {
 	fake.setComponentMutex.Lock()
 	ret, specificReturn := fake.setComponentReturnsOnCall[len(fake.setComponentArgsForCall)]
@@ -489,6 +572,67 @@ func (fake *K8sObjectMetaBuilder) SetGenerateNameReturnsOnCall(i int, result1 k8
 		})
 	}
 	fake.setGenerateNameReturnsOnCall[i] = struct {
+		result1 k8s.ObjectMetaBuilder
+	}{result1}
+}
+
+func (fake *K8sObjectMetaBuilder) SetLabels(arg1 map[string]string) k8s.ObjectMetaBuilder {
+	fake.setLabelsMutex.Lock()
+	ret, specificReturn := fake.setLabelsReturnsOnCall[len(fake.setLabelsArgsForCall)]
+	fake.setLabelsArgsForCall = append(fake.setLabelsArgsForCall, struct {
+		arg1 map[string]string
+	}{arg1})
+	stub := fake.SetLabelsStub
+	fakeReturns := fake.setLabelsReturns
+	fake.recordInvocation("SetLabels", []interface{}{arg1})
+	fake.setLabelsMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sObjectMetaBuilder) SetLabelsCallCount() int {
+	fake.setLabelsMutex.RLock()
+	defer fake.setLabelsMutex.RUnlock()
+	return len(fake.setLabelsArgsForCall)
+}
+
+func (fake *K8sObjectMetaBuilder) SetLabelsCalls(stub func(map[string]string) k8s.ObjectMetaBuilder) {
+	fake.setLabelsMutex.Lock()
+	defer fake.setLabelsMutex.Unlock()
+	fake.SetLabelsStub = stub
+}
+
+func (fake *K8sObjectMetaBuilder) SetLabelsArgsForCall(i int) map[string]string {
+	fake.setLabelsMutex.RLock()
+	defer fake.setLabelsMutex.RUnlock()
+	argsForCall := fake.setLabelsArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sObjectMetaBuilder) SetLabelsReturns(result1 k8s.ObjectMetaBuilder) {
+	fake.setLabelsMutex.Lock()
+	defer fake.setLabelsMutex.Unlock()
+	fake.SetLabelsStub = nil
+	fake.setLabelsReturns = struct {
+		result1 k8s.ObjectMetaBuilder
+	}{result1}
+}
+
+func (fake *K8sObjectMetaBuilder) SetLabelsReturnsOnCall(i int, result1 k8s.ObjectMetaBuilder) {
+	fake.setLabelsMutex.Lock()
+	defer fake.setLabelsMutex.Unlock()
+	fake.SetLabelsStub = nil
+	if fake.setLabelsReturnsOnCall == nil {
+		fake.setLabelsReturnsOnCall = make(map[int]struct {
+			result1 k8s.ObjectMetaBuilder
+		})
+	}
+	fake.setLabelsReturnsOnCall[i] = struct {
 		result1 k8s.ObjectMetaBuilder
 	}{result1}
 }
@@ -685,12 +829,16 @@ func (fake *K8sObjectMetaBuilder) Invocations() map[string][][]interface{} {
 	defer fake.addLabelMutex.RUnlock()
 	fake.buildMutex.RLock()
 	defer fake.buildMutex.RUnlock()
+	fake.setAnnotationsMutex.RLock()
+	defer fake.setAnnotationsMutex.RUnlock()
 	fake.setComponentMutex.RLock()
 	defer fake.setComponentMutex.RUnlock()
 	fake.setFinalizersMutex.RLock()
 	defer fake.setFinalizersMutex.RUnlock()
 	fake.setGenerateNameMutex.RLock()
 	defer fake.setGenerateNameMutex.RUnlock()
+	fake.setLabelsMutex.RLock()
+	defer fake.setLabelsMutex.RUnlock()
 	fake.setNameMutex.RLock()
 	defer fake.setNameMutex.RUnlock()
 	fake.setNamespaceMutex.RLock()

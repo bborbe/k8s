@@ -28,12 +28,14 @@ func (f HasBuildObjectMetaFunc) Build(ctx context.Context) (*metav1.ObjectMeta, 
 type ObjectMetaBuilder interface {
 	HasBuildObjectMeta
 	validation.HasValidation
+	AddLabel(key, value string) ObjectMetaBuilder
+	SetLabels(labels map[string]string) ObjectMetaBuilder
+	AddAnnotation(key, value string) ObjectMetaBuilder
+	SetAnnotations(annotations map[string]string) ObjectMetaBuilder
 	SetGenerateName(generateName string) ObjectMetaBuilder
 	SetName(name Name) ObjectMetaBuilder
 	SetNamespace(namespace Namespace) ObjectMetaBuilder
 	SetComponent(component string) ObjectMetaBuilder
-	AddLabel(key, value string) ObjectMetaBuilder
-	AddAnnotation(key, value string) ObjectMetaBuilder
 	SetFinalizers(finalizers []string) ObjectMetaBuilder
 }
 
@@ -53,6 +55,16 @@ type objectMetaBuilder struct {
 	labels       map[string]string
 	generateName string
 	finalizers   []string
+}
+
+func (o *objectMetaBuilder) SetLabels(labels map[string]string) ObjectMetaBuilder {
+	o.labels = labels
+	return o
+}
+
+func (o *objectMetaBuilder) SetAnnotations(annotations map[string]string) ObjectMetaBuilder {
+	o.annotations = annotations
+	return o
 }
 
 func (o *objectMetaBuilder) SetFinalizers(finalizers []string) ObjectMetaBuilder {
