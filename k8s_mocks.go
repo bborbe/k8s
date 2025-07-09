@@ -7,7 +7,9 @@ package k8s
 import (
 	"k8s.io/client-go/kubernetes"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
-	v1 "k8s.io/client-go/kubernetes/typed/networking/v1"
+	batchv1 "k8s.io/client-go/kubernetes/typed/batch/v1"
+	v1 "k8s.io/client-go/kubernetes/typed/core/v1"
+	networkv1 "k8s.io/client-go/kubernetes/typed/networking/v1"
 )
 
 //counterfeiter:generate -o mocks/k8s-interface.go --fake-name K8sInterface . Interface
@@ -32,10 +34,35 @@ type StatefulSetInterface interface {
 
 //counterfeiter:generate -o mocks/k8s-ingress-interface.go --fake-name K8sIngressInterface . IngressInterface
 type IngressInterface interface {
-	v1.IngressInterface
+	networkv1.IngressInterface
 }
 
 //counterfeiter:generate -o mocks/k8s-networking-interface.go --fake-name K8sNetworkingV1Interface . NetworkingV1Interface
 type NetworkingV1Interface interface {
-	v1.NetworkingV1Interface
+	networkv1.NetworkingV1Interface
+}
+
+//counterfeiter:generate -o mocks/k8s-core-v1-interface.go --fake-name K8sCoreV1Interface . CoreV1Interface
+type CoreV1Interface interface {
+	v1.CoreV1Interface
+}
+
+//counterfeiter:generate -o mocks/k8s-configmap-interface.go --fake-name K8sConfigMapInterface . ConfigMapInterface
+type ConfigMapInterface interface {
+	v1.ConfigMapInterface
+}
+
+//counterfeiter:generate -o mocks/k8s-service-interface.go --fake-name K8sServiceInterface . ServiceInterface
+type ServiceInterface interface {
+	v1.ServiceInterface
+}
+
+//counterfeiter:generate -o mocks/k8s-batchv1-interface.go --fake-name K8sBatchV1Interface . BatchV1Interface
+type BatchV1Interface interface {
+	batchv1.BatchV1Interface
+}
+
+//counterfeiter:generate -o mocks/k8s-job-interface.go --fake-name K8sJobInterface . JobInterface
+type JobInterface interface {
+	batchv1.JobInterface
 }
