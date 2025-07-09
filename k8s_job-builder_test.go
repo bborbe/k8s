@@ -40,6 +40,7 @@ var _ = Describe("Job Builder", func() {
 
 		podSpecBuilder = k8s.NewPodSpecBuilder()
 		podSpecBuilder.SetContainersBuilder(containersBuilder)
+		podSpecBuilder.SetRestartPolicy(corev1.RestartPolicyOnFailure)
 
 		jobBuilder = k8s.NewJobBuilder()
 		jobBuilder.SetObjectMetaBuild(objectMetaBuilder)
@@ -181,6 +182,73 @@ var _ = Describe("Job Builder", func() {
 		})
 	})
 
+	Context("restart policy validation", func() {
+		JustBeforeEach(func() {
+			job, err = jobBuilder.Build(ctx)
+		})
+
+		Context("with valid restart policy Never", func() {
+			BeforeEach(func() {
+				podSpec := corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Name:  "test-container",
+							Image: "test-image:latest",
+						},
+					},
+					RestartPolicy: corev1.RestartPolicyNever,
+				}
+				jobBuilder.SetPodSpec(podSpec)
+			})
+			It("returns no error", func() {
+				Expect(err).To(BeNil())
+			})
+			It("sets restart policy to Never", func() {
+				Expect(job.Spec.Template.Spec.RestartPolicy).To(Equal(corev1.RestartPolicyNever))
+			})
+		})
+
+		Context("with valid restart policy OnFailure", func() {
+			BeforeEach(func() {
+				podSpec := corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Name:  "test-container",
+							Image: "test-image:latest",
+						},
+					},
+					RestartPolicy: corev1.RestartPolicyOnFailure,
+				}
+				jobBuilder.SetPodSpec(podSpec)
+			})
+			It("returns no error", func() {
+				Expect(err).To(BeNil())
+			})
+			It("sets restart policy to OnFailure", func() {
+				Expect(job.Spec.Template.Spec.RestartPolicy).To(Equal(corev1.RestartPolicyOnFailure))
+			})
+		})
+
+		Context("with invalid restart policy Always", func() {
+			BeforeEach(func() {
+				podSpec := corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Name:  "test-container",
+							Image: "test-image:latest",
+						},
+					},
+					RestartPolicy: corev1.RestartPolicyAlways,
+				}
+				jobBuilder.SetPodSpec(podSpec)
+			})
+			It("returns validation error", func() {
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(ContainSubstring("invalid podSpec restart policy"))
+			})
+		})
+	})
+
 	Describe("Method chaining", func() {
 		It("allows fluent interface", func() {
 			objectMeta := metav1.ObjectMeta{
@@ -194,6 +262,7 @@ var _ = Describe("Job Builder", func() {
 						Image: "chain-image:latest",
 					},
 				},
+				RestartPolicy: corev1.RestartPolicyOnFailure,
 			}
 
 			job, err := k8s.NewJobBuilder().

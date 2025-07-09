@@ -137,6 +137,9 @@ func (j *jobBuilder) Build(ctx context.Context) (*batchv1.Job, error) {
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "build podSpec failed")
 	}
+	if podSpec.RestartPolicy != corev1.RestartPolicyNever && podSpec.RestartPolicy != corev1.RestartPolicyOnFailure {
+		return nil, errors.Wrapf(ctx, validation.Error, "invalid podSpec restart policy")
+	}
 
 	return &batchv1.Job{
 		TypeMeta: metav1.TypeMeta{
