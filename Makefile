@@ -15,6 +15,8 @@ format:
 
 generate:
 	rm -rf mocks avro
+	mkdir -p mocks
+	echo "package mocks" > mocks/mocks.go
 	go generate -mod=mod ./...
 
 test:
