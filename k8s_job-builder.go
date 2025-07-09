@@ -56,7 +56,6 @@ func NewJobBuilder() JobBuilder {
 type jobBuilder struct {
 	objectMetaBuilder HasBuildObjectMeta
 	podSpecBuilder    HasBuildPodSpec
-	component         string
 	labels            map[string]string
 	backoffLimit      *int32
 	completions       *int32

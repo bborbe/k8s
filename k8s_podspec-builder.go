@@ -10,7 +10,6 @@ import (
 	"github.com/bborbe/errors"
 	"github.com/bborbe/validation"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type HasBuildPodSpec interface {
@@ -46,8 +45,6 @@ func NewPodSpecBuilder() PodSpecBuilder {
 }
 
 type podSpecBuilder struct {
-	name              string
-	objectMeta        metav1.ObjectMeta
 	volumes           []corev1.Volume
 	restartPolicy     corev1.RestartPolicy
 	affinity          *corev1.Affinity

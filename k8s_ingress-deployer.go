@@ -70,15 +70,15 @@ func (s *ingressDeployer) Undeploy(ctx context.Context, namespace Namespace, nam
 }
 
 func IngressEqual(a, b v1.Ingress) bool {
-	if reflect.DeepEqual(a.ObjectMeta.Labels, b.ObjectMeta.Labels) == false {
+	if !reflect.DeepEqual(a.ObjectMeta.Labels, b.ObjectMeta.Labels) {
 		glog.V(4).Infof("ObjectMeta.Labels not equal %#v %#v", a.ObjectMeta.Labels, b.ObjectMeta.Labels)
 		return false
 	}
-	if reflect.DeepEqual(a.ObjectMeta.Annotations, b.ObjectMeta.Annotations) == false {
+	if !reflect.DeepEqual(a.ObjectMeta.Annotations, b.ObjectMeta.Annotations) {
 		glog.V(4).Infof("ObjectMeta.Annotations not equal %#v %#v", a.ObjectMeta.Annotations, b.ObjectMeta.Annotations)
 		return false
 	}
-	if reflect.DeepEqual(a.Spec, b.Spec) == false {
+	if !reflect.DeepEqual(a.Spec, b.Spec) {
 		glog.V(4).Infof("Spec not equal %#v %#v", a.Spec, b.Spec)
 		return false
 	}
