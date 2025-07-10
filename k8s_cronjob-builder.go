@@ -1,11 +1,15 @@
+// Copyright (c) 2025 Benjamin Borbe All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package k8s
 
 import (
 	"context"
+
 	"github.com/bborbe/collection"
 	"github.com/bborbe/errors"
 	"github.com/bborbe/validation"
-
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

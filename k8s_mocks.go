@@ -8,7 +8,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
 	batchv1 "k8s.io/client-go/kubernetes/typed/batch/v1"
-	v1 "k8s.io/client-go/kubernetes/typed/core/v1"
+	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	networkv1 "k8s.io/client-go/kubernetes/typed/networking/v1"
 )
 
@@ -44,17 +44,17 @@ type NetworkingV1Interface interface {
 
 //counterfeiter:generate -o mocks/k8s-core-v1-interface.go --fake-name K8sCoreV1Interface . CoreV1Interface
 type CoreV1Interface interface {
-	v1.CoreV1Interface
+	corev1.CoreV1Interface
 }
 
 //counterfeiter:generate -o mocks/k8s-configmap-interface.go --fake-name K8sConfigMapInterface . ConfigMapInterface
 type ConfigMapInterface interface {
-	v1.ConfigMapInterface
+	corev1.ConfigMapInterface
 }
 
 //counterfeiter:generate -o mocks/k8s-service-interface.go --fake-name K8sServiceInterface . ServiceInterface
 type ServiceInterface interface {
-	v1.ServiceInterface
+	corev1.ServiceInterface
 }
 
 //counterfeiter:generate -o mocks/k8s-batchv1-interface.go --fake-name K8sBatchV1Interface . BatchV1Interface
@@ -65,4 +65,9 @@ type BatchV1Interface interface {
 //counterfeiter:generate -o mocks/k8s-job-interface.go --fake-name K8sJobInterface . JobInterface
 type JobInterface interface {
 	batchv1.JobInterface
+}
+
+//counterfeiter:generate -o mocks/k8s-cron-job-interface.go --fake-name K8sCronJobInterface . CronJobInterface
+type CronJobInterface interface {
+	batchv1.CronJobInterface
 }
