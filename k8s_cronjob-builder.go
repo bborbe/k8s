@@ -29,7 +29,7 @@ type CronJobBuilder interface {
 	SetImage(image string) CronJobBuilder
 	SetEnv(env []corev1.EnvVar) CronJobBuilder
 	SetLoglevel(loglevel int) CronJobBuilder
-	SetCronExpression(cronScheduleExpression string) CronJobBuilder
+	SetCronExpression(cronScheduleExpression CronScheduleExpression) CronJobBuilder
 	SetParallelism(parallelism int) CronJobBuilder
 	SetBackoffLimit(backoffLimit int) CronJobBuilder
 	SetCompletions(completions int) CronJobBuilder
@@ -43,7 +43,7 @@ func NewCronJobBuilder() CronJobBuilder {
 }
 
 type cronJobBuilder struct {
-	cronScheduleExpression     string
+	cronScheduleExpression     CronScheduleExpression
 	volumes                    []corev1.Volume
 	volumeMounts               []corev1.VolumeMount
 	env                        []corev1.EnvVar
@@ -110,7 +110,7 @@ func (c *cronJobBuilder) SetLoglevel(loglevel int) CronJobBuilder {
 	return c
 }
 
-func (c *cronJobBuilder) SetCronExpression(cronScheduleExpression string) CronJobBuilder {
+func (c *cronJobBuilder) SetCronExpression(cronScheduleExpression CronScheduleExpression) CronJobBuilder {
 	c.cronScheduleExpression = cronScheduleExpression
 	return c
 }
@@ -134,6 +134,7 @@ func (c *cronJobBuilder) Validate(ctx context.Context) error {
 	return validation.All{
 		validation.Name("ObjectMetaBuilder", validation.NotNil(c.objectMetaBuilder)),
 		validation.Name("PodSpecBuilder", validation.NotNil(c.podSpecBuilder)),
+		validation.Name("CronScheduleExpression", validation.NotNil(c.cronScheduleExpression)),
 	}.Validate(ctx)
 }
 
@@ -157,7 +158,7 @@ func (c *cronJobBuilder) Build(ctx context.Context) (*batchv1.CronJob, error) {
 		},
 		ObjectMeta: *objectMeta,
 		Spec: batchv1.CronJobSpec{
-			Schedule:                   c.cronScheduleExpression,
+			Schedule:                   c.cronScheduleExpression.String(),
 			SuccessfulJobsHistoryLimit: c.successfulJobsHistoryLimit,
 			FailedJobsHistoryLimit:     c.failedJobsHistoryLimit,
 			JobTemplate: batchv1.JobTemplateSpec{

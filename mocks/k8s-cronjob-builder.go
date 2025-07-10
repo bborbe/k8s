@@ -69,10 +69,10 @@ type K8sCronJobBuilder struct {
 	setCompletionsReturnsOnCall map[int]struct {
 		result1 k8s.CronJobBuilder
 	}
-	SetCronExpressionStub        func(string) k8s.CronJobBuilder
+	SetCronExpressionStub        func(k8s.CronScheduleExpression) k8s.CronJobBuilder
 	setCronExpressionMutex       sync.RWMutex
 	setCronExpressionArgsForCall []struct {
-		arg1 string
+		arg1 k8s.CronScheduleExpression
 	}
 	setCronExpressionReturns struct {
 		result1 k8s.CronJobBuilder
@@ -502,11 +502,11 @@ func (fake *K8sCronJobBuilder) SetCompletionsReturnsOnCall(i int, result1 k8s.Cr
 	}{result1}
 }
 
-func (fake *K8sCronJobBuilder) SetCronExpression(arg1 string) k8s.CronJobBuilder {
+func (fake *K8sCronJobBuilder) SetCronExpression(arg1 k8s.CronScheduleExpression) k8s.CronJobBuilder {
 	fake.setCronExpressionMutex.Lock()
 	ret, specificReturn := fake.setCronExpressionReturnsOnCall[len(fake.setCronExpressionArgsForCall)]
 	fake.setCronExpressionArgsForCall = append(fake.setCronExpressionArgsForCall, struct {
-		arg1 string
+		arg1 k8s.CronScheduleExpression
 	}{arg1})
 	stub := fake.SetCronExpressionStub
 	fakeReturns := fake.setCronExpressionReturns
@@ -527,13 +527,13 @@ func (fake *K8sCronJobBuilder) SetCronExpressionCallCount() int {
 	return len(fake.setCronExpressionArgsForCall)
 }
 
-func (fake *K8sCronJobBuilder) SetCronExpressionCalls(stub func(string) k8s.CronJobBuilder) {
+func (fake *K8sCronJobBuilder) SetCronExpressionCalls(stub func(k8s.CronScheduleExpression) k8s.CronJobBuilder) {
 	fake.setCronExpressionMutex.Lock()
 	defer fake.setCronExpressionMutex.Unlock()
 	fake.SetCronExpressionStub = stub
 }
 
-func (fake *K8sCronJobBuilder) SetCronExpressionArgsForCall(i int) string {
+func (fake *K8sCronJobBuilder) SetCronExpressionArgsForCall(i int) k8s.CronScheduleExpression {
 	fake.setCronExpressionMutex.RLock()
 	defer fake.setCronExpressionMutex.RUnlock()
 	argsForCall := fake.setCronExpressionArgsForCall[i]
