@@ -68,13 +68,6 @@ var _ = Describe("Job Deployer", func() {
 
 		Context("when job does not exist", func() {
 			BeforeEach(func() {
-				// First Get call for Undeploy (job doesn't exist)
-				notFoundError := k8s_errors.NewNotFound(schema.GroupResource{
-					Group:    "batch",
-					Resource: "jobs",
-				}, "test-job")
-				jobInterface.GetReturns(nil, notFoundError)
-
 				// Create call succeeds
 				jobInterface.CreateReturns(&job, nil)
 			})
@@ -83,10 +76,8 @@ var _ = Describe("Job Deployer", func() {
 				Expect(err).To(BeNil())
 			})
 
-			It("calls Get to check if job exists (for undeploy)", func() {
-				Expect(jobInterface.GetCallCount()).To(Equal(1))
-				_, name, _ := jobInterface.GetArgsForCall(0)
-				Expect(name).To(Equal("test-job"))
+			It("does not call Get", func() {
+				Expect(jobInterface.GetCallCount()).To(Equal(0))
 			})
 
 			It("calls Create to create the job", func() {
@@ -103,15 +94,6 @@ var _ = Describe("Job Deployer", func() {
 
 		Context("when job already exists", func() {
 			BeforeEach(func() {
-				existingJob := job
-				existingJob.ResourceVersion = "123"
-
-				// First Get call for Undeploy (job exists)
-				jobInterface.GetReturns(&existingJob, nil)
-
-				// Delete call succeeds
-				jobInterface.DeleteReturns(nil)
-
 				// Create call succeeds
 				jobInterface.CreateReturns(&job, nil)
 			})
@@ -120,18 +102,12 @@ var _ = Describe("Job Deployer", func() {
 				Expect(err).To(BeNil())
 			})
 
-			It("calls Get to check if job exists (for undeploy)", func() {
-				Expect(jobInterface.GetCallCount()).To(Equal(1))
-				_, name, _ := jobInterface.GetArgsForCall(0)
-				Expect(name).To(Equal("test-job"))
+			It("does not call Get", func() {
+				Expect(jobInterface.GetCallCount()).To(Equal(0))
 			})
 
-			It("calls Delete to remove existing job", func() {
-				Expect(jobInterface.DeleteCallCount()).To(Equal(1))
-				_, deletedName, opts := jobInterface.DeleteArgsForCall(0)
-				Expect(deletedName).To(Equal("test-job"))
-				Expect(opts.PropagationPolicy).NotTo(BeNil())
-				Expect(*opts.PropagationPolicy).To(Equal(metav1.DeletePropagationForeground))
+			It("does not call Delete", func() {
+				Expect(jobInterface.DeleteCallCount()).To(Equal(0))
 			})
 
 			It("calls Create to create the new job", func() {
@@ -142,40 +118,8 @@ var _ = Describe("Job Deployer", func() {
 			})
 		})
 
-		Context("when undeploy fails", func() {
-			BeforeEach(func() {
-				existingJob := job
-				jobInterface.GetReturns(&existingJob, nil)
-				jobInterface.DeleteReturns(errors.New("delete failed"))
-			})
-
-			It("returns an error", func() {
-				Expect(err).NotTo(BeNil())
-				Expect(err.Error()).To(ContainSubstring("undeploy failed"))
-			})
-
-			It("calls Get", func() {
-				Expect(jobInterface.GetCallCount()).To(Equal(1))
-			})
-
-			It("calls Delete", func() {
-				Expect(jobInterface.DeleteCallCount()).To(Equal(1))
-			})
-
-			It("does not call Create", func() {
-				Expect(jobInterface.CreateCallCount()).To(Equal(0))
-			})
-		})
-
 		Context("when create fails", func() {
 			BeforeEach(func() {
-				// Undeploy succeeds (job doesn't exist)
-				notFoundError := k8s_errors.NewNotFound(schema.GroupResource{
-					Group:    "batch",
-					Resource: "jobs",
-				}, "test-job")
-				jobInterface.GetReturns(nil, notFoundError)
-
 				// Create fails
 				jobInterface.CreateReturns(nil, errors.New("create failed"))
 			})
@@ -187,6 +131,14 @@ var _ = Describe("Job Deployer", func() {
 
 			It("calls Create", func() {
 				Expect(jobInterface.CreateCallCount()).To(Equal(1))
+			})
+
+			It("does not call Get", func() {
+				Expect(jobInterface.GetCallCount()).To(Equal(0))
+			})
+
+			It("does not call Delete", func() {
+				Expect(jobInterface.DeleteCallCount()).To(Equal(0))
 			})
 		})
 
@@ -330,19 +282,8 @@ var _ = Describe("Job Deployer", func() {
 	Describe("Deploy behavior", func() {
 		Context("when deploying multiple times", func() {
 			BeforeEach(func() {
-				// First deployment - job doesn't exist
-				notFoundError := k8s_errors.NewNotFound(schema.GroupResource{
-					Group:    "batch",
-					Resource: "jobs",
-				}, "test-job")
-				jobInterface.GetReturnsOnCall(0, nil, notFoundError)
+				// Both deployments succeed
 				jobInterface.CreateReturnsOnCall(0, &job, nil)
-
-				// Second deployment - job exists
-				existingJob := job
-				existingJob.ResourceVersion = "123"
-				jobInterface.GetReturnsOnCall(1, &existingJob, nil)
-				jobInterface.DeleteReturnsOnCall(0, nil)
 				jobInterface.CreateReturnsOnCall(1, &job, nil)
 			})
 
@@ -355,21 +296,15 @@ var _ = Describe("Job Deployer", func() {
 				err2 := jobDeployer.Deploy(ctx, job)
 				Expect(err2).To(BeNil())
 
-				// Should have called Get twice, Delete once, Create twice
-				Expect(jobInterface.GetCallCount()).To(Equal(2))
-				Expect(jobInterface.DeleteCallCount()).To(Equal(1))
+				// Should have called Create twice, no Get or Delete calls
+				Expect(jobInterface.GetCallCount()).To(Equal(0))
+				Expect(jobInterface.DeleteCallCount()).To(Equal(0))
 				Expect(jobInterface.CreateCallCount()).To(Equal(2))
 			})
 		})
 
 		Context("with different job specifications", func() {
 			BeforeEach(func() {
-				notFoundError := k8s_errors.NewNotFound(schema.GroupResource{
-					Group:    "batch",
-					Resource: "jobs",
-				}, "test-job")
-				jobInterface.GetReturns(nil, notFoundError)
-
 				// Modify job spec
 				job.Spec.Parallelism = &[]int32{2}[0]
 				job.Spec.Completions = &[]int32{3}[0]

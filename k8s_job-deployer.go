@@ -36,9 +36,6 @@ type jobDeployer struct {
 
 func (s *jobDeployer) Deploy(ctx context.Context, job batchv1.Job) error {
 	glog.V(3).Infof("deploy %s started", job.Name)
-	if err := s.Undeploy(ctx, Namespace(job.Namespace), Name(job.Name)); err != nil {
-		return errors.Wrap(ctx, err, "undeploy failed")
-	}
 	if _, err := s.clientset.BatchV1().Jobs(job.Namespace).Create(ctx, &job, metav1.CreateOptions{}); err != nil {
 		return errors.Wrap(ctx, err, "create job failed")
 	}
