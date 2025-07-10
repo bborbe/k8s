@@ -39,6 +39,9 @@ func NewCronJobBuilder() CronJobBuilder {
 	return &cronJobBuilder{
 		successfulJobsHistoryLimit: collection.Ptr(int32(1)),
 		failedJobsHistoryLimit:     collection.Ptr(int32(2)),
+		parallelism:                1,
+		completions:                1,
+		backoffLimit:               6,
 	}
 }
 

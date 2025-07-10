@@ -6,11 +6,14 @@ package k8s_test
 
 import (
 	"context"
+	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/format"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
+	"sigs.k8s.io/yaml"
 
 	"github.com/bborbe/k8s"
 )
@@ -44,7 +47,7 @@ var _ = Describe("CronJob Builder", func() {
 		cronJobBuilder = k8s.NewCronJobBuilder()
 		cronJobBuilder.SetObjectMetaBuild(objectMetaBuilder)
 		cronJobBuilder.SetPodSpecBuilder(podSpecBuilder)
-		cronJobBuilder.SetCronExpression("0 0 * * *")
+		cronJobBuilder.SetCronExpression(k8s.CronScheduleExpression("0 0 * * *"))
 	})
 	Context("Build", func() {
 		JustBeforeEach(func() {
@@ -78,7 +81,7 @@ var _ = Describe("CronJob Builder", func() {
 
 		Context("with custom configuration", func() {
 			BeforeEach(func() {
-				cronJobBuilder.SetCronExpression("0 */6 * * *")
+				cronJobBuilder.SetCronExpression(k8s.CronScheduleExpression("0 */6 * * *"))
 				cronJobBuilder.SetParallelism(3)
 				cronJobBuilder.SetBackoffLimit(10)
 				cronJobBuilder.SetCompletions(5)
@@ -98,6 +101,43 @@ var _ = Describe("CronJob Builder", func() {
 				Expect(*cronJob.Spec.JobTemplate.Spec.BackoffLimit).To(Equal(int32(10)))
 				Expect(*cronJob.Spec.JobTemplate.Spec.Completions).To(Equal(int32(5)))
 			})
+		})
+
+		It("has correct content", func() {
+			format.MaxLength = 10000
+
+			bytes, err := yaml.Marshal(cronJob)
+			Expect(err).To(BeNil())
+			Expect(strings.TrimSpace(string(bytes))).To(Equal(strings.TrimSpace(`
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  creationTimestamp: null
+  name: my-object
+  namespace: my-namespace
+spec:
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      backoffLimit: 6
+      completions: 1
+      parallelism: 1
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+          - name: service
+            resources: {}
+          imagePullSecrets:
+          - name: docker
+          restartPolicy: OnFailure
+  schedule: 0 0 * * *
+  successfulJobsHistoryLimit: 1
+status: {}
+`)))
 		})
 	})
 
