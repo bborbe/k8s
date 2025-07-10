@@ -42,24 +42,33 @@ type JobBuilder interface {
 	SetLabels(labels map[string]string) JobBuilder
 	SetApp(app string) JobBuilder
 	SetParallelism(parallelism int32) JobBuilder
+	SetTTLSecondsAfterFinished(ttlSecondsAfterFinished int32) JobBuilder
+	SetCompletionMode(completionMode batchv1.CompletionMode) JobBuilder
+	SetPodReplacementPolicy(podReplacementPolicy batchv1.PodReplacementPolicy) JobBuilder
 }
 
 func NewJobBuilder() JobBuilder {
 	return &jobBuilder{
-		labels:       map[string]string{},
-		backoffLimit: collection.Ptr(int32(4)),
-		completions:  collection.Ptr(int32(1)),
-		parallelism:  collection.Ptr(int32(1)),
+		labels:                  map[string]string{},
+		backoffLimit:            collection.Ptr(int32(4)),
+		completions:             collection.Ptr(int32(1)),
+		parallelism:             collection.Ptr(int32(1)),
+		ttlSecondsAfterFinished: collection.Ptr(int32(600)),
+		completionMode:          collection.Ptr(batchv1.NonIndexedCompletion),
+		podReplacementPolicy:    collection.Ptr(batchv1.TerminatingOrFailed),
 	}
 }
 
 type jobBuilder struct {
-	objectMetaBuilder HasBuildObjectMeta
-	podSpecBuilder    HasBuildPodSpec
-	labels            map[string]string
-	backoffLimit      *int32
-	completions       *int32
-	parallelism       *int32
+	objectMetaBuilder       HasBuildObjectMeta
+	podSpecBuilder          HasBuildPodSpec
+	labels                  map[string]string
+	backoffLimit            *int32
+	completions             *int32
+	parallelism             *int32
+	ttlSecondsAfterFinished *int32
+	completionMode          *batchv1.CompletionMode
+	podReplacementPolicy    *batchv1.PodReplacementPolicy
 }
 
 func (j *jobBuilder) SetPodSpecBuilder(podSpecBuilder HasBuildPodSpec) JobBuilder {
@@ -117,6 +126,21 @@ func (j *jobBuilder) SetParallelism(parallelism int32) JobBuilder {
 	return j
 }
 
+func (j *jobBuilder) SetTTLSecondsAfterFinished(ttlSecondsAfterFinished int32) JobBuilder {
+	j.ttlSecondsAfterFinished = &ttlSecondsAfterFinished
+	return j
+}
+
+func (j *jobBuilder) SetCompletionMode(completionMode batchv1.CompletionMode) JobBuilder {
+	j.completionMode = &completionMode
+	return j
+}
+
+func (j *jobBuilder) SetPodReplacementPolicy(podReplacementPolicy batchv1.PodReplacementPolicy) JobBuilder {
+	j.podReplacementPolicy = &podReplacementPolicy
+	return j
+}
+
 func (j *jobBuilder) Validate(ctx context.Context) error {
 	return validation.All{
 		validation.Name("ObjectMetaBuilder", validation.NotNil(j.objectMetaBuilder)),
@@ -154,9 +178,9 @@ func (j *jobBuilder) Build(ctx context.Context) (*batchv1.Job, error) {
 				},
 				Spec: *podSpec,
 			},
-			TTLSecondsAfterFinished: collection.Ptr(int32(600)),
-			CompletionMode:          collection.Ptr(batchv1.NonIndexedCompletion),
-			PodReplacementPolicy:    collection.Ptr(batchv1.TerminatingOrFailed),
+			TTLSecondsAfterFinished: j.ttlSecondsAfterFinished,
+			CompletionMode:          j.completionMode,
+			PodReplacementPolicy:    j.podReplacementPolicy,
 			BackoffLimit:            j.backoffLimit,
 			Completions:             j.completions,
 			Parallelism:             j.parallelism,

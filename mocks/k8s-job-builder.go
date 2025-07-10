@@ -59,6 +59,17 @@ type K8sJobBuilder struct {
 	setBackoffLimitReturnsOnCall map[int]struct {
 		result1 k8s.JobBuilder
 	}
+	SetCompletionModeStub        func(v1.CompletionMode) k8s.JobBuilder
+	setCompletionModeMutex       sync.RWMutex
+	setCompletionModeArgsForCall []struct {
+		arg1 v1.CompletionMode
+	}
+	setCompletionModeReturns struct {
+		result1 k8s.JobBuilder
+	}
+	setCompletionModeReturnsOnCall map[int]struct {
+		result1 k8s.JobBuilder
+	}
 	SetCompletionsStub        func(int32) k8s.JobBuilder
 	setCompletionsMutex       sync.RWMutex
 	setCompletionsArgsForCall []struct {
@@ -125,6 +136,17 @@ type K8sJobBuilder struct {
 	setParallelismReturnsOnCall map[int]struct {
 		result1 k8s.JobBuilder
 	}
+	SetPodReplacementPolicyStub        func(v1.PodReplacementPolicy) k8s.JobBuilder
+	setPodReplacementPolicyMutex       sync.RWMutex
+	setPodReplacementPolicyArgsForCall []struct {
+		arg1 v1.PodReplacementPolicy
+	}
+	setPodReplacementPolicyReturns struct {
+		result1 k8s.JobBuilder
+	}
+	setPodReplacementPolicyReturnsOnCall map[int]struct {
+		result1 k8s.JobBuilder
+	}
 	SetPodSpecStub        func(v1b.PodSpec) k8s.JobBuilder
 	setPodSpecMutex       sync.RWMutex
 	setPodSpecArgsForCall []struct {
@@ -145,6 +167,17 @@ type K8sJobBuilder struct {
 		result1 k8s.JobBuilder
 	}
 	setPodSpecBuilderReturnsOnCall map[int]struct {
+		result1 k8s.JobBuilder
+	}
+	SetTTLSecondsAfterFinishedStub        func(int32) k8s.JobBuilder
+	setTTLSecondsAfterFinishedMutex       sync.RWMutex
+	setTTLSecondsAfterFinishedArgsForCall []struct {
+		arg1 int32
+	}
+	setTTLSecondsAfterFinishedReturns struct {
+		result1 k8s.JobBuilder
+	}
+	setTTLSecondsAfterFinishedReturnsOnCall map[int]struct {
 		result1 k8s.JobBuilder
 	}
 	ValidateStub        func(context.Context) error
@@ -406,6 +439,67 @@ func (fake *K8sJobBuilder) SetBackoffLimitReturnsOnCall(i int, result1 k8s.JobBu
 		})
 	}
 	fake.setBackoffLimitReturnsOnCall[i] = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
+func (fake *K8sJobBuilder) SetCompletionMode(arg1 v1.CompletionMode) k8s.JobBuilder {
+	fake.setCompletionModeMutex.Lock()
+	ret, specificReturn := fake.setCompletionModeReturnsOnCall[len(fake.setCompletionModeArgsForCall)]
+	fake.setCompletionModeArgsForCall = append(fake.setCompletionModeArgsForCall, struct {
+		arg1 v1.CompletionMode
+	}{arg1})
+	stub := fake.SetCompletionModeStub
+	fakeReturns := fake.setCompletionModeReturns
+	fake.recordInvocation("SetCompletionMode", []interface{}{arg1})
+	fake.setCompletionModeMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sJobBuilder) SetCompletionModeCallCount() int {
+	fake.setCompletionModeMutex.RLock()
+	defer fake.setCompletionModeMutex.RUnlock()
+	return len(fake.setCompletionModeArgsForCall)
+}
+
+func (fake *K8sJobBuilder) SetCompletionModeCalls(stub func(v1.CompletionMode) k8s.JobBuilder) {
+	fake.setCompletionModeMutex.Lock()
+	defer fake.setCompletionModeMutex.Unlock()
+	fake.SetCompletionModeStub = stub
+}
+
+func (fake *K8sJobBuilder) SetCompletionModeArgsForCall(i int) v1.CompletionMode {
+	fake.setCompletionModeMutex.RLock()
+	defer fake.setCompletionModeMutex.RUnlock()
+	argsForCall := fake.setCompletionModeArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sJobBuilder) SetCompletionModeReturns(result1 k8s.JobBuilder) {
+	fake.setCompletionModeMutex.Lock()
+	defer fake.setCompletionModeMutex.Unlock()
+	fake.SetCompletionModeStub = nil
+	fake.setCompletionModeReturns = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
+func (fake *K8sJobBuilder) SetCompletionModeReturnsOnCall(i int, result1 k8s.JobBuilder) {
+	fake.setCompletionModeMutex.Lock()
+	defer fake.setCompletionModeMutex.Unlock()
+	fake.SetCompletionModeStub = nil
+	if fake.setCompletionModeReturnsOnCall == nil {
+		fake.setCompletionModeReturnsOnCall = make(map[int]struct {
+			result1 k8s.JobBuilder
+		})
+	}
+	fake.setCompletionModeReturnsOnCall[i] = struct {
 		result1 k8s.JobBuilder
 	}{result1}
 }
@@ -776,6 +870,67 @@ func (fake *K8sJobBuilder) SetParallelismReturnsOnCall(i int, result1 k8s.JobBui
 	}{result1}
 }
 
+func (fake *K8sJobBuilder) SetPodReplacementPolicy(arg1 v1.PodReplacementPolicy) k8s.JobBuilder {
+	fake.setPodReplacementPolicyMutex.Lock()
+	ret, specificReturn := fake.setPodReplacementPolicyReturnsOnCall[len(fake.setPodReplacementPolicyArgsForCall)]
+	fake.setPodReplacementPolicyArgsForCall = append(fake.setPodReplacementPolicyArgsForCall, struct {
+		arg1 v1.PodReplacementPolicy
+	}{arg1})
+	stub := fake.SetPodReplacementPolicyStub
+	fakeReturns := fake.setPodReplacementPolicyReturns
+	fake.recordInvocation("SetPodReplacementPolicy", []interface{}{arg1})
+	fake.setPodReplacementPolicyMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sJobBuilder) SetPodReplacementPolicyCallCount() int {
+	fake.setPodReplacementPolicyMutex.RLock()
+	defer fake.setPodReplacementPolicyMutex.RUnlock()
+	return len(fake.setPodReplacementPolicyArgsForCall)
+}
+
+func (fake *K8sJobBuilder) SetPodReplacementPolicyCalls(stub func(v1.PodReplacementPolicy) k8s.JobBuilder) {
+	fake.setPodReplacementPolicyMutex.Lock()
+	defer fake.setPodReplacementPolicyMutex.Unlock()
+	fake.SetPodReplacementPolicyStub = stub
+}
+
+func (fake *K8sJobBuilder) SetPodReplacementPolicyArgsForCall(i int) v1.PodReplacementPolicy {
+	fake.setPodReplacementPolicyMutex.RLock()
+	defer fake.setPodReplacementPolicyMutex.RUnlock()
+	argsForCall := fake.setPodReplacementPolicyArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sJobBuilder) SetPodReplacementPolicyReturns(result1 k8s.JobBuilder) {
+	fake.setPodReplacementPolicyMutex.Lock()
+	defer fake.setPodReplacementPolicyMutex.Unlock()
+	fake.SetPodReplacementPolicyStub = nil
+	fake.setPodReplacementPolicyReturns = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
+func (fake *K8sJobBuilder) SetPodReplacementPolicyReturnsOnCall(i int, result1 k8s.JobBuilder) {
+	fake.setPodReplacementPolicyMutex.Lock()
+	defer fake.setPodReplacementPolicyMutex.Unlock()
+	fake.SetPodReplacementPolicyStub = nil
+	if fake.setPodReplacementPolicyReturnsOnCall == nil {
+		fake.setPodReplacementPolicyReturnsOnCall = make(map[int]struct {
+			result1 k8s.JobBuilder
+		})
+	}
+	fake.setPodReplacementPolicyReturnsOnCall[i] = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
 func (fake *K8sJobBuilder) SetPodSpec(arg1 v1b.PodSpec) k8s.JobBuilder {
 	fake.setPodSpecMutex.Lock()
 	ret, specificReturn := fake.setPodSpecReturnsOnCall[len(fake.setPodSpecArgsForCall)]
@@ -898,6 +1053,67 @@ func (fake *K8sJobBuilder) SetPodSpecBuilderReturnsOnCall(i int, result1 k8s.Job
 	}{result1}
 }
 
+func (fake *K8sJobBuilder) SetTTLSecondsAfterFinished(arg1 int32) k8s.JobBuilder {
+	fake.setTTLSecondsAfterFinishedMutex.Lock()
+	ret, specificReturn := fake.setTTLSecondsAfterFinishedReturnsOnCall[len(fake.setTTLSecondsAfterFinishedArgsForCall)]
+	fake.setTTLSecondsAfterFinishedArgsForCall = append(fake.setTTLSecondsAfterFinishedArgsForCall, struct {
+		arg1 int32
+	}{arg1})
+	stub := fake.SetTTLSecondsAfterFinishedStub
+	fakeReturns := fake.setTTLSecondsAfterFinishedReturns
+	fake.recordInvocation("SetTTLSecondsAfterFinished", []interface{}{arg1})
+	fake.setTTLSecondsAfterFinishedMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *K8sJobBuilder) SetTTLSecondsAfterFinishedCallCount() int {
+	fake.setTTLSecondsAfterFinishedMutex.RLock()
+	defer fake.setTTLSecondsAfterFinishedMutex.RUnlock()
+	return len(fake.setTTLSecondsAfterFinishedArgsForCall)
+}
+
+func (fake *K8sJobBuilder) SetTTLSecondsAfterFinishedCalls(stub func(int32) k8s.JobBuilder) {
+	fake.setTTLSecondsAfterFinishedMutex.Lock()
+	defer fake.setTTLSecondsAfterFinishedMutex.Unlock()
+	fake.SetTTLSecondsAfterFinishedStub = stub
+}
+
+func (fake *K8sJobBuilder) SetTTLSecondsAfterFinishedArgsForCall(i int) int32 {
+	fake.setTTLSecondsAfterFinishedMutex.RLock()
+	defer fake.setTTLSecondsAfterFinishedMutex.RUnlock()
+	argsForCall := fake.setTTLSecondsAfterFinishedArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *K8sJobBuilder) SetTTLSecondsAfterFinishedReturns(result1 k8s.JobBuilder) {
+	fake.setTTLSecondsAfterFinishedMutex.Lock()
+	defer fake.setTTLSecondsAfterFinishedMutex.Unlock()
+	fake.SetTTLSecondsAfterFinishedStub = nil
+	fake.setTTLSecondsAfterFinishedReturns = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
+func (fake *K8sJobBuilder) SetTTLSecondsAfterFinishedReturnsOnCall(i int, result1 k8s.JobBuilder) {
+	fake.setTTLSecondsAfterFinishedMutex.Lock()
+	defer fake.setTTLSecondsAfterFinishedMutex.Unlock()
+	fake.SetTTLSecondsAfterFinishedStub = nil
+	if fake.setTTLSecondsAfterFinishedReturnsOnCall == nil {
+		fake.setTTLSecondsAfterFinishedReturnsOnCall = make(map[int]struct {
+			result1 k8s.JobBuilder
+		})
+	}
+	fake.setTTLSecondsAfterFinishedReturnsOnCall[i] = struct {
+		result1 k8s.JobBuilder
+	}{result1}
+}
+
 func (fake *K8sJobBuilder) Validate(arg1 context.Context) error {
 	fake.validateMutex.Lock()
 	ret, specificReturn := fake.validateReturnsOnCall[len(fake.validateArgsForCall)]
@@ -970,6 +1186,8 @@ func (fake *K8sJobBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setAppMutex.RUnlock()
 	fake.setBackoffLimitMutex.RLock()
 	defer fake.setBackoffLimitMutex.RUnlock()
+	fake.setCompletionModeMutex.RLock()
+	defer fake.setCompletionModeMutex.RUnlock()
 	fake.setCompletionsMutex.RLock()
 	defer fake.setCompletionsMutex.RUnlock()
 	fake.setComponentMutex.RLock()
@@ -982,10 +1200,14 @@ func (fake *K8sJobBuilder) Invocations() map[string][][]interface{} {
 	defer fake.setObjectMetaBuildMutex.RUnlock()
 	fake.setParallelismMutex.RLock()
 	defer fake.setParallelismMutex.RUnlock()
+	fake.setPodReplacementPolicyMutex.RLock()
+	defer fake.setPodReplacementPolicyMutex.RUnlock()
 	fake.setPodSpecMutex.RLock()
 	defer fake.setPodSpecMutex.RUnlock()
 	fake.setPodSpecBuilderMutex.RLock()
 	defer fake.setPodSpecBuilderMutex.RUnlock()
+	fake.setTTLSecondsAfterFinishedMutex.RLock()
+	defer fake.setTTLSecondsAfterFinishedMutex.RUnlock()
 	fake.validateMutex.RLock()
 	defer fake.validateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

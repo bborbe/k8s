@@ -98,6 +98,9 @@ var _ = Describe("Job Builder", func() {
 				jobBuilder.SetBackoffLimit(6)
 				jobBuilder.SetCompletions(3)
 				jobBuilder.SetParallelism(2)
+				jobBuilder.SetTTLSecondsAfterFinished(1200)
+				jobBuilder.SetCompletionMode(batchv1.IndexedCompletion)
+				jobBuilder.SetPodReplacementPolicy(batchv1.Failed)
 				jobBuilder.SetComponent("worker")
 				jobBuilder.AddLabel("environment", "test")
 				jobBuilder.AddLabel("version", "v1.0.0")
@@ -120,6 +123,21 @@ var _ = Describe("Job Builder", func() {
 			It("sets custom parallelism", func() {
 				Expect(job).NotTo(BeNil())
 				Expect(*job.Spec.Parallelism).To(Equal(int32(2)))
+			})
+
+			It("sets custom TTL seconds after finished", func() {
+				Expect(job).NotTo(BeNil())
+				Expect(*job.Spec.TTLSecondsAfterFinished).To(Equal(int32(1200)))
+			})
+
+			It("sets custom completion mode", func() {
+				Expect(job).NotTo(BeNil())
+				Expect(*job.Spec.CompletionMode).To(Equal(batchv1.IndexedCompletion))
+			})
+
+			It("sets custom pod replacement policy", func() {
+				Expect(job).NotTo(BeNil())
+				Expect(*job.Spec.PodReplacementPolicy).To(Equal(batchv1.Failed))
 			})
 
 			It("sets custom pod spec", func() {
@@ -271,6 +289,9 @@ var _ = Describe("Job Builder", func() {
 				SetBackoffLimit(10).
 				SetCompletions(5).
 				SetParallelism(3).
+				SetTTLSecondsAfterFinished(900).
+				SetCompletionMode(batchv1.IndexedCompletion).
+				SetPodReplacementPolicy(batchv1.Failed).
 				SetComponent("batch").
 				AddLabel("priority", "high").
 				Build(ctx)
@@ -280,6 +301,9 @@ var _ = Describe("Job Builder", func() {
 			Expect(*job.Spec.BackoffLimit).To(Equal(int32(10)))
 			Expect(*job.Spec.Completions).To(Equal(int32(5)))
 			Expect(*job.Spec.Parallelism).To(Equal(int32(3)))
+			Expect(*job.Spec.TTLSecondsAfterFinished).To(Equal(int32(900)))
+			Expect(*job.Spec.CompletionMode).To(Equal(batchv1.IndexedCompletion))
+			Expect(*job.Spec.PodReplacementPolicy).To(Equal(batchv1.Failed))
 			Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("component", "batch"))
 			Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("priority", "high"))
 		})
