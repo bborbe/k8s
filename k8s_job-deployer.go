@@ -6,6 +6,7 @@ package k8s
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/bborbe/errors"
 	"github.com/golang/glog"
@@ -13,6 +14,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
+
+var JobAlreadyExistsError = stderrors.New("job already exists")
 
 var foreground = metav1.DeletePropagationForeground
 
@@ -35,6 +38,10 @@ type jobDeployer struct {
 }
 
 func (s *jobDeployer) Deploy(ctx context.Context, job batchv1.Job) error {
+	_, err := s.clientset.BatchV1().Jobs(job.Namespace).Get(ctx, job.Name, metav1.GetOptions{})
+	if err == nil {
+		return errors.Wrapf(ctx, JobAlreadyExistsError, "job '%s' already exists", job.Name)
+	}
 	glog.V(3).Infof("deploy %s started", job.Name)
 	if _, err := s.clientset.BatchV1().Jobs(job.Namespace).Create(ctx, &job, metav1.CreateOptions{}); err != nil {
 		return errors.Wrap(ctx, err, "create job failed")

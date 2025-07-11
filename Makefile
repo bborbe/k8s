@@ -35,3 +35,5 @@ addlicense:
 
 vulncheck:
 	go run -mod=mod golang.org/x/vuln/cmd/govulncheck $(shell go list -mod=mod ./... | grep -v /vendor/)
+
+.PHONY: build clean test

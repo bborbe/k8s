@@ -8,6 +8,10 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.8.4
+
+- add JobAlreadyExistsError in JobDeployer  
+
 ## v1.8.3
 
 - add MarshalAsYaml for testing
