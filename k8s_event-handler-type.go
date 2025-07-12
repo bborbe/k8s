@@ -31,6 +31,7 @@ type Provider[T Type] interface {
 	Get(ctx context.Context) ([]T, error)
 }
 
+//counterfeiter:generate -o mocks/k8s-event-handler.go --fake-name EventHandler . EventHandler
 type EventHandler[T Type] interface {
 	OnAdd(ctx context.Context, obj T) error
 	OnUpdate(ctx context.Context, oldObj, newObj T) error
