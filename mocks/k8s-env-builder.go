@@ -320,14 +320,6 @@ func (fake *K8sEnvBuilder) BuildReturnsOnCall(i int, result1 []v1.EnvVar, result
 func (fake *K8sEnvBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.addMutex.RLock()
-	defer fake.addMutex.RUnlock()
-	fake.addFieldRefMutex.RLock()
-	defer fake.addFieldRefMutex.RUnlock()
-	fake.addSecretMutex.RLock()
-	defer fake.addSecretMutex.RUnlock()
-	fake.buildMutex.RLock()
-	defer fake.buildMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

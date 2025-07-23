@@ -248,12 +248,6 @@ func (fake *K8sConfigMapDeployer) UndeployReturnsOnCall(i int, result1 error) {
 func (fake *K8sConfigMapDeployer) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.deployMutex.RLock()
-	defer fake.deployMutex.RUnlock()
-	fake.getMutex.RLock()
-	defer fake.getMutex.RUnlock()
-	fake.undeployMutex.RLock()
-	defer fake.undeployMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

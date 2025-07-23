@@ -599,22 +599,6 @@ func (fake *K8sIngressBuilder) ValidateReturnsOnCall(i int, result1 error) {
 func (fake *K8sIngressBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.buildMutex.RLock()
-	defer fake.buildMutex.RUnlock()
-	fake.setHostMutex.RLock()
-	defer fake.setHostMutex.RUnlock()
-	fake.setIngressClassNameMutex.RLock()
-	defer fake.setIngressClassNameMutex.RUnlock()
-	fake.setObjectMetaMutex.RLock()
-	defer fake.setObjectMetaMutex.RUnlock()
-	fake.setObjectMetaBuilderMutex.RLock()
-	defer fake.setObjectMetaBuilderMutex.RUnlock()
-	fake.setPathMutex.RLock()
-	defer fake.setPathMutex.RUnlock()
-	fake.setServiceNameMutex.RLock()
-	defer fake.setServiceNameMutex.RUnlock()
-	fake.validateMutex.RLock()
-	defer fake.validateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

@@ -440,18 +440,6 @@ func (fake *K8sAppsV1Interface) StatefulSetsReturnsOnCall(i int, result1 v1.Stat
 func (fake *K8sAppsV1Interface) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.controllerRevisionsMutex.RLock()
-	defer fake.controllerRevisionsMutex.RUnlock()
-	fake.daemonSetsMutex.RLock()
-	defer fake.daemonSetsMutex.RUnlock()
-	fake.deploymentsMutex.RLock()
-	defer fake.deploymentsMutex.RUnlock()
-	fake.rESTClientMutex.RLock()
-	defer fake.rESTClientMutex.RUnlock()
-	fake.replicaSetsMutex.RLock()
-	defer fake.replicaSetsMutex.RUnlock()
-	fake.statefulSetsMutex.RLock()
-	defer fake.statefulSetsMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

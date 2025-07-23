@@ -413,18 +413,6 @@ func (fake *K8sNetworkingV1Interface) ServiceCIDRsReturnsOnCall(i int, result1 v
 func (fake *K8sNetworkingV1Interface) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.iPAddressesMutex.RLock()
-	defer fake.iPAddressesMutex.RUnlock()
-	fake.ingressClassesMutex.RLock()
-	defer fake.ingressClassesMutex.RUnlock()
-	fake.ingressesMutex.RLock()
-	defer fake.ingressesMutex.RUnlock()
-	fake.networkPoliciesMutex.RLock()
-	defer fake.networkPoliciesMutex.RUnlock()
-	fake.rESTClientMutex.RLock()
-	defer fake.rESTClientMutex.RUnlock()
-	fake.serviceCIDRsMutex.RLock()
-	defer fake.serviceCIDRsMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

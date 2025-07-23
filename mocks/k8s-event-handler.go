@@ -317,14 +317,6 @@ func (fake *EventHandler[T]) OnUpdateReturnsOnCall(i int, result1 error) {
 func (fake *EventHandler[T]) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.getMutex.RLock()
-	defer fake.getMutex.RUnlock()
-	fake.onAddMutex.RLock()
-	defer fake.onAddMutex.RUnlock()
-	fake.onDeleteMutex.RLock()
-	defer fake.onDeleteMutex.RUnlock()
-	fake.onUpdateMutex.RLock()
-	defer fake.onUpdateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

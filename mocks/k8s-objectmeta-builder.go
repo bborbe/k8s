@@ -823,28 +823,6 @@ func (fake *K8sObjectMetaBuilder) ValidateReturnsOnCall(i int, result1 error) {
 func (fake *K8sObjectMetaBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.addAnnotationMutex.RLock()
-	defer fake.addAnnotationMutex.RUnlock()
-	fake.addLabelMutex.RLock()
-	defer fake.addLabelMutex.RUnlock()
-	fake.buildMutex.RLock()
-	defer fake.buildMutex.RUnlock()
-	fake.setAnnotationsMutex.RLock()
-	defer fake.setAnnotationsMutex.RUnlock()
-	fake.setComponentMutex.RLock()
-	defer fake.setComponentMutex.RUnlock()
-	fake.setFinalizersMutex.RLock()
-	defer fake.setFinalizersMutex.RUnlock()
-	fake.setGenerateNameMutex.RLock()
-	defer fake.setGenerateNameMutex.RUnlock()
-	fake.setLabelsMutex.RLock()
-	defer fake.setLabelsMutex.RUnlock()
-	fake.setNameMutex.RLock()
-	defer fake.setNameMutex.RUnlock()
-	fake.setNamespaceMutex.RLock()
-	defer fake.setNamespaceMutex.RUnlock()
-	fake.validateMutex.RLock()
-	defer fake.validateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

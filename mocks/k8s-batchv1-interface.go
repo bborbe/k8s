@@ -224,12 +224,6 @@ func (fake *K8sBatchV1Interface) RESTClientReturnsOnCall(i int, result1 rest.Int
 func (fake *K8sBatchV1Interface) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.cronJobsMutex.RLock()
-	defer fake.cronJobsMutex.RUnlock()
-	fake.jobsMutex.RLock()
-	defer fake.jobsMutex.RUnlock()
-	fake.rESTClientMutex.RLock()
-	defer fake.rESTClientMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

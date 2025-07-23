@@ -685,24 +685,6 @@ func (fake *K8sPodSpecBuilder) ValidateReturnsOnCall(i int, result1 error) {
 func (fake *K8sPodSpecBuilder) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.buildMutex.RLock()
-	defer fake.buildMutex.RUnlock()
-	fake.setAffinityMutex.RLock()
-	defer fake.setAffinityMutex.RUnlock()
-	fake.setContainersMutex.RLock()
-	defer fake.setContainersMutex.RUnlock()
-	fake.setContainersBuilderMutex.RLock()
-	defer fake.setContainersBuilderMutex.RUnlock()
-	fake.setImagePullSecretsMutex.RLock()
-	defer fake.setImagePullSecretsMutex.RUnlock()
-	fake.setPriorityClassNameMutex.RLock()
-	defer fake.setPriorityClassNameMutex.RUnlock()
-	fake.setRestartPolicyMutex.RLock()
-	defer fake.setRestartPolicyMutex.RUnlock()
-	fake.setVolumesMutex.RLock()
-	defer fake.setVolumesMutex.RUnlock()
-	fake.validateMutex.RLock()
-	defer fake.validateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value
