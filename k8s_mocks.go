@@ -5,12 +5,18 @@
 package k8s
 
 import (
+	apiextensions "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
 	batchv1 "k8s.io/client-go/kubernetes/typed/batch/v1"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	networkv1 "k8s.io/client-go/kubernetes/typed/networking/v1"
 )
+
+//counterfeiter:generate -o mocks/k8s-apiextensions-interface.go --fake-name K8sApiextensionsInterface . ApiextensionsInterface
+type ApiextensionsInterface interface {
+	apiextensions.Interface
+}
 
 //counterfeiter:generate -o mocks/k8s-interface.go --fake-name K8sInterface . Interface
 type Interface interface {
