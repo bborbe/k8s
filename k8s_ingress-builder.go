@@ -62,9 +62,11 @@ func (i *ingressBuilder) SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMe
 }
 
 func (i *ingressBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) IngressBuilder {
-	return i.SetObjectMetaBuilder(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
-		return &objectMeta, nil
-	}))
+	return i.SetObjectMetaBuilder(
+		HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+			return &objectMeta, nil
+		}),
+	)
 }
 
 func (i *ingressBuilder) SetHost(host string) IngressBuilder {

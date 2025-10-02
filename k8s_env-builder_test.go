@@ -282,7 +282,9 @@ var _ = Describe("Env Builder", func() {
 				Expect(envVars[0].ValueFrom.FieldRef.FieldPath).To(Equal("status.podIP"))
 				Expect(envVars[1].ValueFrom.FieldRef.FieldPath).To(Equal("status.hostIP"))
 				Expect(envVars[2].ValueFrom.FieldRef.FieldPath).To(Equal("spec.serviceAccountName"))
-				Expect(envVars[3].ValueFrom.FieldRef.FieldPath).To(Equal("spec.containers[0].resources.limits.cpu"))
+				Expect(
+					envVars[3].ValueFrom.FieldRef.FieldPath,
+				).To(Equal("spec.containers[0].resources.limits.cpu"))
 			})
 		})
 

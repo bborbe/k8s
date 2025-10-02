@@ -80,7 +80,9 @@ func (c *containerBuilder) SetEnv(env []corev1.EnvVar) ContainerBuilder {
 	}))
 }
 
-func (c *containerBuilder) SetRestartPolicy(restartPolicy corev1.ContainerRestartPolicy) ContainerBuilder {
+func (c *containerBuilder) SetRestartPolicy(
+	restartPolicy corev1.ContainerRestartPolicy,
+) ContainerBuilder {
 	c.restartPolicy = &restartPolicy
 	return c
 }

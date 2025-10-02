@@ -34,9 +34,13 @@ type ingressDeployer struct {
 }
 
 func (s *ingressDeployer) Deploy(ctx context.Context, ingress v1.Ingress) error {
-	currentIngress, err := s.clientset.NetworkingV1().Ingresses(ingress.Namespace).Get(ctx, ingress.Name, metav1.GetOptions{})
+	currentIngress, err := s.clientset.NetworkingV1().
+		Ingresses(ingress.Namespace).
+		Get(ctx, ingress.Name, metav1.GetOptions{})
 	if err != nil {
-		_, err = s.clientset.NetworkingV1().Ingresses(ingress.Namespace).Create(ctx, &ingress, metav1.CreateOptions{})
+		_, err = s.clientset.NetworkingV1().
+			Ingresses(ingress.Namespace).
+			Create(ctx, &ingress, metav1.CreateOptions{})
 		if err != nil {
 			return errors.Wrap(ctx, err, "create ingress failed")
 		}
@@ -47,7 +51,9 @@ func (s *ingressDeployer) Deploy(ctx context.Context, ingress v1.Ingress) error 
 		glog.V(3).Infof("ingress %s already update to date => skip", ingress.Name)
 		return nil
 	}
-	_, err = s.clientset.NetworkingV1().Ingresses(ingress.Namespace).Update(ctx, &ingress, metav1.UpdateOptions{})
+	_, err = s.clientset.NetworkingV1().
+		Ingresses(ingress.Namespace).
+		Update(ctx, &ingress, metav1.UpdateOptions{})
 	if err != nil {
 		return errors.Wrap(ctx, err, "update ingress failed")
 	}
@@ -57,7 +63,9 @@ func (s *ingressDeployer) Deploy(ctx context.Context, ingress v1.Ingress) error 
 }
 
 func (s *ingressDeployer) Undeploy(ctx context.Context, namespace Namespace, name Name) error {
-	_, err := s.clientset.NetworkingV1().Ingresses(namespace.String()).Get(ctx, name.String(), metav1.GetOptions{})
+	_, err := s.clientset.NetworkingV1().
+		Ingresses(namespace.String()).
+		Get(ctx, name.String(), metav1.GetOptions{})
 	if err != nil {
 		glog.V(4).Infof("ingress '%s' not found => skip", name)
 		return nil
@@ -71,11 +79,13 @@ func (s *ingressDeployer) Undeploy(ctx context.Context, namespace Namespace, nam
 
 func IngressEqual(a, b v1.Ingress) bool {
 	if !reflect.DeepEqual(a.ObjectMeta.Labels, b.ObjectMeta.Labels) {
-		glog.V(4).Infof("ObjectMeta.Labels not equal %#v %#v", a.ObjectMeta.Labels, b.ObjectMeta.Labels)
+		glog.V(4).
+			Infof("ObjectMeta.Labels not equal %#v %#v", a.ObjectMeta.Labels, b.ObjectMeta.Labels)
 		return false
 	}
 	if !reflect.DeepEqual(a.ObjectMeta.Annotations, b.ObjectMeta.Annotations) {
-		glog.V(4).Infof("ObjectMeta.Annotations not equal %#v %#v", a.ObjectMeta.Annotations, b.ObjectMeta.Annotations)
+		glog.V(4).
+			Infof("ObjectMeta.Annotations not equal %#v %#v", a.ObjectMeta.Annotations, b.ObjectMeta.Annotations)
 		return false
 	}
 	if !reflect.DeepEqual(a.Spec, b.Spec) {

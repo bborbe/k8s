@@ -77,9 +77,11 @@ func (j *jobBuilder) SetPodSpecBuilder(podSpecBuilder HasBuildPodSpec) JobBuilde
 }
 
 func (j *jobBuilder) SetPodSpec(podSpec corev1.PodSpec) JobBuilder {
-	return j.SetPodSpecBuilder(HasBuildPodSpecFunc(func(ctx context.Context) (*corev1.PodSpec, error) {
-		return collection.Ptr(podSpec), nil
-	}))
+	return j.SetPodSpecBuilder(
+		HasBuildPodSpecFunc(func(ctx context.Context) (*corev1.PodSpec, error) {
+			return collection.Ptr(podSpec), nil
+		}),
+	)
 }
 
 func (j *jobBuilder) SetObjectMetaBuild(objectMetaBuilder HasBuildObjectMeta) JobBuilder {
@@ -88,9 +90,11 @@ func (j *jobBuilder) SetObjectMetaBuild(objectMetaBuilder HasBuildObjectMeta) Jo
 }
 
 func (j *jobBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) JobBuilder {
-	return j.SetObjectMetaBuild(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
-		return collection.Ptr(objectMeta), nil
-	}))
+	return j.SetObjectMetaBuild(
+		HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+			return collection.Ptr(objectMeta), nil
+		}),
+	)
 }
 
 func (j *jobBuilder) SetApp(app string) JobBuilder {
@@ -136,7 +140,9 @@ func (j *jobBuilder) SetCompletionMode(completionMode batchv1.CompletionMode) Jo
 	return j
 }
 
-func (j *jobBuilder) SetPodReplacementPolicy(podReplacementPolicy batchv1.PodReplacementPolicy) JobBuilder {
+func (j *jobBuilder) SetPodReplacementPolicy(
+	podReplacementPolicy batchv1.PodReplacementPolicy,
+) JobBuilder {
 	j.podReplacementPolicy = &podReplacementPolicy
 	return j
 }
@@ -160,7 +166,8 @@ func (j *jobBuilder) Build(ctx context.Context) (*batchv1.Job, error) {
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "build podSpec failed")
 	}
-	if podSpec.RestartPolicy != corev1.RestartPolicyNever && podSpec.RestartPolicy != corev1.RestartPolicyOnFailure {
+	if podSpec.RestartPolicy != corev1.RestartPolicyNever &&
+		podSpec.RestartPolicy != corev1.RestartPolicyOnFailure {
 		return nil, errors.Wrapf(ctx, validation.Error, "invalid podSpec restart policy")
 	}
 

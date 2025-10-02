@@ -84,7 +84,9 @@ var _ = Describe("ConfigMap Deployer", func() {
 				Expect(retrievedConfigMap).NotTo(BeNil())
 				Expect(retrievedConfigMap.Name).To(Equal("test-configmap"))
 				Expect(retrievedConfigMap.Namespace).To(Equal("test-namespace"))
-				Expect(retrievedConfigMap.Data).To(HaveKeyWithValue("config.yaml", "database:\n  host: localhost\n  port: 5432"))
+				Expect(
+					retrievedConfigMap.Data,
+				).To(HaveKeyWithValue("config.yaml", "database:\n  host: localhost\n  port: 5432"))
 			})
 
 			It("calls Get with correct parameters", func() {
@@ -105,7 +107,9 @@ var _ = Describe("ConfigMap Deployer", func() {
 
 			It("returns an error", func() {
 				Expect(err).NotTo(BeNil())
-				Expect(err.Error()).To(ContainSubstring("get configmap(test-configmap) in namespace(test-namespace) failed"))
+				Expect(
+					err.Error(),
+				).To(ContainSubstring("get configmap(test-configmap) in namespace(test-namespace) failed"))
 			})
 
 			It("returns nil configmap", func() {
@@ -120,7 +124,9 @@ var _ = Describe("ConfigMap Deployer", func() {
 
 			It("returns an error", func() {
 				Expect(err).NotTo(BeNil())
-				Expect(err.Error()).To(ContainSubstring("get configmap(test-configmap) in namespace(test-namespace) failed"))
+				Expect(
+					err.Error(),
+				).To(ContainSubstring("get configmap(test-configmap) in namespace(test-namespace) failed"))
 			})
 		})
 	})
@@ -155,8 +161,12 @@ var _ = Describe("ConfigMap Deployer", func() {
 				_, createdConfigMap, _ := configMapInterface.CreateArgsForCall(0)
 				Expect(createdConfigMap.Name).To(Equal("test-configmap"))
 				Expect(createdConfigMap.Namespace).To(Equal("test-namespace"))
-				Expect(createdConfigMap.Data).To(HaveKeyWithValue("config.yaml", "database:\n  host: localhost\n  port: 5432"))
-				Expect(createdConfigMap.BinaryData).To(HaveKeyWithValue("binary.dat", []byte{0x89, 0x50, 0x4E, 0x47}))
+				Expect(
+					createdConfigMap.Data,
+				).To(HaveKeyWithValue("config.yaml", "database:\n  host: localhost\n  port: 5432"))
+				Expect(
+					createdConfigMap.BinaryData,
+				).To(HaveKeyWithValue("binary.dat", []byte{0x89, 0x50, 0x4E, 0x47}))
 			})
 
 			It("does not call Update", func() {
@@ -214,8 +224,12 @@ var _ = Describe("ConfigMap Deployer", func() {
 			It("updates the configmap data", func() {
 				Expect(configMapInterface.UpdateCallCount()).To(Equal(1))
 				_, updatedConfigMap, _ := configMapInterface.UpdateArgsForCall(0)
-				Expect(updatedConfigMap.Data).To(HaveKeyWithValue("config.yaml", "database:\n  host: localhost\n  port: 5432"))
-				Expect(updatedConfigMap.Data).To(HaveKeyWithValue("app.json", `{"name": "test-app", "version": "1.0.0"}`))
+				Expect(
+					updatedConfigMap.Data,
+				).To(HaveKeyWithValue("config.yaml", "database:\n  host: localhost\n  port: 5432"))
+				Expect(
+					updatedConfigMap.Data,
+				).To(HaveKeyWithValue("app.json", `{"name": "test-app", "version": "1.0.0"}`))
 				Expect(updatedConfigMap.Data).NotTo(HaveKey("old-config.yaml"))
 			})
 		})
@@ -234,7 +248,9 @@ var _ = Describe("ConfigMap Deployer", func() {
 			It("updates the configmap binary data", func() {
 				Expect(configMapInterface.UpdateCallCount()).To(Equal(1))
 				_, updatedConfigMap, _ := configMapInterface.UpdateArgsForCall(0)
-				Expect(updatedConfigMap.BinaryData).To(HaveKeyWithValue("binary.dat", []byte{0x89, 0x50, 0x4E, 0x47}))
+				Expect(
+					updatedConfigMap.BinaryData,
+				).To(HaveKeyWithValue("binary.dat", []byte{0x89, 0x50, 0x4E, 0x47}))
 				Expect(updatedConfigMap.BinaryData).NotTo(HaveKey("old-binary.dat"))
 			})
 		})
@@ -474,8 +490,12 @@ var _ = Describe("ConfigMap Deployer", func() {
 				Expect(updatedConfigMap.ResourceVersion).To(Equal("456"))
 
 				// Should update the new data
-				Expect(updatedConfigMap.Data).To(HaveKeyWithValue("new-config.yaml", "new: configuration"))
-				Expect(updatedConfigMap.BinaryData).To(HaveKeyWithValue("new-binary.dat", []byte{0xAB, 0xCD, 0xEF}))
+				Expect(
+					updatedConfigMap.Data,
+				).To(HaveKeyWithValue("new-config.yaml", "new: configuration"))
+				Expect(
+					updatedConfigMap.BinaryData,
+				).To(HaveKeyWithValue("new-binary.dat", []byte{0xAB, 0xCD, 0xEF}))
 			})
 		})
 	})
@@ -510,7 +530,9 @@ var _ = Describe("ConfigMap Deployer", func() {
 				Expect(configMapInterface.CreateCallCount()).To(Equal(1))
 				_, createdConfigMap, _ := configMapInterface.CreateArgsForCall(0)
 				Expect(createdConfigMap.BinaryData).To(HaveKey("large-file.bin"))
-				Expect(len(createdConfigMap.BinaryData["large-file.bin"])).To(Equal(1024*1024 - 1000))
+				Expect(
+					len(createdConfigMap.BinaryData["large-file.bin"]),
+				).To(Equal(1024*1024 - 1000))
 			})
 		})
 

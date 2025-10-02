@@ -50,7 +50,9 @@ var _ = Describe("StatefulSet Builder", func() {
 			It("returns correct VolumeClaimTemplates", func() {
 				Expect(statefulSet).NotTo(BeNil())
 				Expect(statefulSet.Spec.VolumeClaimTemplates).To(HaveLen(1))
-				Expect(*statefulSet.Spec.VolumeClaimTemplates[0].Spec.StorageClassName).To(Equal("standard"))
+				Expect(
+					*statefulSet.Spec.VolumeClaimTemplates[0].Spec.StorageClassName,
+				).To(Equal("standard"))
 			})
 			It("returns correct ImagePullSecrets", func() {
 				Expect(statefulSet).NotTo(BeNil())
@@ -64,7 +66,9 @@ var _ = Describe("StatefulSet Builder", func() {
 				It("returns correct ImagePullSecrets", func() {
 					Expect(statefulSet).NotTo(BeNil())
 					Expect(statefulSet.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(1))
-					Expect(statefulSet.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker-registry"))
+					Expect(
+						statefulSet.Spec.Template.Spec.ImagePullSecrets[0].Name,
+					).To(Equal("docker-registry"))
 				})
 			})
 		})

@@ -70,26 +70,34 @@ type statefulSetBuilder struct {
 	imagePullSecrets  []string
 }
 
-func (s *statefulSetBuilder) SetContainersBuilder(hasBuildContainers HasBuildContainers) StatefulSetBuilder {
+func (s *statefulSetBuilder) SetContainersBuilder(
+	hasBuildContainers HasBuildContainers,
+) StatefulSetBuilder {
 	s.containersBuilder = hasBuildContainers
 	return s
 }
 
 func (s *statefulSetBuilder) SetContainers(containers []corev1.Container) StatefulSetBuilder {
-	return s.SetContainersBuilder(HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
-		return containers, nil
-	}))
+	return s.SetContainersBuilder(
+		HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
+			return containers, nil
+		}),
+	)
 }
 
-func (s *statefulSetBuilder) SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) StatefulSetBuilder {
+func (s *statefulSetBuilder) SetObjectMetaBuilder(
+	objectMetaBuilder HasBuildObjectMeta,
+) StatefulSetBuilder {
 	s.objectMetaBuilder = objectMetaBuilder
 	return s
 }
 
 func (s *statefulSetBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) StatefulSetBuilder {
-	return s.SetObjectMetaBuilder(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
-		return &objectMeta, nil
-	}))
+	return s.SetObjectMetaBuilder(
+		HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+			return &objectMeta, nil
+		}),
+	)
 }
 
 func (s *statefulSetBuilder) SetAffinity(affinity corev1.Affinity) StatefulSetBuilder {

@@ -53,15 +53,19 @@ type podSpecBuilder struct {
 	containersBuilder HasBuildContainers
 }
 
-func (p *podSpecBuilder) SetContainersBuilder(hasBuildContainers HasBuildContainers) PodSpecBuilder {
+func (p *podSpecBuilder) SetContainersBuilder(
+	hasBuildContainers HasBuildContainers,
+) PodSpecBuilder {
 	p.containersBuilder = hasBuildContainers
 	return p
 }
 
 func (p *podSpecBuilder) SetContainers(containers []corev1.Container) PodSpecBuilder {
-	return p.SetContainersBuilder(HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
-		return containers, nil
-	}))
+	return p.SetContainersBuilder(
+		HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
+			return containers, nil
+		}),
+	)
 }
 
 func (p *podSpecBuilder) SetPriorityClassName(priorityClassName string) PodSpecBuilder {

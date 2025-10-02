@@ -132,9 +132,15 @@ var _ = Describe("Containers Builder", func() {
 			})
 
 			It("preserves container resources", func() {
-				Expect(containers[0].Resources.Requests).To(HaveKeyWithValue(corev1.ResourceCPU, resource.MustParse("100m")))
-				Expect(containers[0].Resources.Limits).To(HaveKeyWithValue(corev1.ResourceMemory, resource.MustParse("512Mi")))
-				Expect(containers[1].Resources.Requests).To(HaveKeyWithValue(corev1.ResourceCPU, resource.MustParse("50m")))
+				Expect(
+					containers[0].Resources.Requests,
+				).To(HaveKeyWithValue(corev1.ResourceCPU, resource.MustParse("100m")))
+				Expect(
+					containers[0].Resources.Limits,
+				).To(HaveKeyWithValue(corev1.ResourceMemory, resource.MustParse("512Mi")))
+				Expect(
+					containers[1].Resources.Requests,
+				).To(HaveKeyWithValue(corev1.ResourceCPU, resource.MustParse("50m")))
 			})
 
 			It("preserves container ports", func() {
@@ -182,7 +188,9 @@ var _ = Describe("Containers Builder", func() {
 				containerBuilder2.SetName("another-builder")
 				containerBuilder2.SetImage("another-image:latest")
 
-				containersBuilder.SetContainerBuilders([]k8s.HasBuildContainer{containerBuilder1, containerBuilder2})
+				containersBuilder.SetContainerBuilders(
+					[]k8s.HasBuildContainer{containerBuilder1, containerBuilder2},
+				)
 			})
 
 			It("returns no error", func() {
@@ -210,8 +218,10 @@ var _ = Describe("Containers Builder", func() {
 							Name: "API_KEY",
 							ValueFrom: &corev1.EnvVarSource{
 								SecretKeyRef: &corev1.SecretKeySelector{
-									LocalObjectReference: corev1.LocalObjectReference{Name: "api-secret"},
-									Key:                  "key",
+									LocalObjectReference: corev1.LocalObjectReference{
+										Name: "api-secret",
+									},
+									Key: "key",
 								},
 							},
 						},
@@ -316,9 +326,11 @@ var _ = Describe("Containers Builder", func() {
 
 		Context("when container builder fails", func() {
 			BeforeEach(func() {
-				failingBuilder := k8s.HasBuildContainerFunc(func(ctx context.Context) (*corev1.Container, error) {
-					return nil, errors.New("container build failed")
-				})
+				failingBuilder := k8s.HasBuildContainerFunc(
+					func(ctx context.Context) (*corev1.Container, error) {
+						return nil, errors.New("container build failed")
+					},
+				)
 				containersBuilder.AddContainerBuilder(failingBuilder)
 			})
 
@@ -398,7 +410,9 @@ var _ = Describe("Containers Builder", func() {
 				Expect(container.WorkingDir).To(Equal("/app"))
 				Expect(container.Ports).To(HaveLen(2))
 				Expect(container.Env).To(HaveLen(1))
-				Expect(container.Resources.Requests).To(HaveKeyWithValue(corev1.ResourceCPU, resource.MustParse("100m")))
+				Expect(
+					container.Resources.Requests,
+				).To(HaveKeyWithValue(corev1.ResourceCPU, resource.MustParse("100m")))
 				Expect(container.VolumeMounts).To(HaveLen(1))
 				Expect(container.SecurityContext).NotTo(BeNil())
 				Expect(*container.SecurityContext.RunAsUser).To(Equal(int64(1000)))

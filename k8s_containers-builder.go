@@ -42,12 +42,16 @@ type containersBuilder struct {
 	containersBuilders []HasBuildContainer
 }
 
-func (c *containersBuilder) AddContainerBuilder(containersBuilder HasBuildContainer) ContainersBuilder {
+func (c *containersBuilder) AddContainerBuilder(
+	containersBuilder HasBuildContainer,
+) ContainersBuilder {
 	c.containersBuilders = append(c.containersBuilders, containersBuilder)
 	return c
 }
 
-func (c *containersBuilder) SetContainerBuilders(containersBuilders []HasBuildContainer) ContainersBuilder {
+func (c *containersBuilder) SetContainerBuilders(
+	containersBuilders []HasBuildContainer,
+) ContainersBuilder {
 	c.containersBuilders = containersBuilders
 	return c
 }
@@ -55,9 +59,11 @@ func (c *containersBuilder) SetContainerBuilders(containersBuilders []HasBuildCo
 func (c *containersBuilder) SetContainers(containers []corev1.Container) ContainersBuilder {
 	containerBuilders := make([]HasBuildContainer, len(containers))
 	for i, c := range containers {
-		containerBuilders[i] = HasBuildContainerFunc(func(ctx context.Context) (*corev1.Container, error) {
-			return collection.Ptr(c), nil
-		})
+		containerBuilders[i] = HasBuildContainerFunc(
+			func(ctx context.Context) (*corev1.Container, error) {
+				return collection.Ptr(c), nil
+			},
+		)
 	}
 	return c.SetContainerBuilders(containerBuilders)
 }

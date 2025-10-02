@@ -24,13 +24,25 @@ func createTestPod(name string, labels map[string]string) corev1.Pod {
 	}
 }
 
-var _ = DescribeTable("NameFromPod",
+var _ = DescribeTable(
+	"NameFromPod",
 	func(pod corev1.Pod, expectedName k8s.Name) {
 		name := k8s.NameFromPod(pod)
 		Expect(name).To(Equal(expectedName))
 	},
-	Entry("deployment", createTestPod("raw-fetcher-646d746df5-tdzls", map[string]string{"pod-template-hash": "646d746df5"}), k8s.Name("raw-fetcher")),
-	Entry("statefulset", createTestPod("raw-fetcher-0", map[string]string{}), k8s.Name("raw-fetcher")),
+	Entry(
+		"deployment",
+		createTestPod(
+			"raw-fetcher-646d746df5-tdzls",
+			map[string]string{"pod-template-hash": "646d746df5"},
+		),
+		k8s.Name("raw-fetcher"),
+	),
+	Entry(
+		"statefulset",
+		createTestPod("raw-fetcher-0", map[string]string{}),
+		k8s.Name("raw-fetcher"),
+	),
 )
 
 var _ = DescribeTable("BuildName",

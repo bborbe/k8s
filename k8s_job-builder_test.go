@@ -150,9 +150,15 @@ var _ = Describe("Job Builder", func() {
 
 			It("sets custom labels", func() {
 				Expect(job).NotTo(BeNil())
-				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("component", "worker"))
-				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("environment", "test"))
-				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("version", "v1.0.0"))
+				Expect(
+					job.Spec.Template.ObjectMeta.Labels,
+				).To(HaveKeyWithValue("component", "worker"))
+				Expect(
+					job.Spec.Template.ObjectMeta.Labels,
+				).To(HaveKeyWithValue("environment", "test"))
+				Expect(
+					job.Spec.Template.ObjectMeta.Labels,
+				).To(HaveKeyWithValue("version", "v1.0.0"))
 			})
 		})
 
@@ -177,7 +183,9 @@ var _ = Describe("Job Builder", func() {
 			It("sets all labels including app label", func() {
 				Expect(job).NotTo(BeNil())
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("team", "platform"))
-				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("environment", "production"))
+				Expect(
+					job.Spec.Template.ObjectMeta.Labels,
+				).To(HaveKeyWithValue("environment", "production"))
 				Expect(job.Spec.Template.ObjectMeta.Labels).To(HaveKeyWithValue("tier", "backend"))
 			})
 		})
@@ -243,7 +251,9 @@ var _ = Describe("Job Builder", func() {
 				Expect(err).To(BeNil())
 			})
 			It("sets restart policy to OnFailure", func() {
-				Expect(job.Spec.Template.Spec.RestartPolicy).To(Equal(corev1.RestartPolicyOnFailure))
+				Expect(
+					job.Spec.Template.Spec.RestartPolicy,
+				).To(Equal(corev1.RestartPolicyOnFailure))
 			})
 		})
 

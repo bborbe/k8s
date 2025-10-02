@@ -30,9 +30,9 @@ type CronJobBuilder interface {
 	SetEnv(env []corev1.EnvVar) CronJobBuilder
 	SetLoglevel(loglevel int) CronJobBuilder
 	SetCronExpression(cronScheduleExpression CronScheduleExpression) CronJobBuilder
-	SetParallelism(parallelism int) CronJobBuilder
-	SetBackoffLimit(backoffLimit int) CronJobBuilder
-	SetCompletions(completions int) CronJobBuilder
+	SetParallelism(parallelism int32) CronJobBuilder
+	SetBackoffLimit(backoffLimit int32) CronJobBuilder
+	SetCompletions(completions int32) CronJobBuilder
 }
 
 func NewCronJobBuilder() CronJobBuilder {
@@ -67,9 +67,11 @@ func (c *cronJobBuilder) SetPodSpecBuilder(podSpecBuilder HasBuildPodSpec) CronJ
 }
 
 func (c *cronJobBuilder) SetPodSpec(podSpec corev1.PodSpec) CronJobBuilder {
-	return c.SetPodSpecBuilder(HasBuildPodSpecFunc(func(ctx context.Context) (*corev1.PodSpec, error) {
-		return collection.Ptr(podSpec), nil
-	}))
+	return c.SetPodSpecBuilder(
+		HasBuildPodSpecFunc(func(ctx context.Context) (*corev1.PodSpec, error) {
+			return collection.Ptr(podSpec), nil
+		}),
+	)
 }
 
 func (c *cronJobBuilder) SetObjectMetaBuild(objectMetaBuilder HasBuildObjectMeta) CronJobBuilder {
@@ -78,9 +80,11 @@ func (c *cronJobBuilder) SetObjectMetaBuild(objectMetaBuilder HasBuildObjectMeta
 }
 
 func (c *cronJobBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) CronJobBuilder {
-	return c.SetObjectMetaBuild(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
-		return collection.Ptr(objectMeta), nil
-	}))
+	return c.SetObjectMetaBuild(
+		HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+			return collection.Ptr(objectMeta), nil
+		}),
+	)
 }
 
 func (c *cronJobBuilder) AddVolumes(volumes ...corev1.Volume) CronJobBuilder {
@@ -113,23 +117,25 @@ func (c *cronJobBuilder) SetLoglevel(loglevel int) CronJobBuilder {
 	return c
 }
 
-func (c *cronJobBuilder) SetCronExpression(cronScheduleExpression CronScheduleExpression) CronJobBuilder {
+func (c *cronJobBuilder) SetCronExpression(
+	cronScheduleExpression CronScheduleExpression,
+) CronJobBuilder {
 	c.cronScheduleExpression = cronScheduleExpression
 	return c
 }
 
-func (c *cronJobBuilder) SetParallelism(parallelism int) CronJobBuilder {
-	c.parallelism = int32(parallelism)
+func (c *cronJobBuilder) SetParallelism(parallelism int32) CronJobBuilder {
+	c.parallelism = parallelism
 	return c
 }
 
-func (c *cronJobBuilder) SetBackoffLimit(backoffLimit int) CronJobBuilder {
-	c.backoffLimit = int32(backoffLimit)
+func (c *cronJobBuilder) SetBackoffLimit(backoffLimit int32) CronJobBuilder {
+	c.backoffLimit = backoffLimit
 	return c
 }
 
-func (c *cronJobBuilder) SetCompletions(completions int) CronJobBuilder {
-	c.completions = int32(completions)
+func (c *cronJobBuilder) SetCompletions(completions int32) CronJobBuilder {
+	c.completions = completions
 	return c
 }
 

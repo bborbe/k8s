@@ -62,7 +62,9 @@ var _ = Describe("Deployment Builder", func() {
 			It("returns correct ImagePullSecrets", func() {
 				Expect(deployment).NotTo(BeNil())
 				Expect(deployment.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(1))
-				Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker-registry"))
+				Expect(
+					deployment.Spec.Template.Spec.ImagePullSecrets[0].Name,
+				).To(Equal("docker-registry"))
 			})
 		})
 	})
@@ -292,7 +294,9 @@ var _ = Describe("Deployment Builder", func() {
 				Expect(deployment).NotTo(BeNil())
 				Expect(deployment.Spec.Template.Spec.Affinity).NotTo(BeNil())
 				Expect(deployment.Spec.Template.Spec.Affinity.NodeAffinity).NotTo(BeNil())
-				Expect(deployment.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution).NotTo(BeNil())
+				Expect(
+					deployment.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution,
+				).NotTo(BeNil())
 			})
 		})
 
@@ -327,7 +331,9 @@ var _ = Describe("Deployment Builder", func() {
 				Expect(deployment).NotTo(BeNil())
 				Expect(deployment.Spec.Template.Spec.Affinity).NotTo(BeNil())
 				Expect(deployment.Spec.Template.Spec.Affinity.PodAffinity).NotTo(BeNil())
-				Expect(deployment.Spec.Template.Spec.Affinity.PodAffinity.RequiredDuringSchedulingIgnoredDuringExecution).To(HaveLen(1))
+				Expect(
+					deployment.Spec.Template.Spec.Affinity.PodAffinity.RequiredDuringSchedulingIgnoredDuringExecution,
+				).To(HaveLen(1))
 			})
 		})
 	})
@@ -335,7 +341,9 @@ var _ = Describe("Deployment Builder", func() {
 	Context("image pull secrets configuration", func() {
 		Context("with multiple image pull secrets", func() {
 			BeforeEach(func() {
-				deploymentBuilder.SetImagePullSecrets([]string{"docker-registry", "private-registry"})
+				deploymentBuilder.SetImagePullSecrets(
+					[]string{"docker-registry", "private-registry"},
+				)
 			})
 
 			JustBeforeEach(func() {
@@ -349,8 +357,12 @@ var _ = Describe("Deployment Builder", func() {
 			It("includes all image pull secrets", func() {
 				Expect(deployment).NotTo(BeNil())
 				Expect(deployment.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(2))
-				Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker-registry"))
-				Expect(deployment.Spec.Template.Spec.ImagePullSecrets[1].Name).To(Equal("private-registry"))
+				Expect(
+					deployment.Spec.Template.Spec.ImagePullSecrets[0].Name,
+				).To(Equal("docker-registry"))
+				Expect(
+					deployment.Spec.Template.Spec.ImagePullSecrets[1].Name,
+				).To(Equal("private-registry"))
 			})
 		})
 
@@ -371,8 +383,12 @@ var _ = Describe("Deployment Builder", func() {
 				Expect(deployment).NotTo(BeNil())
 				Expect(deployment.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(3))
 				Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("docker"))
-				Expect(deployment.Spec.Template.Spec.ImagePullSecrets[1].Name).To(Equal("registry1"))
-				Expect(deployment.Spec.Template.Spec.ImagePullSecrets[2].Name).To(Equal("registry2"))
+				Expect(
+					deployment.Spec.Template.Spec.ImagePullSecrets[1].Name,
+				).To(Equal("registry1"))
+				Expect(
+					deployment.Spec.Template.Spec.ImagePullSecrets[2].Name,
+				).To(Equal("registry2"))
 			})
 		})
 
@@ -412,7 +428,9 @@ var _ = Describe("Deployment Builder", func() {
 
 			It("sets the service account name", func() {
 				Expect(deployment).NotTo(BeNil())
-				Expect(deployment.Spec.Template.Spec.ServiceAccountName).To(Equal("custom-service-account"))
+				Expect(
+					deployment.Spec.Template.Spec.ServiceAccountName,
+				).To(Equal("custom-service-account"))
 			})
 		})
 
@@ -447,13 +465,17 @@ var _ = Describe("Deployment Builder", func() {
 
 		It("uses rolling update strategy", func() {
 			Expect(deployment).NotTo(BeNil())
-			Expect(deployment.Spec.Strategy.Type).To(Equal(appsv1.RollingUpdateDeploymentStrategyType))
+			Expect(
+				deployment.Spec.Strategy.Type,
+			).To(Equal(appsv1.RollingUpdateDeploymentStrategyType))
 			Expect(deployment.Spec.Strategy.RollingUpdate).NotTo(BeNil())
 		})
 
 		It("sets correct rolling update parameters", func() {
 			Expect(deployment).NotTo(BeNil())
-			Expect(deployment.Spec.Strategy.RollingUpdate.MaxUnavailable).To(Equal(&intstr.IntOrString{
+			Expect(
+				deployment.Spec.Strategy.RollingUpdate.MaxUnavailable,
+			).To(Equal(&intstr.IntOrString{
 				Type:   intstr.Int,
 				IntVal: 1,
 			}))
@@ -480,7 +502,9 @@ var _ = Describe("Deployment Builder", func() {
 
 			It("sets selector with custom name", func() {
 				Expect(deployment).NotTo(BeNil())
-				Expect(deployment.Spec.Selector.MatchLabels).To(HaveKeyWithValue("app", "custom-app"))
+				Expect(
+					deployment.Spec.Selector.MatchLabels,
+				).To(HaveKeyWithValue("app", "custom-app"))
 			})
 
 			It("sets pod template labels with custom name", func() {
@@ -531,9 +555,13 @@ var _ = Describe("Deployment Builder", func() {
 	Context("error handling", func() {
 		Context("when ObjectMeta build fails", func() {
 			BeforeEach(func() {
-				deploymentBuilder.SetObjectMetaBuilder(k8s.HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
-					return nil, errors.New("object meta build failed")
-				}))
+				deploymentBuilder.SetObjectMetaBuilder(
+					k8s.HasBuildObjectMetaFunc(
+						func(ctx context.Context) (*metav1.ObjectMeta, error) {
+							return nil, errors.New("object meta build failed")
+						},
+					),
+				)
 			})
 
 			JustBeforeEach(func() {
@@ -552,9 +580,13 @@ var _ = Describe("Deployment Builder", func() {
 
 		Context("when containers build fails", func() {
 			BeforeEach(func() {
-				deploymentBuilder.SetContainersBuilder(k8s.HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
-					return nil, errors.New("containers build failed")
-				}))
+				deploymentBuilder.SetContainersBuilder(
+					k8s.HasBuildContainersFunc(
+						func(ctx context.Context) ([]corev1.Container, error) {
+							return nil, errors.New("containers build failed")
+						},
+					),
+				)
 			})
 
 			JustBeforeEach(func() {
@@ -602,7 +634,9 @@ var _ = Describe("Deployment Builder", func() {
 			Expect(deployment.Spec.Template.Labels).To(HaveKeyWithValue("app", "chain-app"))
 			Expect(deployment.Spec.Template.Spec.ServiceAccountName).To(Equal("chain-sa"))
 			Expect(deployment.Spec.Template.Spec.ImagePullSecrets).To(HaveLen(1))
-			Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("chain-registry"))
+			Expect(
+				deployment.Spec.Template.Spec.ImagePullSecrets[0].Name,
+			).To(Equal("chain-registry"))
 		})
 	})
 })

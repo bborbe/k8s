@@ -33,16 +33,22 @@ type cronJobDeployer struct {
 }
 
 func (c *cronJobDeployer) Deploy(ctx context.Context, cronjob batchv1.CronJob) error {
-	_, err := c.clientset.BatchV1().CronJobs(cronjob.Namespace).Get(ctx, cronjob.Name, metav1.GetOptions{})
+	_, err := c.clientset.BatchV1().
+		CronJobs(cronjob.Namespace).
+		Get(ctx, cronjob.Name, metav1.GetOptions{})
 	if err != nil {
-		_, err = c.clientset.BatchV1().CronJobs(cronjob.Namespace).Create(ctx, &cronjob, metav1.CreateOptions{})
+		_, err = c.clientset.BatchV1().
+			CronJobs(cronjob.Namespace).
+			Create(ctx, &cronjob, metav1.CreateOptions{})
 		if err != nil {
 			return errors.Wrap(ctx, err, "create cronjob failed")
 		}
 		glog.V(3).Infof("cronjob %s created successful", cronjob.Name)
 		return nil
 	}
-	_, err = c.clientset.BatchV1().CronJobs(cronjob.Namespace).Update(ctx, &cronjob, metav1.UpdateOptions{})
+	_, err = c.clientset.BatchV1().
+		CronJobs(cronjob.Namespace).
+		Update(ctx, &cronjob, metav1.UpdateOptions{})
 	if err != nil {
 		return errors.Wrap(ctx, err, "update deployment failed")
 	}

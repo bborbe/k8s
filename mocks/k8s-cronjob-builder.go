@@ -47,10 +47,10 @@ type K8sCronJobBuilder struct {
 		result1 *v1a.CronJob
 		result2 error
 	}
-	SetBackoffLimitStub        func(int) k8s.CronJobBuilder
+	SetBackoffLimitStub        func(int32) k8s.CronJobBuilder
 	setBackoffLimitMutex       sync.RWMutex
 	setBackoffLimitArgsForCall []struct {
-		arg1 int
+		arg1 int32
 	}
 	setBackoffLimitReturns struct {
 		result1 k8s.CronJobBuilder
@@ -58,10 +58,10 @@ type K8sCronJobBuilder struct {
 	setBackoffLimitReturnsOnCall map[int]struct {
 		result1 k8s.CronJobBuilder
 	}
-	SetCompletionsStub        func(int) k8s.CronJobBuilder
+	SetCompletionsStub        func(int32) k8s.CronJobBuilder
 	setCompletionsMutex       sync.RWMutex
 	setCompletionsArgsForCall []struct {
-		arg1 int
+		arg1 int32
 	}
 	setCompletionsReturns struct {
 		result1 k8s.CronJobBuilder
@@ -135,10 +135,10 @@ type K8sCronJobBuilder struct {
 	setObjectMetaBuildReturnsOnCall map[int]struct {
 		result1 k8s.CronJobBuilder
 	}
-	SetParallelismStub        func(int) k8s.CronJobBuilder
+	SetParallelismStub        func(int32) k8s.CronJobBuilder
 	setParallelismMutex       sync.RWMutex
 	setParallelismArgsForCall []struct {
-		arg1 int
+		arg1 int32
 	}
 	setParallelismReturns struct {
 		result1 k8s.CronJobBuilder
@@ -380,11 +380,11 @@ func (fake *K8sCronJobBuilder) BuildReturnsOnCall(i int, result1 *v1a.CronJob, r
 	}{result1, result2}
 }
 
-func (fake *K8sCronJobBuilder) SetBackoffLimit(arg1 int) k8s.CronJobBuilder {
+func (fake *K8sCronJobBuilder) SetBackoffLimit(arg1 int32) k8s.CronJobBuilder {
 	fake.setBackoffLimitMutex.Lock()
 	ret, specificReturn := fake.setBackoffLimitReturnsOnCall[len(fake.setBackoffLimitArgsForCall)]
 	fake.setBackoffLimitArgsForCall = append(fake.setBackoffLimitArgsForCall, struct {
-		arg1 int
+		arg1 int32
 	}{arg1})
 	stub := fake.SetBackoffLimitStub
 	fakeReturns := fake.setBackoffLimitReturns
@@ -405,13 +405,13 @@ func (fake *K8sCronJobBuilder) SetBackoffLimitCallCount() int {
 	return len(fake.setBackoffLimitArgsForCall)
 }
 
-func (fake *K8sCronJobBuilder) SetBackoffLimitCalls(stub func(int) k8s.CronJobBuilder) {
+func (fake *K8sCronJobBuilder) SetBackoffLimitCalls(stub func(int32) k8s.CronJobBuilder) {
 	fake.setBackoffLimitMutex.Lock()
 	defer fake.setBackoffLimitMutex.Unlock()
 	fake.SetBackoffLimitStub = stub
 }
 
-func (fake *K8sCronJobBuilder) SetBackoffLimitArgsForCall(i int) int {
+func (fake *K8sCronJobBuilder) SetBackoffLimitArgsForCall(i int) int32 {
 	fake.setBackoffLimitMutex.RLock()
 	defer fake.setBackoffLimitMutex.RUnlock()
 	argsForCall := fake.setBackoffLimitArgsForCall[i]
@@ -441,11 +441,11 @@ func (fake *K8sCronJobBuilder) SetBackoffLimitReturnsOnCall(i int, result1 k8s.C
 	}{result1}
 }
 
-func (fake *K8sCronJobBuilder) SetCompletions(arg1 int) k8s.CronJobBuilder {
+func (fake *K8sCronJobBuilder) SetCompletions(arg1 int32) k8s.CronJobBuilder {
 	fake.setCompletionsMutex.Lock()
 	ret, specificReturn := fake.setCompletionsReturnsOnCall[len(fake.setCompletionsArgsForCall)]
 	fake.setCompletionsArgsForCall = append(fake.setCompletionsArgsForCall, struct {
-		arg1 int
+		arg1 int32
 	}{arg1})
 	stub := fake.SetCompletionsStub
 	fakeReturns := fake.setCompletionsReturns
@@ -466,13 +466,13 @@ func (fake *K8sCronJobBuilder) SetCompletionsCallCount() int {
 	return len(fake.setCompletionsArgsForCall)
 }
 
-func (fake *K8sCronJobBuilder) SetCompletionsCalls(stub func(int) k8s.CronJobBuilder) {
+func (fake *K8sCronJobBuilder) SetCompletionsCalls(stub func(int32) k8s.CronJobBuilder) {
 	fake.setCompletionsMutex.Lock()
 	defer fake.setCompletionsMutex.Unlock()
 	fake.SetCompletionsStub = stub
 }
 
-func (fake *K8sCronJobBuilder) SetCompletionsArgsForCall(i int) int {
+func (fake *K8sCronJobBuilder) SetCompletionsArgsForCall(i int) int32 {
 	fake.setCompletionsMutex.RLock()
 	defer fake.setCompletionsMutex.RUnlock()
 	argsForCall := fake.setCompletionsArgsForCall[i]
@@ -873,11 +873,11 @@ func (fake *K8sCronJobBuilder) SetObjectMetaBuildReturnsOnCall(i int, result1 k8
 	}{result1}
 }
 
-func (fake *K8sCronJobBuilder) SetParallelism(arg1 int) k8s.CronJobBuilder {
+func (fake *K8sCronJobBuilder) SetParallelism(arg1 int32) k8s.CronJobBuilder {
 	fake.setParallelismMutex.Lock()
 	ret, specificReturn := fake.setParallelismReturnsOnCall[len(fake.setParallelismArgsForCall)]
 	fake.setParallelismArgsForCall = append(fake.setParallelismArgsForCall, struct {
-		arg1 int
+		arg1 int32
 	}{arg1})
 	stub := fake.SetParallelismStub
 	fakeReturns := fake.setParallelismReturns
@@ -898,13 +898,13 @@ func (fake *K8sCronJobBuilder) SetParallelismCallCount() int {
 	return len(fake.setParallelismArgsForCall)
 }
 
-func (fake *K8sCronJobBuilder) SetParallelismCalls(stub func(int) k8s.CronJobBuilder) {
+func (fake *K8sCronJobBuilder) SetParallelismCalls(stub func(int32) k8s.CronJobBuilder) {
 	fake.setParallelismMutex.Lock()
 	defer fake.setParallelismMutex.Unlock()
 	fake.SetParallelismStub = stub
 }
 
-func (fake *K8sCronJobBuilder) SetParallelismArgsForCall(i int) int {
+func (fake *K8sCronJobBuilder) SetParallelismArgsForCall(i int) int32 {
 	fake.setParallelismMutex.RLock()
 	defer fake.setParallelismMutex.RUnlock()
 	argsForCall := fake.setParallelismArgsForCall[i]

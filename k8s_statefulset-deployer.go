@@ -33,16 +33,22 @@ type statefulSetDeployer struct {
 }
 
 func (s *statefulSetDeployer) Deploy(ctx context.Context, statefulSet appsv1.StatefulSet) error {
-	_, err := s.clientset.AppsV1().StatefulSets(statefulSet.Namespace).Get(ctx, statefulSet.Name, metav1.GetOptions{})
+	_, err := s.clientset.AppsV1().
+		StatefulSets(statefulSet.Namespace).
+		Get(ctx, statefulSet.Name, metav1.GetOptions{})
 	if err != nil {
-		_, err = s.clientset.AppsV1().StatefulSets(statefulSet.Namespace).Create(ctx, &statefulSet, metav1.CreateOptions{})
+		_, err = s.clientset.AppsV1().
+			StatefulSets(statefulSet.Namespace).
+			Create(ctx, &statefulSet, metav1.CreateOptions{})
 		if err != nil {
 			return errors.Wrap(ctx, err, "create statefulSet failed")
 		}
 		glog.V(3).Infof("statefulSet %s created successful", statefulSet.Name)
 		return nil
 	}
-	_, err = s.clientset.AppsV1().StatefulSets(statefulSet.Namespace).Update(ctx, &statefulSet, metav1.UpdateOptions{})
+	_, err = s.clientset.AppsV1().
+		StatefulSets(statefulSet.Namespace).
+		Update(ctx, &statefulSet, metav1.UpdateOptions{})
 	if err != nil {
 		return errors.Wrap(ctx, err, "update statefulSet failed")
 	}
@@ -52,7 +58,9 @@ func (s *statefulSetDeployer) Deploy(ctx context.Context, statefulSet appsv1.Sta
 }
 
 func (s *statefulSetDeployer) Undeploy(ctx context.Context, namespace Namespace, name Name) error {
-	_, err := s.clientset.AppsV1().StatefulSets(namespace.String()).Get(ctx, name.String(), metav1.GetOptions{})
+	_, err := s.clientset.AppsV1().
+		StatefulSets(namespace.String()).
+		Get(ctx, name.String(), metav1.GetOptions{})
 	if err != nil {
 		glog.V(4).Infof("statefulSet '%s' not found => skip", name)
 		return nil

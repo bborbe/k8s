@@ -81,7 +81,9 @@ var _ = Describe("CronJob Deployer", func() {
 
 		Context("when cronjob already exists", func() {
 			BeforeEach(func() {
-				_, err := fakeClient.BatchV1().CronJobs("default").Create(ctx, &cronJob, metav1.CreateOptions{})
+				_, err := fakeClient.BatchV1().
+					CronJobs("default").
+					Create(ctx, &cronJob, metav1.CreateOptions{})
 				Expect(err).To(BeNil())
 			})
 
@@ -101,9 +103,13 @@ var _ = Describe("CronJob Deployer", func() {
 
 		Context("when create fails", func() {
 			BeforeEach(func() {
-				fakeClient.PrependReactor("create", "cronjobs", func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
-					return true, nil, stderrors.New("create failed")
-				})
+				fakeClient.PrependReactor(
+					"create",
+					"cronjobs",
+					func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
+						return true, nil, stderrors.New("create failed")
+					},
+				)
 			})
 
 			It("returns error", func() {
@@ -114,11 +120,17 @@ var _ = Describe("CronJob Deployer", func() {
 
 		Context("when update fails", func() {
 			BeforeEach(func() {
-				_, err := fakeClient.BatchV1().CronJobs("default").Create(ctx, &cronJob, metav1.CreateOptions{})
+				_, err := fakeClient.BatchV1().
+					CronJobs("default").
+					Create(ctx, &cronJob, metav1.CreateOptions{})
 				Expect(err).To(BeNil())
-				fakeClient.PrependReactor("update", "cronjobs", func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
-					return true, nil, stderrors.New("update failed")
-				})
+				fakeClient.PrependReactor(
+					"update",
+					"cronjobs",
+					func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
+						return true, nil, stderrors.New("update failed")
+					},
+				)
 			})
 
 			It("returns error", func() {
@@ -137,7 +149,9 @@ var _ = Describe("CronJob Deployer", func() {
 
 		Context("when cronjob exists", func() {
 			BeforeEach(func() {
-				_, err := fakeClient.BatchV1().CronJobs("default").Create(ctx, &cronJob, metav1.CreateOptions{})
+				_, err := fakeClient.BatchV1().
+					CronJobs("default").
+					Create(ctx, &cronJob, metav1.CreateOptions{})
 				Expect(err).To(BeNil())
 			})
 
@@ -170,11 +184,17 @@ var _ = Describe("CronJob Deployer", func() {
 
 		Context("when delete fails", func() {
 			BeforeEach(func() {
-				_, err := fakeClient.BatchV1().CronJobs("default").Create(ctx, &cronJob, metav1.CreateOptions{})
+				_, err := fakeClient.BatchV1().
+					CronJobs("default").
+					Create(ctx, &cronJob, metav1.CreateOptions{})
 				Expect(err).To(BeNil())
-				fakeClient.PrependReactor("delete", "cronjobs", func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
-					return true, nil, stderrors.New("delete failed")
-				})
+				fakeClient.PrependReactor(
+					"delete",
+					"cronjobs",
+					func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
+						return true, nil, stderrors.New("delete failed")
+					},
+				)
 			})
 
 			It("returns error", func() {

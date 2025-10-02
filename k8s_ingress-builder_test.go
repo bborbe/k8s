@@ -9,7 +9,7 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"k8s.io/api/networking/v1"
+	v1 "k8s.io/api/networking/v1"
 
 	"github.com/bborbe/k8s"
 )
@@ -45,7 +45,9 @@ var _ = Describe("Ingress Builder", func() {
 				Expect(ingress.ObjectMeta.Name).To(Equal("my-ingress-name"))
 				Expect(ingress.Spec.Rules[0].Host).To(Equal("myname.example.com"))
 				Expect(*ingress.Spec.IngressClassName).To(Equal("traefik"))
-				Expect(ingress.Spec.Rules[0].IngressRuleValue.HTTP.Paths[0].Backend.Service.Name).To(Equal("my-service-name"))
+				Expect(
+					ingress.Spec.Rules[0].IngressRuleValue.HTTP.Paths[0].Backend.Service.Name,
+				).To(Equal("my-service-name"))
 			})
 		})
 

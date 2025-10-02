@@ -15,19 +15,25 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
+// HasBuildDeployment is an interface for types that can build a Kubernetes Deployment.
 type HasBuildDeployment interface {
 	Build(ctx context.Context) (*appsv1.Deployment, error)
 }
 
 var _ HasBuildDeployment = HasBuildDeploymentFunc(nil)
 
+// HasBuildDeploymentFunc is a function type that implements HasBuildDeployment.
 type HasBuildDeploymentFunc func(ctx context.Context) (*appsv1.Deployment, error)
 
+// Build executes the function to build a Deployment.
 func (f HasBuildDeploymentFunc) Build(ctx context.Context) (*appsv1.Deployment, error) {
 	return f(ctx)
 }
 
 //counterfeiter:generate -o mocks/k8s-deployment-builder.go --fake-name K8sDeploymentBuilder . DeploymentBuilder
+
+// DeploymentBuilder provides a fluent interface for building Kubernetes Deployments.
+// Use NewDeploymentBuilder to create a new instance with sensible defaults.
 type DeploymentBuilder interface {
 	HasBuildDeployment
 	validation.HasValidation
@@ -46,6 +52,9 @@ type DeploymentBuilder interface {
 	SetImagePullSecrets(imagePullSecrets []string) DeploymentBuilder
 }
 
+// NewDeploymentBuilder creates a new DeploymentBuilder with default values:
+//   - replicas: 1
+//   - imagePullSecrets: ["docker"]
 func NewDeploymentBuilder() DeploymentBuilder {
 	return &deploymentBuilder{
 		replicas:         1,
@@ -65,26 +74,34 @@ type deploymentBuilder struct {
 	imagePullSecrets   []string
 }
 
-func (s *deploymentBuilder) SetContainersBuilder(hasBuildContainers HasBuildContainers) DeploymentBuilder {
+func (s *deploymentBuilder) SetContainersBuilder(
+	hasBuildContainers HasBuildContainers,
+) DeploymentBuilder {
 	s.containersBuilder = hasBuildContainers
 	return s
 }
 
 func (s *deploymentBuilder) SetContainers(containers []corev1.Container) DeploymentBuilder {
-	return s.SetContainersBuilder(HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
-		return containers, nil
-	}))
+	return s.SetContainersBuilder(
+		HasBuildContainersFunc(func(ctx context.Context) ([]corev1.Container, error) {
+			return containers, nil
+		}),
+	)
 }
 
-func (s *deploymentBuilder) SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMeta) DeploymentBuilder {
+func (s *deploymentBuilder) SetObjectMetaBuilder(
+	objectMetaBuilder HasBuildObjectMeta,
+) DeploymentBuilder {
 	s.objectMetaBuilder = objectMetaBuilder
 	return s
 }
 
 func (s *deploymentBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) DeploymentBuilder {
-	return s.SetObjectMetaBuilder(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
-		return &objectMeta, nil
-	}))
+	return s.SetObjectMetaBuilder(
+		HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+			return &objectMeta, nil
+		}),
+	)
 }
 
 func (d *deploymentBuilder) SetAffinity(affinity corev1.Affinity) DeploymentBuilder {

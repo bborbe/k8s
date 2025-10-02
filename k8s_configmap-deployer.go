@@ -33,18 +33,34 @@ type configmapDeployer struct {
 	clientset k8s_kubernetes.Interface
 }
 
-func (s *configmapDeployer) Get(ctx context.Context, namespace Namespace, name Name) (*v1.ConfigMap, error) {
-	cm, err := s.clientset.CoreV1().ConfigMaps(namespace.String()).Get(ctx, name.String(), metav1.GetOptions{})
+func (s *configmapDeployer) Get(
+	ctx context.Context,
+	namespace Namespace,
+	name Name,
+) (*v1.ConfigMap, error) {
+	cm, err := s.clientset.CoreV1().
+		ConfigMaps(namespace.String()).
+		Get(ctx, name.String(), metav1.GetOptions{})
 	if err != nil {
-		return nil, errors.Wrapf(ctx, err, "get configmap(%s) in namespace(%s) failed", name, namespace)
+		return nil, errors.Wrapf(
+			ctx,
+			err,
+			"get configmap(%s) in namespace(%s) failed",
+			name,
+			namespace,
+		)
 	}
 	return cm, nil
 }
 
 func (s *configmapDeployer) Deploy(ctx context.Context, configmap v1.ConfigMap) error {
-	currentConfigMap, err := s.clientset.CoreV1().ConfigMaps(configmap.Namespace).Get(ctx, configmap.Name, metav1.GetOptions{})
+	currentConfigMap, err := s.clientset.CoreV1().
+		ConfigMaps(configmap.Namespace).
+		Get(ctx, configmap.Name, metav1.GetOptions{})
 	if err != nil {
-		_, err = s.clientset.CoreV1().ConfigMaps(configmap.Namespace).Create(ctx, &configmap, metav1.CreateOptions{})
+		_, err = s.clientset.CoreV1().
+			ConfigMaps(configmap.Namespace).
+			Create(ctx, &configmap, metav1.CreateOptions{})
 		if err != nil {
 			return errors.Wrap(ctx, err, "create configmap failed")
 		}
@@ -52,7 +68,9 @@ func (s *configmapDeployer) Deploy(ctx context.Context, configmap v1.ConfigMap) 
 		return nil
 	}
 	updateConfigMap := mergeConfigMap(*currentConfigMap, configmap)
-	_, err = s.clientset.CoreV1().ConfigMaps(configmap.Namespace).Update(ctx, &updateConfigMap, metav1.UpdateOptions{})
+	_, err = s.clientset.CoreV1().
+		ConfigMaps(configmap.Namespace).
+		Update(ctx, &updateConfigMap, metav1.UpdateOptions{})
 	if err != nil {
 		return errors.Wrap(ctx, err, "update configmap failed")
 	}
@@ -61,7 +79,9 @@ func (s *configmapDeployer) Deploy(ctx context.Context, configmap v1.ConfigMap) 
 }
 
 func (s *configmapDeployer) Undeploy(ctx context.Context, namespace Namespace, name Name) error {
-	_, err := s.clientset.CoreV1().ConfigMaps(namespace.String()).Get(ctx, name.String(), metav1.GetOptions{})
+	_, err := s.clientset.CoreV1().
+		ConfigMaps(namespace.String()).
+		Get(ctx, name.String(), metav1.GetOptions{})
 	if err != nil {
 		glog.V(4).Infof("configmap '%s' not found => skip", name)
 		return nil

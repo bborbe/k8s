@@ -8,6 +8,15 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.9.0
+
+- Add comprehensive package-level documentation (doc.go)
+- Add godoc comments to all exported types and interfaces
+- Improve README.md with installation guide, features, quick start examples, and API documentation
+- Clean up CLAUDE.md to reference coding guidelines instead of duplicating content
+- Update mocks and regenerate after adding documentation
+- **WARNING**: Breaking changes in CronJobBuilder - SetParallelism, SetBackoffLimit, and SetCompletions now accept int32 instead of int
+
 ## v1.8.9
 
 - go mod update

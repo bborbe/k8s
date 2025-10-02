@@ -13,19 +13,25 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// HasBuildService is an interface for types that can build a Kubernetes Service.
 type HasBuildService interface {
 	Build(ctx context.Context) (*corev1.Service, error)
 }
 
 var _ HasBuildService = HasBuildServiceFunc(nil)
 
+// HasBuildServiceFunc is a function type that implements HasBuildService.
 type HasBuildServiceFunc func(ctx context.Context) (*corev1.Service, error)
 
+// Build executes the function to build a Service.
 func (f HasBuildServiceFunc) Build(ctx context.Context) (*corev1.Service, error) {
 	return f(ctx)
 }
 
 //counterfeiter:generate -o mocks/k8s-service-builder.go --fake-name K8sServiceBuilder . ServiceBuilder
+
+// ServiceBuilder provides a fluent interface for building Kubernetes Services.
+// Use NewServiceBuilder to create a new instance with sensible defaults.
 type ServiceBuilder interface {
 	HasBuildService
 	validation.HasValidation
@@ -36,6 +42,9 @@ type ServiceBuilder interface {
 	SetServicePortNumber(servicePortNumber int32) ServiceBuilder
 }
 
+// NewServiceBuilder creates a new ServiceBuilder with default values:
+//   - servicePortName: "http"
+//   - servicePortNumber: 9090
 func NewServiceBuilder() ServiceBuilder {
 	return &serviceBuilder{
 		servicePortName:   "http",
@@ -56,9 +65,11 @@ func (s *serviceBuilder) SetObjectMetaBuilder(objectMetaBuilder HasBuildObjectMe
 }
 
 func (s *serviceBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) ServiceBuilder {
-	return s.SetObjectMetaBuilder(HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
-		return &objectMeta, nil
-	}))
+	return s.SetObjectMetaBuilder(
+		HasBuildObjectMetaFunc(func(ctx context.Context) (*metav1.ObjectMeta, error) {
+			return &objectMeta, nil
+		}),
+	)
 }
 
 func (s *serviceBuilder) SetName(name Name) ServiceBuilder {

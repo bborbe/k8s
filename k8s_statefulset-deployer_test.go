@@ -232,9 +232,13 @@ var _ = Describe("StatefulSet Deployer", func() {
 			It("updates the update strategy", func() {
 				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
 				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
-				Expect(updatedStatefulSet.Spec.UpdateStrategy.Type).To(Equal(appsv1.RollingUpdateStatefulSetStrategyType))
+				Expect(
+					updatedStatefulSet.Spec.UpdateStrategy.Type,
+				).To(Equal(appsv1.RollingUpdateStatefulSetStrategyType))
 				Expect(updatedStatefulSet.Spec.UpdateStrategy.RollingUpdate).NotTo(BeNil())
-				Expect(*updatedStatefulSet.Spec.UpdateStrategy.RollingUpdate.Partition).To(Equal(int32(0)))
+				Expect(
+					*updatedStatefulSet.Spec.UpdateStrategy.RollingUpdate.Partition,
+				).To(Equal(int32(0)))
 			})
 		})
 
@@ -440,7 +444,9 @@ var _ = Describe("StatefulSet Deployer", func() {
 				_, createdStatefulSet, _ := statefulSetInterface.CreateArgsForCall(0)
 				Expect(createdStatefulSet.Spec.VolumeClaimTemplates).To(HaveLen(1))
 				Expect(createdStatefulSet.Spec.VolumeClaimTemplates[0].Name).To(Equal("data"))
-				Expect(createdStatefulSet.Spec.VolumeClaimTemplates[0].Spec.AccessModes).To(ContainElement(corev1.ReadWriteOnce))
+				Expect(
+					createdStatefulSet.Spec.VolumeClaimTemplates[0].Spec.AccessModes,
+				).To(ContainElement(corev1.ReadWriteOnce))
 			})
 		})
 
