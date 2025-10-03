@@ -8,6 +8,13 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.9.1
+
+- Add ServiceWatcher interface and implementation for watching Kubernetes service changes
+- Add ServiceEventProcessor interface for handling service update and delete events
+- Add ServiceEventProcessorSkipError wrapper for gracefully skipping errors in service event processing
+- Add comprehensive test coverage for ServiceWatcher with all event types and error scenarios
+
 ## v1.9.0
 
 - Add comprehensive package-level documentation (doc.go)
