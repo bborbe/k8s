@@ -11,7 +11,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func NewServiceManagerSkipError(
+func NewServiceEventProcessorSkipError(
 	serviceEventProcessor ServiceEventProcessor,
 ) ServiceEventProcessor {
 	return ServiceEventProcessorFunc(
