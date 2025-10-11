@@ -8,6 +8,12 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.9.3
+
+- Update Go version to 1.25.2 in CI workflow
+- Upgrade osv-scanner to v2 with improved config file support
+- Update dependencies (go.mod and go.sum)
+
 ## v1.9.2
 
 - rename NewServiceManagerSkipError -> NewServiceEventProcessorSkipError
