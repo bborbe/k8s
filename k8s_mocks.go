@@ -68,6 +68,11 @@ type SecretInterface interface {
 	corev1.SecretInterface
 }
 
+//counterfeiter:generate -o mocks/k8s-pod-interface.go --fake-name K8sPodInterface . PodInterface
+type PodInterface interface {
+	corev1.PodInterface
+}
+
 //counterfeiter:generate -o mocks/k8s-batchv1-interface.go --fake-name K8sBatchV1Interface . BatchV1Interface
 type BatchV1Interface interface {
 	batchv1.BatchV1Interface

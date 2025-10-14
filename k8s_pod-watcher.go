@@ -16,34 +16,34 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-//counterfeiter:generate -o mocks/k8s-secret-watcher.go --fake-name K8sSecretWatcher . SecretWatcher
-type SecretWatcher interface {
+//counterfeiter:generate -o mocks/k8s-pod-watcher.go --fake-name K8sPodWatcher . PodWatcher
+type PodWatcher interface {
 	Watch(ctx context.Context) error
 }
 
-// NewSecretWatcher creates a Kubernetes Secret watcher that monitors Secret
+// NewPodWatcher creates a Kubernetes Pod watcher that monitors Pod
 // resources in the specified namespace. It invokes callbacks on the provided
-// SecretEventProcessor for Add/Modify/Delete events. This watcher returns when
-// the watch connection closes. Use NewSecretWatcherRetry for automatic retries.
-func NewSecretWatcher(
+// PodEventProcessor for Add/Modify/Delete events. This watcher returns when
+// the watch connection closes. Use NewPodWatcherRetry for automatic retries.
+func NewPodWatcher(
 	clientset kubernetes.Interface,
-	secretManager SecretEventProcessor,
+	podManager PodEventProcessor,
 	namespace Namespace,
-) SecretWatcher {
-	return &secretStatusMonitoring{
-		clientset:     clientset,
-		namespace:     namespace,
-		secretManager: secretManager,
+) PodWatcher {
+	return &podStatusMonitoring{
+		clientset:  clientset,
+		namespace:  namespace,
+		podManager: podManager,
 	}
 }
 
-type secretStatusMonitoring struct {
-	clientset     kubernetes.Interface
-	namespace     Namespace
-	secretManager SecretEventProcessor
+type podStatusMonitoring struct {
+	clientset  kubernetes.Interface
+	namespace  Namespace
+	podManager PodEventProcessor
 }
 
-func (s *secretStatusMonitoring) Watch(ctx context.Context) error {
+func (s *podStatusMonitoring) Watch(ctx context.Context) error {
 	// Check if context is already canceled before starting watch
 	select {
 	case <-ctx.Done():
@@ -51,9 +51,9 @@ func (s *secretStatusMonitoring) Watch(ctx context.Context) error {
 	default:
 	}
 
-	glog.V(2).Infof("watch secrets started")
+	glog.V(2).Infof("watch pods started")
 	watchInf, err := s.clientset.CoreV1().
-		Secrets(s.namespace.String()).
+		Pods(s.namespace.String()).
 		Watch(ctx, metav1.ListOptions{})
 	if err != nil {
 		return errors.Wrap(ctx, err, "watch failed")
@@ -76,8 +76,8 @@ func (s *secretStatusMonitoring) Watch(ctx context.Context) error {
 				return apierrors.FromObject(event.Object)
 			case watch.Added, watch.Modified:
 				switch o := event.Object.(type) {
-				case *corev1.Secret:
-					if err := s.secretManager.OnUpdate(ctx, *o); err != nil {
+				case *corev1.Pod:
+					if err := s.podManager.OnUpdate(ctx, *o); err != nil {
 						return errors.Wrap(ctx, err, "on update failed")
 					}
 				default:
@@ -85,8 +85,8 @@ func (s *secretStatusMonitoring) Watch(ctx context.Context) error {
 				}
 			case watch.Deleted:
 				switch o := event.Object.(type) {
-				case *corev1.Secret:
-					if err := s.secretManager.OnDelete(ctx, *o); err != nil {
+				case *corev1.Pod:
+					if err := s.podManager.OnDelete(ctx, *o); err != nil {
 						return errors.Wrap(ctx, err, "on delete failed")
 					}
 				default:

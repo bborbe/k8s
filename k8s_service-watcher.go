@@ -68,8 +68,8 @@ func (s *serviceStatusMonitoring) Watch(ctx context.Context) error {
 			return ctx.Err()
 		case event, ok := <-resultChan:
 			if !ok {
-				glog.V(2).Infof("result channel closed => return")
-				return nil
+				glog.V(2).Infof("result channel closed")
+				return ErrResultChannelClosed
 			}
 			switch event.Type {
 			case watch.Error:
@@ -94,7 +94,7 @@ func (s *serviceStatusMonitoring) Watch(ctx context.Context) error {
 				}
 			case watch.Bookmark:
 			default:
-				return errors.Errorf(ctx, "unknown event type")
+				return errors.Wrapf(ctx, ErrUnknownEventType, "event type: %s", event.Type)
 			}
 		}
 	}

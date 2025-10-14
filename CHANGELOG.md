@@ -8,6 +8,19 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.11.0
+
+- Add PodWatcher interface and implementation for watching Kubernetes pod changes
+- Add PodEventProcessor interface for handling pod update and delete events
+- Add PodEventProcessorSkipError wrapper for gracefully skipping errors in pod event processing
+- Add PodInterface mock for testing
+- Add NewPodWatcherRetry wrapper for automatic retry with configurable wait duration
+- Add ErrResultChannelClosed error constant for watch channel closure detection
+- Add ErrUnknownEventType error constant for unknown K8s event types
+- **Improve error semantics**: Watchers now return ErrResultChannelClosed instead of nil when watch connection closes
+- Update ServiceWatcher and SecretWatcher to return ErrResultChannelClosed on channel closure
+- Add comprehensive test coverage for PodWatcher with all event types and error scenarios
+
 ## v1.10.0
 
 - Add SecretWatcher interface and implementation for watching Kubernetes secret changes

@@ -236,8 +236,8 @@ var _ = Describe("SecretWatcher", func() {
 				}()
 			})
 
-			It("returns nil", func() {
-				Expect(err).To(BeNil())
+			It("returns ErrResultChannelClosed", func() {
+				Expect(err).To(MatchError(k8s.ErrResultChannelClosed))
 			})
 		})
 

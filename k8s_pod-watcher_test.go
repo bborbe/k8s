@@ -18,12 +18,12 @@ import (
 	"github.com/bborbe/k8s/mocks"
 )
 
-var _ = Describe("ServiceWatcher", func() {
-	var serviceWatcher k8s.ServiceWatcher
+var _ = Describe("PodWatcher", func() {
+	var podWatcher k8s.PodWatcher
 	var clientset *mocks.K8sInterface
 	var coreV1 *mocks.K8sCoreV1Interface
-	var serviceInterface *mocks.K8sServiceInterface
-	var serviceEventProcessor *mocks.K8sServiceEventProcessor
+	var podInterface *mocks.K8sPodInterface
+	var podEventProcessor *mocks.K8sPodEventProcessor
 	var ctx context.Context
 	var cancel context.CancelFunc
 	var namespace k8s.Namespace
@@ -34,18 +34,18 @@ var _ = Describe("ServiceWatcher", func() {
 		ctx, cancel = context.WithCancel(context.Background())
 		clientset = &mocks.K8sInterface{}
 		coreV1 = &mocks.K8sCoreV1Interface{}
-		serviceInterface = &mocks.K8sServiceInterface{}
-		serviceEventProcessor = &mocks.K8sServiceEventProcessor{}
+		podInterface = &mocks.K8sPodInterface{}
+		podEventProcessor = &mocks.K8sPodEventProcessor{}
 		namespace = k8s.Namespace("test-namespace")
 		fakeWatcher = watch.NewFake()
 
 		clientset.CoreV1Returns(coreV1)
-		coreV1.ServicesReturns(serviceInterface)
-		serviceInterface.WatchReturns(fakeWatcher, nil)
+		coreV1.PodsReturns(podInterface)
+		podInterface.WatchReturns(fakeWatcher, nil)
 
-		serviceWatcher = k8s.NewServiceWatcher(
+		podWatcher = k8s.NewPodWatcher(
 			clientset,
-			serviceEventProcessor,
+			podEventProcessor,
 			namespace,
 		)
 	})
@@ -59,7 +59,7 @@ var _ = Describe("ServiceWatcher", func() {
 
 	Describe("Watch", func() {
 		JustBeforeEach(func() {
-			err = serviceWatcher.Watch(ctx)
+			err = podWatcher.Watch(ctx)
 		})
 
 		Context("when context is already canceled", func() {
@@ -71,14 +71,14 @@ var _ = Describe("ServiceWatcher", func() {
 				Expect(err).To(Equal(context.Canceled))
 			})
 
-			It("does not call Watch on service interface", func() {
-				Expect(serviceInterface.WatchCallCount()).To(Equal(0))
+			It("does not call Watch on pod interface", func() {
+				Expect(podInterface.WatchCallCount()).To(Equal(0))
 			})
 		})
 
 		Context("when watch fails to start", func() {
 			BeforeEach(func() {
-				serviceInterface.WatchReturns(nil, errors.New("watch failed"))
+				podInterface.WatchReturns(nil, errors.New("watch failed"))
 			})
 
 			It("returns an error", func() {
@@ -88,100 +88,100 @@ var _ = Describe("ServiceWatcher", func() {
 		})
 
 		Context("when receiving Added event", func() {
-			var service corev1.Service
+			var pod corev1.Pod
 
 			BeforeEach(func() {
-				service = corev1.Service{
+				pod = corev1.Pod{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "test-service",
+						Name:      "test-pod",
 						Namespace: "test-namespace",
 					},
 				}
 
-				serviceEventProcessor.OnUpdateReturns(nil)
+				podEventProcessor.OnUpdateReturns(nil)
 
 				// Start watch in background and send event
 				go func() {
-					fakeWatcher.Add(&service)
+					fakeWatcher.Add(&pod)
 					fakeWatcher.Stop()
 				}()
 			})
 
-			It("calls OnUpdate on service event processor", func() {
-				Expect(serviceEventProcessor.OnUpdateCallCount()).To(Equal(1))
-				_, receivedService := serviceEventProcessor.OnUpdateArgsForCall(0)
-				Expect(receivedService.Name).To(Equal("test-service"))
-				Expect(receivedService.Namespace).To(Equal("test-namespace"))
+			It("calls OnUpdate on pod event processor", func() {
+				Expect(podEventProcessor.OnUpdateCallCount()).To(Equal(1))
+				_, receivedPod := podEventProcessor.OnUpdateArgsForCall(0)
+				Expect(receivedPod.Name).To(Equal("test-pod"))
+				Expect(receivedPod.Namespace).To(Equal("test-namespace"))
 			})
 		})
 
 		Context("when receiving Modified event", func() {
-			var service corev1.Service
+			var pod corev1.Pod
 
 			BeforeEach(func() {
-				service = corev1.Service{
+				pod = corev1.Pod{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "test-service",
+						Name:      "test-pod",
 						Namespace: "test-namespace",
 					},
 				}
 
-				serviceEventProcessor.OnUpdateReturns(nil)
+				podEventProcessor.OnUpdateReturns(nil)
 
 				go func() {
-					fakeWatcher.Modify(&service)
+					fakeWatcher.Modify(&pod)
 					fakeWatcher.Stop()
 				}()
 			})
 
-			It("calls OnUpdate on service event processor", func() {
-				Expect(serviceEventProcessor.OnUpdateCallCount()).To(Equal(1))
-				_, receivedService := serviceEventProcessor.OnUpdateArgsForCall(0)
-				Expect(receivedService.Name).To(Equal("test-service"))
+			It("calls OnUpdate on pod event processor", func() {
+				Expect(podEventProcessor.OnUpdateCallCount()).To(Equal(1))
+				_, receivedPod := podEventProcessor.OnUpdateArgsForCall(0)
+				Expect(receivedPod.Name).To(Equal("test-pod"))
 			})
 		})
 
 		Context("when receiving Deleted event", func() {
-			var service corev1.Service
+			var pod corev1.Pod
 
 			BeforeEach(func() {
-				service = corev1.Service{
+				pod = corev1.Pod{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "test-service",
+						Name:      "test-pod",
 						Namespace: "test-namespace",
 					},
 				}
 
-				serviceEventProcessor.OnDeleteReturns(nil)
+				podEventProcessor.OnDeleteReturns(nil)
 
 				go func() {
-					fakeWatcher.Delete(&service)
+					fakeWatcher.Delete(&pod)
 					fakeWatcher.Stop()
 				}()
 			})
 
-			It("calls OnDelete on service event processor", func() {
-				Expect(serviceEventProcessor.OnDeleteCallCount()).To(Equal(1))
-				_, receivedService := serviceEventProcessor.OnDeleteArgsForCall(0)
-				Expect(receivedService.Name).To(Equal("test-service"))
+			It("calls OnDelete on pod event processor", func() {
+				Expect(podEventProcessor.OnDeleteCallCount()).To(Equal(1))
+				_, receivedPod := podEventProcessor.OnDeleteArgsForCall(0)
+				Expect(receivedPod.Name).To(Equal("test-pod"))
 			})
 		})
 
 		Context("when OnUpdate returns an error", func() {
-			var service corev1.Service
+			var pod corev1.Pod
 
 			BeforeEach(func() {
-				service = corev1.Service{
+				pod = corev1.Pod{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "test-service",
+						Name:      "test-pod",
 						Namespace: "test-namespace",
 					},
 				}
 
-				serviceEventProcessor.OnUpdateReturns(errors.New("update failed"))
+				podEventProcessor.OnUpdateReturns(errors.New("update failed"))
 
 				go func() {
-					fakeWatcher.Add(&service)
+					fakeWatcher.Add(&pod)
 				}()
 			})
 
@@ -192,20 +192,20 @@ var _ = Describe("ServiceWatcher", func() {
 		})
 
 		Context("when OnDelete returns an error", func() {
-			var service corev1.Service
+			var pod corev1.Pod
 
 			BeforeEach(func() {
-				service = corev1.Service{
+				pod = corev1.Pod{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "test-service",
+						Name:      "test-pod",
 						Namespace: "test-namespace",
 					},
 				}
 
-				serviceEventProcessor.OnDeleteReturns(errors.New("delete failed"))
+				podEventProcessor.OnDeleteReturns(errors.New("delete failed"))
 
 				go func() {
-					fakeWatcher.Delete(&service)
+					fakeWatcher.Delete(&pod)
 				}()
 			})
 
@@ -224,8 +224,8 @@ var _ = Describe("ServiceWatcher", func() {
 			})
 
 			It("does not call event processor", func() {
-				Expect(serviceEventProcessor.OnUpdateCallCount()).To(Equal(0))
-				Expect(serviceEventProcessor.OnDeleteCallCount()).To(Equal(0))
+				Expect(podEventProcessor.OnUpdateCallCount()).To(Equal(0))
+				Expect(podEventProcessor.OnDeleteCallCount()).To(Equal(0))
 			})
 		})
 
@@ -256,10 +256,10 @@ var _ = Describe("ServiceWatcher", func() {
 	})
 
 	Describe("Constructor", func() {
-		It("creates a new service watcher", func() {
-			watcher := k8s.NewServiceWatcher(
+		It("creates a new pod watcher", func() {
+			watcher := k8s.NewPodWatcher(
 				clientset,
-				serviceEventProcessor,
+				podEventProcessor,
 				namespace,
 			)
 			Expect(watcher).NotTo(BeNil())
