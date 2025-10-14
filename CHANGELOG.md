@@ -8,6 +8,19 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.10.0
+
+- Add SecretWatcher interface and implementation for watching Kubernetes secret changes
+- Add SecretEventProcessor interface for handling secret update and delete events
+- Add SecretEventProcessorSkipError wrapper for gracefully skipping errors in secret event processing
+- Add SecretInterface mock for testing
+- **Refactor watchers with decorator pattern**: Separate retry logic from base watchers
+- Add NewServiceWatcherRetry wrapper for automatic retry with configurable wait duration
+- Add NewSecretWatcherRetry wrapper for automatic retry with configurable wait duration
+- Add godoc comments to exported constructors (NewServiceWatcher, NewSecretWatcher)
+- **BREAKING CHANGE**: NewServiceWatcher and NewSecretWatcher constructors no longer accept waiterDuration parameter - use retry wrappers instead
+- Update dependencies (go.mod and go.sum)
+
 ## v1.9.3
 
 - Update Go version to 1.25.2 in CI workflow

@@ -63,6 +63,11 @@ type ServiceInterface interface {
 	corev1.ServiceInterface
 }
 
+//counterfeiter:generate -o mocks/k8s-secret-interface.go --fake-name K8sSecretInterface . SecretInterface
+type SecretInterface interface {
+	corev1.SecretInterface
+}
+
 //counterfeiter:generate -o mocks/k8s-batchv1-interface.go --fake-name K8sBatchV1Interface . BatchV1Interface
 type BatchV1Interface interface {
 	batchv1.BatchV1Interface

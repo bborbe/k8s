@@ -16,34 +16,34 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-//counterfeiter:generate -o mocks/k8s-service-watcher.go --fake-name K8sServiceWatcher . ServiceWatcher
-type ServiceWatcher interface {
+//counterfeiter:generate -o mocks/k8s-secret-watcher.go --fake-name K8sSecretWatcher . SecretWatcher
+type SecretWatcher interface {
 	Watch(ctx context.Context) error
 }
 
-// NewServiceWatcher creates a Kubernetes Service watcher that monitors Service
+// NewSecretWatcher creates a Kubernetes Secret watcher that monitors Secret
 // resources in the specified namespace. It invokes callbacks on the provided
-// ServiceEventProcessor for Add/Modify/Delete events. This watcher returns when
-// the watch connection closes. Use NewServiceWatcherRetry for automatic retries.
-func NewServiceWatcher(
+// SecretEventProcessor for Add/Modify/Delete events. This watcher returns when
+// the watch connection closes. Use NewSecretWatcherRetry for automatic retries.
+func NewSecretWatcher(
 	clientset kubernetes.Interface,
-	serviceManager ServiceEventProcessor,
+	secretManager SecretEventProcessor,
 	namespace Namespace,
-) ServiceWatcher {
-	return &serviceStatusMonitoring{
-		clientset:      clientset,
-		namespace:      namespace,
-		serviceManager: serviceManager,
+) SecretWatcher {
+	return &secretStatusMonitoring{
+		clientset:     clientset,
+		namespace:     namespace,
+		secretManager: secretManager,
 	}
 }
 
-type serviceStatusMonitoring struct {
-	clientset      kubernetes.Interface
-	namespace      Namespace
-	serviceManager ServiceEventProcessor
+type secretStatusMonitoring struct {
+	clientset     kubernetes.Interface
+	namespace     Namespace
+	secretManager SecretEventProcessor
 }
 
-func (s *serviceStatusMonitoring) Watch(ctx context.Context) error {
+func (s *secretStatusMonitoring) Watch(ctx context.Context) error {
 	// Check if context is already canceled before starting watch
 	select {
 	case <-ctx.Done():
@@ -51,9 +51,9 @@ func (s *serviceStatusMonitoring) Watch(ctx context.Context) error {
 	default:
 	}
 
-	glog.V(2).Infof("watch services started")
+	glog.V(2).Infof("watch secrets started")
 	watchInf, err := s.clientset.CoreV1().
-		Services(s.namespace.String()).
+		Secrets(s.namespace.String()).
 		Watch(ctx, metav1.ListOptions{})
 	if err != nil {
 		return errors.Wrap(ctx, err, "watch failed")
@@ -76,8 +76,8 @@ func (s *serviceStatusMonitoring) Watch(ctx context.Context) error {
 				return apierrors.FromObject(event.Object)
 			case watch.Added, watch.Modified:
 				switch o := event.Object.(type) {
-				case *corev1.Service:
-					if err := s.serviceManager.OnUpdate(ctx, *o); err != nil {
+				case *corev1.Secret:
+					if err := s.secretManager.OnUpdate(ctx, *o); err != nil {
 						return errors.Wrap(ctx, err, "on update failed")
 					}
 				default:
@@ -85,8 +85,8 @@ func (s *serviceStatusMonitoring) Watch(ctx context.Context) error {
 				}
 			case watch.Deleted:
 				switch o := event.Object.(type) {
-				case *corev1.Service:
-					if err := s.serviceManager.OnDelete(ctx, *o); err != nil {
+				case *corev1.Secret:
+					if err := s.secretManager.OnDelete(ctx, *o); err != nil {
 						return errors.Wrap(ctx, err, "on delete failed")
 					}
 				default:
