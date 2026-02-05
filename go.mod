@@ -1,6 +1,6 @@
 module github.com/bborbe/k8s
 
-go 1.25.6
+go 1.25.7
 
 replace (
 	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20250701173324-9bd5c66d9911
@@ -9,7 +9,7 @@ replace (
 require (
 	github.com/bborbe/collection v1.20.1
 	github.com/bborbe/errors v1.5.1
-	github.com/bborbe/time v1.21.1
+	github.com/bborbe/time v1.22.0
 	github.com/bborbe/validation v1.4.1
 	github.com/golang/glog v1.2.5
 	github.com/golangci/golangci-lint v1.64.8
@@ -84,8 +84,8 @@ require (
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
-	github.com/bborbe/math v1.2.1 // indirect
-	github.com/bborbe/parse v1.10.0 // indirect
+	github.com/bborbe/math v1.3.0 // indirect
+	github.com/bborbe/parse v1.10.1 // indirect
 	github.com/bborbe/run v1.9.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bkielbasa/cyclop v1.2.3 // indirect
