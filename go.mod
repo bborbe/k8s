@@ -1,6 +1,6 @@
 module github.com/bborbe/k8s
 
-go 1.25.5
+go 1.25.7
 
 replace (
 	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20250701173324-9bd5c66d9911
