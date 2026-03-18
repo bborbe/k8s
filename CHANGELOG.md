@@ -8,6 +8,12 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.13.0
+
+- upgrade k8s.io deps to v0.35.2 and structured-merge-diff to v6
+- remove kube-openapi replace directive and k8s version excludes
+- fix CronJob builder test for k8s v0.35 serialization change
+
 ## v1.12.4
 
 - go mod update

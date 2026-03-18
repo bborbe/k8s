@@ -112,21 +112,18 @@ var _ = Describe("CronJob Builder", func() {
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  creationTimestamp: null
   name: my-object
   namespace: my-namespace
 spec:
   failedJobsHistoryLimit: 2
   jobTemplate:
-    metadata:
-      creationTimestamp: null
+    metadata: {}
     spec:
       backoffLimit: 6
       completions: 1
       parallelism: 1
       template:
-        metadata:
-          creationTimestamp: null
+        metadata: {}
         spec:
           containers:
           - name: service
