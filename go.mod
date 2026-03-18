@@ -3,9 +3,9 @@ module github.com/bborbe/k8s
 go 1.26.1
 
 require (
-	github.com/bborbe/collection v1.20.3
-	github.com/bborbe/errors v1.5.3
-	github.com/bborbe/time v1.24.1
+	github.com/bborbe/collection v1.20.4
+	github.com/bborbe/errors v1.5.4
+	github.com/bborbe/time v1.25.0
 	github.com/bborbe/validation v1.4.4
 	github.com/golang/glog v1.2.5
 	github.com/golangci/golangci-lint v1.64.8
@@ -82,7 +82,7 @@ require (
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bborbe/math v1.3.1 // indirect
 	github.com/bborbe/parse v1.10.3 // indirect
-	github.com/bborbe/run v1.9.1 // indirect
+	github.com/bborbe/run v1.9.4 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bkielbasa/cyclop v1.2.3 // indirect
 	github.com/blizzy78/varnamelen v0.8.0 // indirect
@@ -132,7 +132,7 @@ require (
 	github.com/distribution/reference v0.6.0 // indirect
 	github.com/djherbis/times v1.6.0 // indirect
 	github.com/dlclark/regexp2 v1.11.5 // indirect
-	github.com/docker/cli v29.2.1+incompatible // indirect
+	github.com/docker/cli v29.3.0+incompatible // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/docker v28.3.3+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.9.3 // indirect
@@ -156,7 +156,7 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/fzipp/gocyclo v0.6.0 // indirect
-	github.com/getsentry/sentry-go v0.40.0 // indirect
+	github.com/getsentry/sentry-go v0.43.0 // indirect
 	github.com/ghostiam/protogetter v0.3.9 // indirect
 	github.com/go-critic/go-critic v0.12.0 // indirect
 	github.com/go-errors/errors v1.4.2 // indirect
@@ -401,7 +401,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
-	go.yaml.in/yaml/v3 v3.0.2 // indirect
+	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/crypto v0.48.0 // indirect
 	golang.org/x/exp v0.0.0-20250718183923-645b1fa84792 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20250210185358-939b2ce775ac // indirect
@@ -444,16 +444,4 @@ require (
 	sigs.k8s.io/structured-merge-diff/v6 v6.3.0 // indirect
 	www.velocidex.com/golang/go-ntfs v0.2.0 // indirect
 	www.velocidex.com/golang/regparser v0.0.0-20250203141505-31e704a67ef7 // indirect
-)
-
-exclude (
-	cloud.google.com/go v0.26.0
-	github.com/go-logr/glogr v1.0.0-rc1
-	github.com/go-logr/glogr v1.0.0
-	github.com/go-logr/logr v1.0.0-rc1
-	github.com/go-logr/logr v1.0.0
-	go.yaml.in/yaml/v3 v3.0.3
-	go.yaml.in/yaml/v3 v3.0.4
-	golang.org/x/tools v0.38.0
-	golang.org/x/tools v0.39.0
 )

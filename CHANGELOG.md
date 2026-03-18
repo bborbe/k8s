@@ -8,6 +8,12 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.13.1
+
+- update dependencies (collection, errors, time, run)
+- update docker/cli, getsentry/sentry-go, go.yaml.in/yaml/v3
+- remove outdated exclude directives from go.mod
+
 ## v1.13.0
 
 - upgrade k8s.io deps to v0.35.2 and structured-merge-diff to v6
