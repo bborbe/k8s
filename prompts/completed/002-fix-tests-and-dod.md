@@ -1,7 +1,12 @@
 ---
-status: approved
+status: completed
+summary: Ran make precommit — all tests pass, linting succeeds, and no issues found; project is in a healthy state with exit code 0.
+container: k8s-002-fix-tests-and-dod
+dark-factory-version: v0.59.5-dirty
 created: "2026-03-20T14:24:31Z"
 queued: "2026-03-20T14:24:31Z"
+started: "2026-03-20T14:57:50Z"
+completed: "2026-03-20T15:05:08Z"
 ---
 
 <summary>
