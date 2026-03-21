@@ -72,8 +72,8 @@ func (s *serviceDeployer) Undeploy(ctx context.Context, namespace Namespace, nam
 	return nil
 }
 
-func mergeService(current, new v1.Service) v1.Service {
-	new.Spec.ClusterIP = current.Spec.ClusterIP
-	new.ObjectMeta.ResourceVersion = current.ObjectMeta.ResourceVersion
-	return new
+func mergeService(current, updated v1.Service) v1.Service {
+	updated.Spec.ClusterIP = current.Spec.ClusterIP
+	updated.ResourceVersion = current.ResourceVersion
+	return updated
 }

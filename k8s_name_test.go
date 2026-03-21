@@ -80,7 +80,7 @@ var _ = Describe("Name methods", func() {
 	})
 
 	It("Validate returns error for name longer than 253", func() {
-		var n k8s.Name = k8s.Name(make([]byte, 254))
+		n := k8s.Name(make([]byte, 254))
 		err := n.Validate(context.Background())
 		Expect(err).To(HaveOccurred())
 	})

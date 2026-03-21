@@ -8,6 +8,10 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.13.4
+
+- chore: enable golangci-lint in check target and fix all lint violations (depguard, dupl, prealloc, revive, staticcheck)
+
 ## v1.13.3
 
 - chore: add missing license header to mocks/mocks.go

@@ -54,7 +54,7 @@ func (e *eventHandlerAlert[T]) Get(ctx context.Context) ([]T, error) {
 	e.mux.Lock()
 	defer e.mux.Unlock()
 
-	var result []T
+	result := make([]T, 0, len(e.data))
 	for _, a := range e.data {
 		result = append(result, a)
 	}

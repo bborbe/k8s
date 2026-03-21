@@ -52,7 +52,7 @@ var _ = Describe("ConfigMap Deployer", func() {
 				"app.json":    `{"name": "test-app", "version": "1.0.0"}`,
 			},
 			BinaryData: map[string][]byte{
-				"binary.dat": []byte{0x89, 0x50, 0x4E, 0x47},
+				"binary.dat": {0x89, 0x50, 0x4E, 0x47},
 			},
 		}
 	})
@@ -239,7 +239,7 @@ var _ = Describe("ConfigMap Deployer", func() {
 				existingConfigMap := configMap
 				existingConfigMap.ResourceVersion = "123"
 				existingConfigMap.BinaryData = map[string][]byte{
-					"old-binary.dat": []byte{0x01, 0x02, 0x03},
+					"old-binary.dat": {0x01, 0x02, 0x03},
 				}
 				configMapInterface.GetReturns(&existingConfigMap, nil)
 				configMapInterface.UpdateReturns(&configMap, nil)
@@ -468,7 +468,7 @@ var _ = Describe("ConfigMap Deployer", func() {
 					"new-config.yaml": "new: configuration",
 				}
 				newConfigMap.BinaryData = map[string][]byte{
-					"new-binary.dat": []byte{0xAB, 0xCD, 0xEF},
+					"new-binary.dat": {0xAB, 0xCD, 0xEF},
 				}
 
 				configMapInterface.GetReturns(&existingConfigMap, nil)

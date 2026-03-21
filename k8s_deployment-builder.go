@@ -104,69 +104,69 @@ func (s *deploymentBuilder) SetObjectMeta(objectMeta metav1.ObjectMeta) Deployme
 	)
 }
 
-func (d *deploymentBuilder) SetAffinity(affinity corev1.Affinity) DeploymentBuilder {
-	d.affinity = &affinity
-	return d
+func (s *deploymentBuilder) SetAffinity(affinity corev1.Affinity) DeploymentBuilder {
+	s.affinity = &affinity
+	return s
 }
 
-func (d *deploymentBuilder) AddVolumes(volumes ...corev1.Volume) DeploymentBuilder {
-	d.volumes = append(d.volumes, volumes...)
-	return d
+func (s *deploymentBuilder) AddVolumes(volumes ...corev1.Volume) DeploymentBuilder {
+	s.volumes = append(s.volumes, volumes...)
+	return s
 }
 
-func (d *deploymentBuilder) SetVolumes(volumes []corev1.Volume) DeploymentBuilder {
-	d.volumes = volumes
-	return d
+func (s *deploymentBuilder) SetVolumes(volumes []corev1.Volume) DeploymentBuilder {
+	s.volumes = volumes
+	return s
 }
 
-func (d *deploymentBuilder) AddImagePullSecrets(imagePullSecrets ...string) DeploymentBuilder {
-	d.imagePullSecrets = append(d.imagePullSecrets, imagePullSecrets...)
-	return d
+func (s *deploymentBuilder) AddImagePullSecrets(imagePullSecrets ...string) DeploymentBuilder {
+	s.imagePullSecrets = append(s.imagePullSecrets, imagePullSecrets...)
+	return s
 }
 
-func (d *deploymentBuilder) SetImagePullSecrets(imagePullSecrets []string) DeploymentBuilder {
-	d.imagePullSecrets = imagePullSecrets
-	return d
+func (s *deploymentBuilder) SetImagePullSecrets(imagePullSecrets []string) DeploymentBuilder {
+	s.imagePullSecrets = imagePullSecrets
+	return s
 }
 
-func (d *deploymentBuilder) SetServiceAccountName(serviceAccountName string) DeploymentBuilder {
-	d.serviceAccountName = serviceAccountName
-	return d
+func (s *deploymentBuilder) SetServiceAccountName(serviceAccountName string) DeploymentBuilder {
+	s.serviceAccountName = serviceAccountName
+	return s
 }
 
-func (d *deploymentBuilder) SetName(name Name) DeploymentBuilder {
-	d.name = name
-	return d
+func (s *deploymentBuilder) SetName(name Name) DeploymentBuilder {
+	s.name = name
+	return s
 }
 
-func (d *deploymentBuilder) SetReplicas(replicas int32) DeploymentBuilder {
-	d.replicas = replicas
-	return d
+func (s *deploymentBuilder) SetReplicas(replicas int32) DeploymentBuilder {
+	s.replicas = replicas
+	return s
 }
 
-func (d *deploymentBuilder) SetComponent(component string) DeploymentBuilder {
-	d.component = component
-	return d
+func (s *deploymentBuilder) SetComponent(component string) DeploymentBuilder {
+	s.component = component
+	return s
 }
 
-func (d *deploymentBuilder) Validate(ctx context.Context) error {
+func (s *deploymentBuilder) Validate(ctx context.Context) error {
 	return validation.All{
-		validation.Name("ObjectMeta", validation.NotNil(d.objectMetaBuilder)),
-		validation.Name("ContainersBuilder", validation.NotNil(d.containersBuilder)),
+		validation.Name("ObjectMeta", validation.NotNil(s.objectMetaBuilder)),
+		validation.Name("ContainersBuilder", validation.NotNil(s.containersBuilder)),
 	}.Validate(ctx)
 }
 
-func (d *deploymentBuilder) Build(ctx context.Context) (*appsv1.Deployment, error) {
-	if err := d.Validate(ctx); err != nil {
+func (s *deploymentBuilder) Build(ctx context.Context) (*appsv1.Deployment, error) {
+	if err := s.Validate(ctx); err != nil {
 		return nil, errors.Wrapf(ctx, err, "validate deploymentBuilder failed")
 	}
 
-	objectMeta, err := d.objectMetaBuilder.Build(ctx)
+	objectMeta, err := s.objectMetaBuilder.Build(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "build objectMeta failed")
 	}
 
-	containers, err := d.containersBuilder.Build(ctx)
+	containers, err := s.containersBuilder.Build(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "build containers failed")
 	}
@@ -180,10 +180,10 @@ func (d *deploymentBuilder) Build(ctx context.Context) (*appsv1.Deployment, erro
 		},
 		ObjectMeta: *objectMeta,
 		Spec: appsv1.DeploymentSpec{
-			Replicas: &d.replicas,
+			Replicas: &s.replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app": d.name.String(),
+					"app": s.name.String(),
 				},
 			},
 			Strategy: appsv1.DeploymentStrategy{
@@ -202,25 +202,25 @@ func (d *deploymentBuilder) Build(ctx context.Context) (*appsv1.Deployment, erro
 						"prometheus.io/scrape": "true",
 					},
 					Labels: map[string]string{
-						"component": d.component,
-						"app":       d.name.String(),
+						"component": s.component,
+						"app":       s.name.String(),
 					},
 				},
 				Spec: corev1.PodSpec{
-					Affinity:           d.affinity,
+					Affinity:           s.affinity,
 					Containers:         containers,
-					ServiceAccountName: d.serviceAccountName,
-					ImagePullSecrets:   d.createImagePullSecrets(),
-					Volumes:            d.volumes,
+					ServiceAccountName: s.serviceAccountName,
+					ImagePullSecrets:   s.createImagePullSecrets(),
+					Volumes:            s.volumes,
 				},
 			},
 		},
 	}, nil
 }
 
-func (d *deploymentBuilder) createImagePullSecrets() []corev1.LocalObjectReference {
-	result := make([]corev1.LocalObjectReference, 0, len(d.imagePullSecrets))
-	for _, imagePullSecret := range d.imagePullSecrets {
+func (s *deploymentBuilder) createImagePullSecrets() []corev1.LocalObjectReference {
+	result := make([]corev1.LocalObjectReference, 0, len(s.imagePullSecrets))
+	for _, imagePullSecret := range s.imagePullSecrets {
 		result = append(result, corev1.LocalObjectReference{Name: imagePullSecret})
 	}
 	return result

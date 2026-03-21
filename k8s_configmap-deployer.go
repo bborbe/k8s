@@ -93,7 +93,7 @@ func (s *configmapDeployer) Undeploy(ctx context.Context, namespace Namespace, n
 	return nil
 }
 
-func mergeConfigMap(current, new v1.ConfigMap) v1.ConfigMap {
-	new.ObjectMeta.ResourceVersion = current.ObjectMeta.ResourceVersion
-	return new
+func mergeConfigMap(current, updated v1.ConfigMap) v1.ConfigMap {
+	updated.ResourceVersion = current.ResourceVersion
+	return updated
 }
