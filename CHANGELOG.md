@@ -8,6 +8,12 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.13.5
+
+- Update indirect dependencies (docker, containerd, opentelemetry, go-openapi, moby/buildkit)
+- Add replace directives for charmbracelet/x/cellbuf, denis-tingaikin/go-header, opencontainers/runtime-spec
+- Bump golang.org/x/{exp,time} and go-git/go-git
+
 ## v1.13.4
 
 - chore: enable golangci-lint in check target and fix all lint violations (depguard, dupl, prealloc, revive, staticcheck)
