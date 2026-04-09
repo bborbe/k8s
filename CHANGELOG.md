@@ -8,6 +8,14 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.13.6
+
+- update k8s.io/api, apimachinery, client-go to v0.35.3
+- update bborbe/* dependencies (collection, errors, time, validation, parse)
+- update golangci-lint to v2.11.4, counterfeiter to v6.12.2
+- update go-modtool to v0.7.1, osv-scanner to v2.3.5
+- bump Go toolchain to 1.26.2
+
 ## v1.13.5
 
 - Update indirect dependencies (docker, containerd, opentelemetry, go-openapi, moby/buildkit)
