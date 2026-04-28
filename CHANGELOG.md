@@ -8,6 +8,14 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.14.0
+
+- Update k8s.io/api, apimachinery, client-go v0.35.3 → v0.36.0
+- Remove deprecated AutoscalingV2beta1/V2beta2 from K8s interface mock
+- Replace SchedulingV1alpha1 with SchedulingV1alpha2 in mock
+- Update bborbe/* and golang.org/x/* dependencies
+- Remove golang.org/x/lint/golint from tools
+
 ## v1.13.6
 
 - update k8s.io/api, apimachinery, client-go to v0.35.3
