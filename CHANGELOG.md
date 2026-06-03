@@ -8,6 +8,14 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.14.3
+
+- bump k8s.io/{api,apimachinery,client-go,apiextensions-apiserver} to v0.36.1
+- bump golang.org/x/{net,sys,term,text} for vulnerability fixes
+- bump bborbe/time to v1.27.0, onsi/ginkgo v2.29.0, onsi/gomega v1.41.0
+- drop standalone errcheck/gosec targets; move rules into golangci config
+- add .maintainer.yaml for autoRelease/autoApprove
+
 ## v1.14.2
 
 - bump bborbe/collection v1.20.11→v1.20.12
