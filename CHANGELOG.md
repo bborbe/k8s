@@ -8,6 +8,12 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.14.4
+
+- Bump bborbe/collection, errors, time, validation deps
+- Bump k8s.io libs to v0.36.2
+- Bump ginkgo/gomega and golang.org/x deps
+
 ## v1.14.3
 
 - bump k8s.io/{api,apimachinery,client-go,apiextensions-apiserver} to v0.36.1
