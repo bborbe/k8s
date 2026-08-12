@@ -21,6 +21,13 @@ var _ = Describe("Clientset", func() {
 
 		It("returns in-cluster config when kubeconfig is empty", func() {
 			config, err := k8s.CreateConfig("")
+			if runningInCluster() {
+				// Inside a pod the in-cluster fallback succeeds.
+				Expect(err).NotTo(HaveOccurred())
+				Expect(config).NotTo(BeNil())
+				return
+			}
+			// Outside a cluster there is no in-cluster config to fall back on.
 			Expect(err).To(HaveOccurred())
 			Expect(config).To(BeNil())
 		})
@@ -53,3 +60,15 @@ var _ = Describe("Clientset", func() {
 		})
 	})
 })
+
+// runningInCluster reports whether rest.InClusterConfig() can succeed, mirroring
+// its own preconditions: the service host env var AND a mounted service-account
+// token. The env var alone is not enough — checking only that made this suite
+// fail in environments that set it without mounting a token.
+func runningInCluster() bool {
+	if os.Getenv("KUBERNETES_SERVICE_HOST") == "" {
+		return false
+	}
+	_, err := os.Stat("/var/run/secrets/kubernetes.io/serviceaccount/token")
+	return err == nil
+}
