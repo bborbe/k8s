@@ -8,6 +8,10 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## Unreleased
+
+- fix: make the in-cluster CreateConfig spec environment-aware so the suite passes both inside and outside a Kubernetes pod
+
 ## v1.14.7
 
 - Bump `golang.org/x/text` to v0.39.0 (CVE-2026-56852)
