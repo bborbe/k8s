@@ -8,6 +8,10 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## Unreleased
+
+- update Go to 1.26.5 and update dependencies
+
 ## v1.14.8
 
 - fix: make the in-cluster CreateConfig spec environment-aware so the suite passes both inside and outside a Kubernetes pod
