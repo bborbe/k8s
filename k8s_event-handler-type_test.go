@@ -101,4 +101,33 @@ var _ = Describe("EventHandler", func() {
 			})
 		})
 	})
+	Context("cancelled context", func() {
+		BeforeEach(func() {
+			var cancel context.CancelFunc
+			ctx, cancel = context.WithCancel(context.Background())
+			cancel()
+		})
+		Context("OnAdd", func() {
+			It("returns error", func() {
+				err = eventHandlerAlert.OnAdd(ctx, alertA)
+				Expect(err).NotTo(BeNil())
+			})
+		})
+		Context("OnDelete", func() {
+			BeforeEach(func() {
+				err = eventHandlerAlert.OnAdd(context.Background(), alertA)
+				Expect(err).To(BeNil())
+			})
+			It("returns error", func() {
+				err = eventHandlerAlert.OnDelete(ctx, alertA)
+				Expect(err).NotTo(BeNil())
+			})
+		})
+		Context("OnUpdate", func() {
+			It("returns error", func() {
+				err = eventHandlerAlert.OnUpdate(ctx, alertA, alertB)
+				Expect(err).NotTo(BeNil())
+			})
+		})
+	})
 })

@@ -103,12 +103,17 @@ func (e *eventHandlerAlert[T]) OnDelete(ctx context.Context, obj T) error {
 }
 
 func (e *eventHandlerAlert[T]) add(ctx context.Context, obj T) error {
-
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	e.data[obj.Identifier()] = obj
 	return nil
 }
 
 func (e *eventHandlerAlert[T]) delete(ctx context.Context, obj T) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	delete(e.data, obj.Identifier())
 	return nil
 }
