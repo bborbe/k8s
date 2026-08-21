@@ -8,7 +8,7 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
-## Unreleased
+## v1.14.11
 
 - chore: Fix make precommit on Go 1.27 — run gofmt last in the format target, bump golangci-lint to v2.13.1 and errcheck to v1.20.0
 - fix: Check context cancellation in eventHandlerAlert add/delete so errors surface instead of always returning nil
