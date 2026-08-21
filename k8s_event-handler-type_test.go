@@ -124,9 +124,21 @@ var _ = Describe("EventHandler", func() {
 			})
 		})
 		Context("OnUpdate", func() {
+			BeforeEach(func() {
+				err = eventHandlerAlert.OnAdd(context.Background(), alertA)
+				Expect(err).To(BeNil())
+			})
 			It("returns error", func() {
 				err = eventHandlerAlert.OnUpdate(ctx, alertA, alertB)
 				Expect(err).NotTo(BeNil())
+			})
+			It("leaves the collection intact (delete did not commit)", func() {
+				err = eventHandlerAlert.OnUpdate(ctx, alertA, alertB)
+				Expect(err).NotTo(BeNil())
+				items, getErr := eventHandlerAlert.Get(context.Background())
+				Expect(getErr).To(BeNil())
+				Expect(items).To(HaveLen(1))
+				Expect(items[0]).To(Equal(alertA))
 			})
 		})
 	})

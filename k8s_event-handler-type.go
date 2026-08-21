@@ -56,6 +56,11 @@ func (e *eventHandlerAlert[T]) Get(ctx context.Context) ([]T, error) {
 
 	result := make([]T, 0, len(e.data))
 	for _, a := range e.data {
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		default:
+		}
 		result = append(result, a)
 	}
 	return result, nil
@@ -64,6 +69,10 @@ func (e *eventHandlerAlert[T]) Get(ctx context.Context) ([]T, error) {
 func (e *eventHandlerAlert[T]) OnUpdate(ctx context.Context, oldObj, newObj T) error {
 	e.mux.Lock()
 	defer e.mux.Unlock()
+
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 
 	if oldObj.Equal(newObj) {
 		glog.V(3).Infof("nothing changed => skip update")
