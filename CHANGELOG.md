@@ -8,7 +8,7 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
-## Unreleased
+## v1.14.12
 
 - fix: StatefulSet deployer update path merges only mutable spec fields into the live object and preserves immutable fields (selector, serviceName, volumeClaimTemplates) — the previous full-spec Update was rejected by the API server with "updates to statefulset spec for fields other than ... are forbidden"
 
