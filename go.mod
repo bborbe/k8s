@@ -3,7 +3,7 @@ module github.com/bborbe/k8s
 go 1.27.0
 
 require (
-	github.com/bborbe/collection v1.20.23
+	github.com/bborbe/collection v1.20.24
 	github.com/bborbe/errors v1.5.20
 	github.com/bborbe/time v1.27.10
 	github.com/bborbe/validation v1.4.22
