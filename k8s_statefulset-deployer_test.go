@@ -232,29 +232,36 @@ var _ = Describe("StatefulSet Deployer", func() {
 			})
 		})
 
-		Context("when statefulSet exists with a retention policy and the desired has one too", func() {
-			BeforeEach(func() {
-				existingStatefulSet := statefulSet.DeepCopy()
-				existingStatefulSet.ResourceVersion = "123"
-				existingStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy = &appsv1.StatefulSetPersistentVolumeClaimRetentionPolicy{
-					WhenDeleted: appsv1.DeletePersistentVolumeClaimRetentionPolicyType,
-					WhenScaled:  appsv1.DeletePersistentVolumeClaimRetentionPolicyType,
-				}
-				statefulSet.Spec.PersistentVolumeClaimRetentionPolicy = &appsv1.StatefulSetPersistentVolumeClaimRetentionPolicy{
-					WhenDeleted: appsv1.RetainPersistentVolumeClaimRetentionPolicyType,
-					WhenScaled:  appsv1.RetainPersistentVolumeClaimRetentionPolicyType,
-				}
-				statefulSetInterface.GetReturns(existingStatefulSet, nil)
-				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
-			})
+		Context(
+			"when statefulSet exists with a retention policy and the desired has one too",
+			func() {
+				BeforeEach(func() {
+					existingStatefulSet := statefulSet.DeepCopy()
+					existingStatefulSet.ResourceVersion = "123"
+					existingStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy = &appsv1.StatefulSetPersistentVolumeClaimRetentionPolicy{
+						WhenDeleted: appsv1.DeletePersistentVolumeClaimRetentionPolicyType,
+						WhenScaled:  appsv1.DeletePersistentVolumeClaimRetentionPolicyType,
+					}
+					statefulSet.Spec.PersistentVolumeClaimRetentionPolicy = &appsv1.StatefulSetPersistentVolumeClaimRetentionPolicy{
+						WhenDeleted: appsv1.RetainPersistentVolumeClaimRetentionPolicyType,
+						WhenScaled:  appsv1.RetainPersistentVolumeClaimRetentionPolicyType,
+					}
+					statefulSetInterface.GetReturns(existingStatefulSet, nil)
+					statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+				})
 
-			It("overwrites with the desired retention policy when both are set", func() {
-				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
-				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
-				Expect(updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy).NotTo(BeNil())
-				Expect(updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy.WhenDeleted).To(Equal(appsv1.RetainPersistentVolumeClaimRetentionPolicyType))
-			})
-		})
+				It("overwrites with the desired retention policy when both are set", func() {
+					Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+					_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+					Expect(
+						updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy,
+					).NotTo(BeNil())
+					Expect(
+						updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy.WhenDeleted,
+					).To(Equal(appsv1.RetainPersistentVolumeClaimRetentionPolicyType))
+				})
+			},
+		)
 
 		Context("when statefulSet exists with a retention policy but the desired has none", func() {
 			BeforeEach(func() {
@@ -273,7 +280,9 @@ var _ = Describe("StatefulSet Deployer", func() {
 				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
 				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
 				Expect(updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy).NotTo(BeNil())
-				Expect(updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy.WhenDeleted).To(Equal(appsv1.DeletePersistentVolumeClaimRetentionPolicyType))
+				Expect(
+					updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy.WhenDeleted,
+				).To(Equal(appsv1.DeletePersistentVolumeClaimRetentionPolicyType))
 			})
 		})
 
