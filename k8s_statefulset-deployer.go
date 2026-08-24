@@ -33,7 +33,7 @@ type statefulSetDeployer struct {
 }
 
 func (s *statefulSetDeployer) Deploy(ctx context.Context, statefulSet appsv1.StatefulSet) error {
-	_, err := s.clientset.AppsV1().
+	existing, err := s.clientset.AppsV1().
 		StatefulSets(statefulSet.Namespace).
 		Get(ctx, statefulSet.Name, metav1.GetOptions{})
 	if err != nil {
@@ -46,9 +46,23 @@ func (s *statefulSetDeployer) Deploy(ctx context.Context, statefulSet appsv1.Sta
 		glog.V(3).Infof("statefulSet %s created successful", statefulSet.Name)
 		return nil
 	}
+	// Update path: merge only the mutable spec fields into the live object.
+	// Immutable fields (selector, serviceName, volumeClaimTemplates) must not be
+	// sent on update — the API server rejects any change to them.
+	existing.Spec.Template = statefulSet.Spec.Template
+	existing.Spec.Replicas = statefulSet.Spec.Replicas
+	existing.Spec.UpdateStrategy = statefulSet.Spec.UpdateStrategy
+	existing.Spec.RevisionHistoryLimit = statefulSet.Spec.RevisionHistoryLimit
+	existing.Spec.MinReadySeconds = statefulSet.Spec.MinReadySeconds
+	if statefulSet.Spec.PersistentVolumeClaimRetentionPolicy != nil {
+		existing.Spec.PersistentVolumeClaimRetentionPolicy = statefulSet.Spec.PersistentVolumeClaimRetentionPolicy
+	}
+	if statefulSet.Spec.Ordinals != nil {
+		existing.Spec.Ordinals = statefulSet.Spec.Ordinals
+	}
 	_, err = s.clientset.AppsV1().
 		StatefulSets(statefulSet.Namespace).
-		Update(ctx, &statefulSet, metav1.UpdateOptions{})
+		Update(ctx, existing, metav1.UpdateOptions{})
 	if err != nil {
 		return errors.Wrap(ctx, err, "update statefulSet failed")
 	}

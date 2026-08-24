@@ -8,6 +8,10 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## Unreleased
+
+- fix: StatefulSet deployer update path merges only mutable spec fields into the live object and preserves immutable fields (selector, serviceName, volumeClaimTemplates) — the previous full-spec Update was rejected by the API server with "updates to statefulset spec for fields other than ... are forbidden"
+
 ## v1.14.11
 
 - chore: Fix make precommit on Go 1.27 — run gofmt last in the format target, bump golangci-lint to v2.13.1 and errcheck to v1.20.0

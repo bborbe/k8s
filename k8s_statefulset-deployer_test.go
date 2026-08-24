@@ -197,16 +197,38 @@ var _ = Describe("StatefulSet Deployer", func() {
 					},
 				}
 				statefulSetInterface.GetReturns(&existingStatefulSet, nil)
-				statefulSetInterface.UpdateReturns(&statefulSet, nil)
+				statefulSetInterface.UpdateReturns(&existingStatefulSet, nil)
 			})
 
-			It("updates the volume claim templates", func() {
+			It(
+				"preserves the existing volume claim templates (immutable field not overwritten)",
+				func() {
+					Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+					_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+					Expect(updatedStatefulSet.Spec.VolumeClaimTemplates).To(HaveLen(1))
+					Expect(
+						updatedStatefulSet.Spec.VolumeClaimTemplates[0].Name,
+					).To(Equal("old-data"))
+				},
+			)
+		})
+
+		Context("when statefulSet exists with a different template", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				existingStatefulSet.Spec.Template.Spec.Containers[0].Image = "old-image:1.0"
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("applies the desired template and preserves the live object metadata", func() {
 				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
 				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
-				Expect(updatedStatefulSet.Spec.VolumeClaimTemplates).To(HaveLen(1))
-				Expect(updatedStatefulSet.Spec.VolumeClaimTemplates[0].Name).To(Equal("data"))
-				storageRequest := updatedStatefulSet.Spec.VolumeClaimTemplates[0].Spec.Resources.Requests[corev1.ResourceStorage]
-				Expect(storageRequest.String()).To(Equal("10Gi"))
+				Expect(
+					updatedStatefulSet.Spec.Template.Spec.Containers[0].Image,
+				).To(Equal("test-image:latest"))
+				Expect(updatedStatefulSet.ResourceVersion).To(Equal("123"))
 			})
 		})
 
