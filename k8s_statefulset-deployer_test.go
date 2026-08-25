@@ -197,16 +197,128 @@ var _ = Describe("StatefulSet Deployer", func() {
 					},
 				}
 				statefulSetInterface.GetReturns(&existingStatefulSet, nil)
-				statefulSetInterface.UpdateReturns(&statefulSet, nil)
+				statefulSetInterface.UpdateReturns(&existingStatefulSet, nil)
 			})
 
-			It("updates the volume claim templates", func() {
+			It(
+				"preserves the existing volume claim templates (immutable field not overwritten)",
+				func() {
+					Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+					_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+					Expect(updatedStatefulSet.Spec.VolumeClaimTemplates).To(HaveLen(1))
+					Expect(
+						updatedStatefulSet.Spec.VolumeClaimTemplates[0].Name,
+					).To(Equal("old-data"))
+				},
+			)
+		})
+
+		Context("when statefulSet exists with a different template", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				existingStatefulSet.Spec.Template.Spec.Containers[0].Image = "old-image:1.0"
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("applies the desired template and preserves the live object metadata", func() {
 				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
 				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
-				Expect(updatedStatefulSet.Spec.VolumeClaimTemplates).To(HaveLen(1))
-				Expect(updatedStatefulSet.Spec.VolumeClaimTemplates[0].Name).To(Equal("data"))
-				storageRequest := updatedStatefulSet.Spec.VolumeClaimTemplates[0].Spec.Resources.Requests[corev1.ResourceStorage]
-				Expect(storageRequest.String()).To(Equal("10Gi"))
+				Expect(
+					updatedStatefulSet.Spec.Template.Spec.Containers[0].Image,
+				).To(Equal("test-image:latest"))
+				Expect(updatedStatefulSet.ResourceVersion).To(Equal("123"))
+			})
+		})
+
+		Context(
+			"when statefulSet exists with a retention policy and the desired has one too",
+			func() {
+				BeforeEach(func() {
+					existingStatefulSet := statefulSet.DeepCopy()
+					existingStatefulSet.ResourceVersion = "123"
+					existingStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy = &appsv1.StatefulSetPersistentVolumeClaimRetentionPolicy{
+						WhenDeleted: appsv1.DeletePersistentVolumeClaimRetentionPolicyType,
+						WhenScaled:  appsv1.DeletePersistentVolumeClaimRetentionPolicyType,
+					}
+					statefulSet.Spec.PersistentVolumeClaimRetentionPolicy = &appsv1.StatefulSetPersistentVolumeClaimRetentionPolicy{
+						WhenDeleted: appsv1.RetainPersistentVolumeClaimRetentionPolicyType,
+						WhenScaled:  appsv1.RetainPersistentVolumeClaimRetentionPolicyType,
+					}
+					statefulSetInterface.GetReturns(existingStatefulSet, nil)
+					statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+				})
+
+				It("overwrites with the desired retention policy when both are set", func() {
+					Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+					_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+					Expect(
+						updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy,
+					).NotTo(BeNil())
+					Expect(
+						updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy.WhenDeleted,
+					).To(Equal(appsv1.RetainPersistentVolumeClaimRetentionPolicyType))
+				})
+			},
+		)
+
+		Context("when statefulSet exists with a retention policy but the desired has none", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				existingStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy = &appsv1.StatefulSetPersistentVolumeClaimRetentionPolicy{
+					WhenDeleted: appsv1.DeletePersistentVolumeClaimRetentionPolicyType,
+					WhenScaled:  appsv1.DeletePersistentVolumeClaimRetentionPolicyType,
+				}
+				statefulSet.Spec.PersistentVolumeClaimRetentionPolicy = nil
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("preserves the existing retention policy when the desired has none", func() {
+				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+				Expect(updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy).NotTo(BeNil())
+				Expect(
+					updatedStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy.WhenDeleted,
+				).To(Equal(appsv1.DeletePersistentVolumeClaimRetentionPolicyType))
+			})
+		})
+
+		Context("when statefulSet exists with ordinals and the desired has them too", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				existingStatefulSet.Spec.Ordinals = &appsv1.StatefulSetOrdinals{Start: 1}
+				statefulSet.Spec.Ordinals = &appsv1.StatefulSetOrdinals{Start: 5}
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("overwrites with the desired ordinals when both are set", func() {
+				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+				Expect(updatedStatefulSet.Spec.Ordinals).NotTo(BeNil())
+				Expect(updatedStatefulSet.Spec.Ordinals.Start).To(Equal(int32(5)))
+			})
+		})
+
+		Context("when statefulSet exists with ordinals but the desired has none", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				existingStatefulSet.Spec.Ordinals = &appsv1.StatefulSetOrdinals{Start: 1}
+				statefulSet.Spec.Ordinals = nil
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("preserves the existing ordinals when the desired has none", func() {
+				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+				Expect(updatedStatefulSet.Spec.Ordinals).NotTo(BeNil())
+				Expect(updatedStatefulSet.Spec.Ordinals.Start).To(Equal(int32(1)))
 			})
 		})
 
