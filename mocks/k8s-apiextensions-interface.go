@@ -31,15 +31,15 @@ type K8sApiextensionsInterface struct {
 	apiextensionsV1beta1ReturnsOnCall map[int]struct {
 		result1 v1beta1.ApiextensionsV1beta1Interface
 	}
-	DiscoveryStub        func() discovery.DiscoveryInterface
+	DiscoveryStub        func() discovery.DiscoveryInterfaces
 	discoveryMutex       sync.RWMutex
 	discoveryArgsForCall []struct {
 	}
 	discoveryReturns struct {
-		result1 discovery.DiscoveryInterface
+		result1 discovery.DiscoveryInterfaces
 	}
 	discoveryReturnsOnCall map[int]struct {
-		result1 discovery.DiscoveryInterface
+		result1 discovery.DiscoveryInterfaces
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -151,7 +151,7 @@ func (fake *K8sApiextensionsInterface) ApiextensionsV1beta1ReturnsOnCall(i int, 
 	}{result1}
 }
 
-func (fake *K8sApiextensionsInterface) Discovery() discovery.DiscoveryInterface {
+func (fake *K8sApiextensionsInterface) Discovery() discovery.DiscoveryInterfaces {
 	fake.discoveryMutex.Lock()
 	ret, specificReturn := fake.discoveryReturnsOnCall[len(fake.discoveryArgsForCall)]
 	fake.discoveryArgsForCall = append(fake.discoveryArgsForCall, struct {
@@ -175,32 +175,32 @@ func (fake *K8sApiextensionsInterface) DiscoveryCallCount() int {
 	return len(fake.discoveryArgsForCall)
 }
 
-func (fake *K8sApiextensionsInterface) DiscoveryCalls(stub func() discovery.DiscoveryInterface) {
+func (fake *K8sApiextensionsInterface) DiscoveryCalls(stub func() discovery.DiscoveryInterfaces) {
 	fake.discoveryMutex.Lock()
 	defer fake.discoveryMutex.Unlock()
 	fake.DiscoveryStub = stub
 }
 
-func (fake *K8sApiextensionsInterface) DiscoveryReturns(result1 discovery.DiscoveryInterface) {
+func (fake *K8sApiextensionsInterface) DiscoveryReturns(result1 discovery.DiscoveryInterfaces) {
 	fake.discoveryMutex.Lock()
 	defer fake.discoveryMutex.Unlock()
 	fake.DiscoveryStub = nil
 	fake.discoveryReturns = struct {
-		result1 discovery.DiscoveryInterface
+		result1 discovery.DiscoveryInterfaces
 	}{result1}
 }
 
-func (fake *K8sApiextensionsInterface) DiscoveryReturnsOnCall(i int, result1 discovery.DiscoveryInterface) {
+func (fake *K8sApiextensionsInterface) DiscoveryReturnsOnCall(i int, result1 discovery.DiscoveryInterfaces) {
 	fake.discoveryMutex.Lock()
 	defer fake.discoveryMutex.Unlock()
 	fake.DiscoveryStub = nil
 	if fake.discoveryReturnsOnCall == nil {
 		fake.discoveryReturnsOnCall = make(map[int]struct {
-			result1 discovery.DiscoveryInterface
+			result1 discovery.DiscoveryInterfaces
 		})
 	}
 	fake.discoveryReturnsOnCall[i] = struct {
-		result1 discovery.DiscoveryInterface
+		result1 discovery.DiscoveryInterfaces
 	}{result1}
 }
 
