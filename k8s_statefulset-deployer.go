@@ -49,7 +49,16 @@ func (s *statefulSetDeployer) Deploy(ctx context.Context, statefulSet appsv1.Sta
 	// Update path: merge only the mutable spec fields into the live object.
 	// Immutable fields (selector, serviceName, volumeClaimTemplates) must not be
 	// sent on update — the API server rejects any change to them.
+	// The pod template is taken from the desired object except for its
+	// annotations, which are merged so keys written by other tools survive.
+	// Consequence: dropping an annotation from the desired template no longer
+	// removes it from the live object.
+	livePodTemplateAnnotations := existing.Spec.Template.Annotations
 	existing.Spec.Template = statefulSet.Spec.Template
+	existing.Spec.Template.Annotations = mergePodTemplateAnnotations(
+		livePodTemplateAnnotations,
+		statefulSet.Spec.Template.Annotations,
+	)
 	existing.Spec.Replicas = statefulSet.Spec.Replicas
 	existing.Spec.UpdateStrategy = statefulSet.Spec.UpdateStrategy
 	existing.Spec.RevisionHistoryLimit = statefulSet.Spec.RevisionHistoryLimit
@@ -84,4 +93,26 @@ func (s *statefulSetDeployer) Undeploy(ctx context.Context, namespace Namespace,
 	}
 	glog.V(3).Infof("delete %s completed", name)
 	return nil
+}
+
+// mergePodTemplateAnnotations returns the union of the live pod template's
+// annotations and the desired ones. Keys present in desired win. A nil map on
+// either side is treated as empty. When either side is non-empty the result is
+// a newly allocated map; when both are empty the desired map is returned
+// unchanged (nil stays nil). Neither input map is ever mutated.
+func mergePodTemplateAnnotations(
+	live map[string]string,
+	desired map[string]string,
+) map[string]string {
+	if len(live) == 0 && len(desired) == 0 {
+		return desired
+	}
+	result := make(map[string]string, len(live)+len(desired))
+	for key, value := range live {
+		result[key] = value
+	}
+	for key, value := range desired {
+		result[key] = value
+	}
+	return result
 }
