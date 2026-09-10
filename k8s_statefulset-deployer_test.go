@@ -233,6 +233,190 @@ var _ = Describe("StatefulSet Deployer", func() {
 		})
 
 		Context(
+			"when the live pod template has an annotation the desired template does not set",
+			func() {
+				BeforeEach(func() {
+					existingStatefulSet := statefulSet.DeepCopy()
+					existingStatefulSet.ResourceVersion = "123"
+					existingStatefulSet.Spec.Template.Annotations = map[string]string{
+						"example.com/marker": "live-value",
+					}
+					statefulSetInterface.GetReturns(existingStatefulSet, nil)
+					statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+				})
+
+				It("returns no error", func() {
+					Expect(err).To(BeNil())
+				})
+
+				It("preserves the annotation only present on the live pod template", func() {
+					Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+					_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+					Expect(updatedStatefulSet.Spec.Template.Annotations).To(
+						HaveKeyWithValue("example.com/marker", "live-value"),
+					)
+				})
+			},
+		)
+
+		Context("when live and desired pod templates set the same annotation key", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				existingStatefulSet.Spec.Template.Annotations = map[string]string{
+					"shared": "old",
+				}
+				statefulSet.Spec.Template.Annotations = map[string]string{
+					"shared": "new",
+				}
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("lets the desired value win on a conflicting key", func() {
+				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+				Expect(updatedStatefulSet.Spec.Template.Annotations).To(
+					HaveKeyWithValue("shared", "new"),
+				)
+			})
+		})
+
+		Context("when the desired pod template adds an annotation the live one lacks", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				existingStatefulSet.Spec.Template.Annotations = map[string]string{
+					"existing": "kept",
+				}
+				statefulSet.Spec.Template.Annotations = map[string]string{
+					"added": "yes",
+				}
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("merges the added annotation and keeps the live one", func() {
+				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+				Expect(updatedStatefulSet.Spec.Template.Annotations).To(
+					HaveKeyWithValue("added", "yes"),
+				)
+				Expect(updatedStatefulSet.Spec.Template.Annotations).To(
+					HaveKeyWithValue("existing", "kept"),
+				)
+			})
+		})
+
+		Context("when the live pod template has a nil annotation map", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				statefulSet.Spec.Template.Annotations = map[string]string{
+					"added": "yes",
+				}
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("returns no error", func() {
+				Expect(err).To(BeNil())
+			})
+
+			It("applies the desired annotations onto the live nil map", func() {
+				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+				Expect(updatedStatefulSet.Spec.Template.Annotations).To(
+					Equal(map[string]string{"added": "yes"}),
+				)
+			})
+		})
+
+		Context("when the desired pod template has a nil annotation map", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				existingStatefulSet.Spec.Template.Annotations = map[string]string{
+					"example.com/marker": "live-value",
+				}
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("returns no error", func() {
+				Expect(err).To(BeNil())
+			})
+
+			It("keeps the live annotations when the desired template has none", func() {
+				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+				Expect(updatedStatefulSet.Spec.Template.Annotations).To(
+					Equal(map[string]string{"example.com/marker": "live-value"}),
+				)
+			})
+		})
+
+		Context("when merging pod template annotations", func() {
+			BeforeEach(func() {
+				existingStatefulSet := statefulSet.DeepCopy()
+				existingStatefulSet.ResourceVersion = "123"
+				existingStatefulSet.Spec.Template.Annotations = map[string]string{
+					"example.com/marker": "live-value",
+				}
+				statefulSet.Spec.Template.Annotations = map[string]string{
+					"added": "yes",
+				}
+				statefulSetInterface.GetReturns(existingStatefulSet, nil)
+				statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+			})
+
+			It("does not mutate the annotations of the object passed in by the caller", func() {
+				Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+				_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+				Expect(updatedStatefulSet.Spec.Template.Annotations).To(
+					HaveKeyWithValue("added", "yes"),
+				)
+				Expect(updatedStatefulSet.Spec.Template.Annotations).To(
+					HaveKeyWithValue("example.com/marker", "live-value"),
+				)
+				Expect(statefulSet.Spec.Template.Annotations).To(
+					Equal(map[string]string{"added": "yes"}),
+				)
+			})
+		})
+
+		Context(
+			"when the live pod template has a label and a container the desired template does not",
+			func() {
+				BeforeEach(func() {
+					existingStatefulSet := statefulSet.DeepCopy()
+					existingStatefulSet.ResourceVersion = "123"
+					existingStatefulSet.Spec.Template.Labels = map[string]string{
+						"app":       "test-app",
+						"live-only": "yes",
+					}
+					existingStatefulSet.Spec.Template.Spec.Containers[0].Image = "old-image:1.0"
+					statefulSetInterface.GetReturns(existingStatefulSet, nil)
+					statefulSetInterface.UpdateReturns(existingStatefulSet, nil)
+				})
+
+				It("replaces labels and containers without merging them", func() {
+					Expect(statefulSetInterface.UpdateCallCount()).To(Equal(1))
+					_, updatedStatefulSet, _ := statefulSetInterface.UpdateArgsForCall(0)
+					Expect(
+						updatedStatefulSet.Spec.Template.Labels,
+					).NotTo(HaveKey("live-only"))
+					Expect(updatedStatefulSet.Spec.Template.Labels).To(
+						HaveKeyWithValue("app", "test-app"),
+					)
+					Expect(updatedStatefulSet.Spec.Template.Spec.Containers[0].Image).To(
+						Equal("test-image:latest"),
+					)
+				})
+			},
+		)
+
+		Context(
 			"when statefulSet exists with a retention policy and the desired has one too",
 			func() {
 				BeforeEach(func() {
