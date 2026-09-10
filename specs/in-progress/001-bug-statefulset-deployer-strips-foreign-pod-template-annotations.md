@@ -1,8 +1,9 @@
 ---
-status: prompted
+status: verifying
 approved: "2026-09-10T11:54:03Z"
 generating: "2026-09-10T12:11:55Z"
 prompted: "2026-09-10T12:11:55Z"
+verifying: "2026-09-10T12:57:00Z"
 branch: dark-factory/bug-statefulset-deployer-strips-foreign-pod-template-annotations
 ---
 
