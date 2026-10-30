@@ -5,7 +5,7 @@ go 1.27.3
 require (
 	github.com/bborbe/collection v1.21.4
 	github.com/bborbe/errors v1.6.5
-	github.com/bborbe/time v1.27.22
+	github.com/bborbe/time v1.27.23
 	github.com/bborbe/validation v1.5.6
 	github.com/golang/glog v1.2.5
 	github.com/onsi/ginkgo/v2 v2.33.1
@@ -22,7 +22,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.5.0 // indirect
 	github.com/bborbe/math v1.4.16 // indirect
 	github.com/bborbe/parse v1.12.4 // indirect
-	github.com/bborbe/run v1.11.8 // indirect
+	github.com/bborbe/run v1.11.9 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
@@ -58,7 +58,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.25.0 // indirect
 	github.com/prometheus/client_model v0.6.3 // indirect
-	github.com/prometheus/common v0.73.0 // indirect
+	github.com/prometheus/common v0.73.1 // indirect
 	github.com/prometheus/procfs v0.23.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
