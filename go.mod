@@ -5,7 +5,7 @@ go 1.27.3
 require (
 	github.com/bborbe/collection v1.21.4
 	github.com/bborbe/errors v1.6.5
-	github.com/bborbe/time v1.27.23
+	github.com/bborbe/time v1.27.24
 	github.com/bborbe/validation v1.5.6
 	github.com/golang/glog v1.2.5
 	github.com/onsi/ginkgo/v2 v2.33.1
