@@ -8,6 +8,38 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## v1.14.31
+
+- chore: update github.com/bborbe/time to v1.27.24
+
+## v1.14.30
+
+- chore: update github.com/bborbe/time to v1.27.23
+
+## v1.14.29
+
+- chore: update github.com/bborbe/time to v1.27.22
+
+## v1.14.28
+
+- chore: update go module dependencies
+
+## v1.14.27
+
+- chore: update github.com/bborbe/time to v1.27.21
+
+## v1.14.26
+
+- chore: update github.com/bborbe/time to v1.27.20
+
+## v1.14.25
+
+- chore: update github.com/bborbe/collection to v1.21.4, github.com/bborbe/errors to v1.6.5, github.com/bborbe/time to v1.27.19, github.com/bborbe/validation to v1.5.6, k8s.io/api to v0.37.2, k8s.io/apiextensions-apiserver to v0.37.2, k8s.io/apimachinery to v0.37.2, k8s.io/client-go to v0.37.2
+
+## v1.14.24
+
+- chore: update Go to 1.27.3 and github.com/bborbe/collection to v1.21.3, github.com/bborbe/time to v1.27.18, github.com/bborbe/validation to v1.5.5
+
 ## v1.14.23
 
 - chore: update github.com/bborbe/collection to v1.21.2, github.com/bborbe/errors to v1.6.3, github.com/bborbe/time to v1.27.16, github.com/bborbe/validation to v1.5.4, github.com/onsi/ginkgo/v2 to v2.33.1
