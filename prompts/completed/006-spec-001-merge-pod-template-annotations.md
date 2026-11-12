@@ -1,6 +1,6 @@
 ---
 status: completed
-spec: ["001"]
+spec: [001-bug-statefulset-deployer-strips-foreign-pod-template-annotations]
 summary: StatefulSetDeployer now merges pod-template annotations on update instead of replacing them, preserving annotations written by other tools; added 7 Ginkgo test contexts and a CHANGELOG entry, with make precommit exiting 0.
 execution_id: k8s-statefulset-annotations-exec-006-spec-001-merge-pod-template-annotations
 dark-factory-version: dev

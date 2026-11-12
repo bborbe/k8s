@@ -2,6 +2,9 @@ module github.com/bborbe/k8s
 
 go 1.27.3
 
+
+toolchain go1.27.4
+
 require (
 	github.com/bborbe/collection v1.21.6
 	github.com/bborbe/errors v1.6.6
