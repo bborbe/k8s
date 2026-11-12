@@ -8,7 +8,7 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
-## Unreleased
+## v1.15.0
 
 - feat: SecretWatcher and PodWatcher now deliver the objects that already exist when they start, and re-deliver the full set every 5 minutes, so a consumer that starts after its objects exist still receives them and a missed watch event repairs itself. Delivery is at-least-once — each reconnect re-delivers the full set. The interval is injectable through the new NewSecretWatcherWithResync / NewPodWatcherWithResync constructors; the existing constructors and both watcher interfaces are unchanged.
 
