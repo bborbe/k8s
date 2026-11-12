@@ -1,7 +1,12 @@
 ---
-status: approved
+status: failed
+execution_id: k8s-watcher-resync-exec-007-watcher-initial-list-and-resync
+dark-factory-version: v0.198.17
 created: "2026-11-12T12:51:00Z"
 queued: "2026-11-12T12:51:00Z"
+started: "2026-11-12T13:03:27Z"
+completed: "2026-11-12T13:03:29Z"
+lastFailReason: 'execute prompt: docker run failed: wait command: exit status 1'
 ---
 
 # Deliver existing objects on startup and resync watchers periodically
@@ -184,7 +189,7 @@ Then run each of these and check the stated expectation:
 - `grep -c 'NewSecretWatcherWithResync\|NewPodWatcherWithResync' k8s_secret-watcher.go k8s_pod-watcher.go` — **both** counts must be at least `2` (a doc comment in one file must not be able to carry the total alone).
 - `grep -q 'const defaultResyncInterval' k8s_secret-watcher.go` — must exit 0.
 - `grep -c 'func (s \*secretStatusMonitoring) reconcile' k8s_secret-watcher.go` — must print `1`, and the same for `podStatusMonitoring` in `k8s_pod-watcher.go`.
-- `grep -c '\.List(' k8s_secret-watcher.go k8s_pod-watcher.go` — both counts must be at least `1`, proving both watchers perform the startup list. Deliberately looser than `List(ctx, metav1.ListOptions{})`, because `golines` may wrap the argument list across lines.
+- `grep -c 'List(ctx' k8s_secret-watcher.go k8s_pod-watcher.go` — both counts must be at least `1`, proving both watchers perform the startup list. Use this exact pattern: the call chain breaks after `Secrets(...)` / `Pods(...)`, so `List` sits at the start of its own line with **no** leading dot, and `golines` may wrap the argument list — both `\.List(` and `List(ctx, metav1.ListOptions{})` return `0` against correct code.
 - `grep -c 'time.NewTicker' k8s_secret-watcher.go k8s_pod-watcher.go` — both counts must be at least `1`, proving the ticker branch exists in both.
 - `! grep -q 'time\.Tick(' k8s_secret-watcher.go k8s_pod-watcher.go` — must exit 0 (no per-iteration timer). Written as `! grep -q` rather than a bare `grep`, because a bare `grep` exits 1 when it finds nothing, i.e. exactly when this assertion passes. Note this and the next check also pass on an untouched repo — they are regression guards against a rejected approach, not change-detectors; the `time.NewTicker` check above is the change-detector.
 - `! grep -q 'SharedInformerFactory' k8s_secret-watcher.go k8s_pod-watcher.go` — must exit 0, proving the informer route was not substituted.
