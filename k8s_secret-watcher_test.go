@@ -7,7 +7,9 @@ package k8s_test
 import (
 	"context"
 	"errors"
+	"time"
 
+	libtime "github.com/bborbe/time"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
@@ -41,6 +43,7 @@ var _ = Describe("SecretWatcher", func() {
 
 		clientset.CoreV1Returns(coreV1)
 		coreV1.SecretsReturns(secretInterface)
+		secretInterface.ListReturns(&corev1.SecretList{}, nil)
 		secretInterface.WatchReturns(fakeWatcher, nil)
 
 		secretWatcher = k8s.NewSecretWatcher(
@@ -251,6 +254,131 @@ var _ = Describe("SecretWatcher", func() {
 
 			It("returns context.Canceled", func() {
 				Expect(err).To(MatchError(context.Canceled))
+			})
+		})
+
+		Context("when objects already exist before the watch starts", func() {
+			BeforeEach(func() {
+				secretInterface.ListReturns(&corev1.SecretList{
+					Items: []corev1.Secret{
+						{
+							ObjectMeta: metav1.ObjectMeta{
+								Name:      "existing-secret",
+								Namespace: "test-namespace",
+							},
+						},
+					},
+				}, nil)
+				secretEventProcessor.OnUpdateReturns(nil)
+				go func() {
+					fakeWatcher.Stop()
+				}()
+			})
+
+			It("delivers the existing secret", func() {
+				Expect(secretEventProcessor.OnUpdateCallCount()).To(Equal(1))
+				_, receivedSecret := secretEventProcessor.OnUpdateArgsForCall(0)
+				Expect(receivedSecret.Name).To(Equal("existing-secret"))
+			})
+		})
+
+		Context("when the initial list fails", func() {
+			BeforeEach(func() {
+				secretInterface.ListReturns(nil, errors.New("list failed"))
+			})
+
+			It("returns an error", func() {
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(ContainSubstring("list secrets failed"))
+			})
+
+			It("does not start the watch", func() {
+				Expect(secretInterface.WatchCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("when the event processor fails during the initial list", func() {
+			BeforeEach(func() {
+				secretInterface.ListReturns(&corev1.SecretList{
+					Items: []corev1.Secret{
+						{ObjectMeta: metav1.ObjectMeta{Name: "existing-secret"}},
+					},
+				}, nil)
+				secretEventProcessor.OnUpdateReturns(errors.New("update failed"))
+			})
+
+			It("returns an error", func() {
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(ContainSubstring("on update failed"))
+			})
+		})
+
+		Context("when the context is canceled during the initial list", func() {
+			BeforeEach(func() {
+				secretInterface.ListReturns(&corev1.SecretList{
+					Items: []corev1.Secret{
+						{ObjectMeta: metav1.ObjectMeta{Name: "first-secret"}},
+						{ObjectMeta: metav1.ObjectMeta{Name: "second-secret"}},
+					},
+				}, nil)
+				secretEventProcessor.OnUpdateStub = func(ctx context.Context, secret corev1.Secret) error {
+					cancel()
+					return nil
+				}
+			})
+
+			It("stops at the cancellation", func() {
+				Expect(err).To(MatchError(context.Canceled))
+				Expect(secretEventProcessor.OnUpdateCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("when the resync interval elapses", func() {
+			BeforeEach(func() {
+				secretWatcher = k8s.NewSecretWatcherWithResync(
+					clientset,
+					secretEventProcessor,
+					namespace,
+					libtime.Duration(10*time.Millisecond),
+				)
+				secretInterface.ListReturns(&corev1.SecretList{
+					Items: []corev1.Secret{
+						{ObjectMeta: metav1.ObjectMeta{Name: "existing-secret"}},
+					},
+				}, nil)
+				secretEventProcessor.OnUpdateReturns(nil)
+				go func() {
+					time.Sleep(200 * time.Millisecond)
+					fakeWatcher.Stop()
+				}()
+			})
+
+			It("re-delivers the full set on resync", func() {
+				Expect(secretEventProcessor.OnUpdateCallCount()).To(BeNumerically(">=", 2))
+			})
+		})
+
+		Context("when the resync interval is non-positive", func() {
+			BeforeEach(func() {
+				secretWatcher = k8s.NewSecretWatcherWithResync(
+					clientset,
+					secretEventProcessor,
+					namespace,
+					libtime.Duration(0),
+				)
+				secretInterface.ListReturns(&corev1.SecretList{
+					Items: []corev1.Secret{
+						{ObjectMeta: metav1.ObjectMeta{Name: "existing-secret"}},
+					},
+				}, nil)
+				secretEventProcessor.OnUpdateReturns(nil)
+				go func() {
+					fakeWatcher.Stop()
+				}()
+			})
+
+			It("delivers the startup list only", func() {
+				Expect(secretEventProcessor.OnUpdateCallCount()).To(Equal(1))
 			})
 		})
 	})

@@ -43,6 +43,7 @@ type serviceStatusMonitoring struct {
 	serviceManager ServiceEventProcessor
 }
 
+//nolint:dupl // the secret, pod and service watchers are intentionally parallel; see docs/dod.md
 func (s *serviceStatusMonitoring) Watch(ctx context.Context) error {
 	// Check if context is already canceled before starting watch
 	select {

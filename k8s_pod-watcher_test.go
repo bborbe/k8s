@@ -7,7 +7,9 @@ package k8s_test
 import (
 	"context"
 	"errors"
+	"time"
 
+	libtime "github.com/bborbe/time"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
@@ -41,6 +43,7 @@ var _ = Describe("PodWatcher", func() {
 
 		clientset.CoreV1Returns(coreV1)
 		coreV1.PodsReturns(podInterface)
+		podInterface.ListReturns(&corev1.PodList{}, nil)
 		podInterface.WatchReturns(fakeWatcher, nil)
 
 		podWatcher = k8s.NewPodWatcher(
@@ -251,6 +254,131 @@ var _ = Describe("PodWatcher", func() {
 
 			It("returns context.Canceled", func() {
 				Expect(err).To(MatchError(context.Canceled))
+			})
+		})
+
+		Context("when objects already exist before the watch starts", func() {
+			BeforeEach(func() {
+				podInterface.ListReturns(&corev1.PodList{
+					Items: []corev1.Pod{
+						{
+							ObjectMeta: metav1.ObjectMeta{
+								Name:      "existing-pod",
+								Namespace: "test-namespace",
+							},
+						},
+					},
+				}, nil)
+				podEventProcessor.OnUpdateReturns(nil)
+				go func() {
+					fakeWatcher.Stop()
+				}()
+			})
+
+			It("delivers the existing pod", func() {
+				Expect(podEventProcessor.OnUpdateCallCount()).To(Equal(1))
+				_, receivedPod := podEventProcessor.OnUpdateArgsForCall(0)
+				Expect(receivedPod.Name).To(Equal("existing-pod"))
+			})
+		})
+
+		Context("when the initial list fails", func() {
+			BeforeEach(func() {
+				podInterface.ListReturns(nil, errors.New("list failed"))
+			})
+
+			It("returns an error", func() {
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(ContainSubstring("list pods failed"))
+			})
+
+			It("does not start the watch", func() {
+				Expect(podInterface.WatchCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("when the event processor fails during the initial list", func() {
+			BeforeEach(func() {
+				podInterface.ListReturns(&corev1.PodList{
+					Items: []corev1.Pod{
+						{ObjectMeta: metav1.ObjectMeta{Name: "existing-pod"}},
+					},
+				}, nil)
+				podEventProcessor.OnUpdateReturns(errors.New("update failed"))
+			})
+
+			It("returns an error", func() {
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(ContainSubstring("on update failed"))
+			})
+		})
+
+		Context("when the context is canceled during the initial list", func() {
+			BeforeEach(func() {
+				podInterface.ListReturns(&corev1.PodList{
+					Items: []corev1.Pod{
+						{ObjectMeta: metav1.ObjectMeta{Name: "first-pod"}},
+						{ObjectMeta: metav1.ObjectMeta{Name: "second-pod"}},
+					},
+				}, nil)
+				podEventProcessor.OnUpdateStub = func(ctx context.Context, pod corev1.Pod) error {
+					cancel()
+					return nil
+				}
+			})
+
+			It("stops at the cancellation", func() {
+				Expect(err).To(MatchError(context.Canceled))
+				Expect(podEventProcessor.OnUpdateCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("when the resync interval elapses", func() {
+			BeforeEach(func() {
+				podWatcher = k8s.NewPodWatcherWithResync(
+					clientset,
+					podEventProcessor,
+					namespace,
+					libtime.Duration(10*time.Millisecond),
+				)
+				podInterface.ListReturns(&corev1.PodList{
+					Items: []corev1.Pod{
+						{ObjectMeta: metav1.ObjectMeta{Name: "existing-pod"}},
+					},
+				}, nil)
+				podEventProcessor.OnUpdateReturns(nil)
+				go func() {
+					time.Sleep(200 * time.Millisecond)
+					fakeWatcher.Stop()
+				}()
+			})
+
+			It("re-delivers the full set on resync", func() {
+				Expect(podEventProcessor.OnUpdateCallCount()).To(BeNumerically(">=", 2))
+			})
+		})
+
+		Context("when the resync interval is non-positive", func() {
+			BeforeEach(func() {
+				podWatcher = k8s.NewPodWatcherWithResync(
+					clientset,
+					podEventProcessor,
+					namespace,
+					libtime.Duration(0),
+				)
+				podInterface.ListReturns(&corev1.PodList{
+					Items: []corev1.Pod{
+						{ObjectMeta: metav1.ObjectMeta{Name: "existing-pod"}},
+					},
+				}, nil)
+				podEventProcessor.OnUpdateReturns(nil)
+				go func() {
+					fakeWatcher.Stop()
+				}()
+			})
+
+			It("delivers the startup list only", func() {
+				Expect(podEventProcessor.OnUpdateCallCount()).To(Equal(1))
 			})
 		})
 	})
