@@ -1,15 +1,12 @@
 module github.com/bborbe/k8s
 
-go 1.27.3
-
-
-toolchain go1.27.4
+go 1.27.4
 
 require (
-	github.com/bborbe/collection v1.21.6
-	github.com/bborbe/errors v1.6.6
-	github.com/bborbe/time v1.27.26
-	github.com/bborbe/validation v1.5.9
+	github.com/bborbe/collection v1.21.7
+	github.com/bborbe/errors v1.6.7
+	github.com/bborbe/time v1.27.28
+	github.com/bborbe/validation v1.5.10
 	github.com/golang/glog v1.2.5
 	github.com/onsi/ginkgo/v2 v2.34.0
 	github.com/onsi/gomega v1.44.0
@@ -23,9 +20,9 @@ require (
 
 require (
 	github.com/Masterminds/semver/v3 v3.5.0 // indirect
-	github.com/bborbe/math v1.4.19 // indirect
-	github.com/bborbe/parse v1.12.5 // indirect
-	github.com/bborbe/run v1.11.10 // indirect
+	github.com/bborbe/math v1.4.20 // indirect
+	github.com/bborbe/parse v1.12.7 // indirect
+	github.com/bborbe/run v1.11.12 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
@@ -37,15 +34,15 @@ require (
 	github.com/go-openapi/jsonreference v1.0.3 // indirect
 	github.com/go-openapi/swag v0.27.1 // indirect
 	github.com/go-openapi/swag/cmdutils v0.27.1 // indirect
-	github.com/go-openapi/swag/conv v0.29.2 // indirect
+	github.com/go-openapi/swag/conv v0.27.1 // indirect
 	github.com/go-openapi/swag/fileutils v0.27.1 // indirect
-	github.com/go-openapi/swag/jsonutils v0.29.2 // indirect
+	github.com/go-openapi/swag/jsonutils v0.27.1 // indirect
 	github.com/go-openapi/swag/loading v0.27.1 // indirect
 	github.com/go-openapi/swag/mangling v0.27.1 // indirect
 	github.com/go-openapi/swag/netutils v0.27.1 // indirect
-	github.com/go-openapi/swag/pools v0.29.2 // indirect
+	github.com/go-openapi/swag/pools v0.27.1 // indirect
 	github.com/go-openapi/swag/stringutils v0.27.1 // indirect
-	github.com/go-openapi/swag/typeutils v0.29.2 // indirect
+	github.com/go-openapi/swag/typeutils v0.27.1 // indirect
 	github.com/go-openapi/swag/yamlutils v0.27.1 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/google/gnostic-models v0.7.1 // indirect
@@ -61,7 +58,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.25.0 // indirect
 	github.com/prometheus/client_model v0.6.3 // indirect
-	github.com/prometheus/common v0.73.1 // indirect
+	github.com/prometheus/common v0.74.0 // indirect
 	github.com/prometheus/procfs v0.23.0 // indirect
 	github.com/spf13/pflag v1.1.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
@@ -91,4 +88,5 @@ exclude (
 	cloud.google.com/go v0.26.0
 	k8s.io/kube-openapi v0.0.0-20261007072838-e2e80c32a35f
 	k8s.io/kube-openapi v0.0.0-20261014044854-ca3452a79603
+	k8s.io/kube-openapi v0.0.0-20261104182252-5bee61fc5225
 )
