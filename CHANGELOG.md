@@ -8,6 +8,10 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## Unreleased
+
+- chore: update github.com/bborbe/collection to v1.21.9, github.com/bborbe/errors to v1.7.1, github.com/bborbe/time to v1.27.29, github.com/bborbe/validation to v1.5.11, k8s.io/api to v0.37.3, k8s.io/apiextensions-apiserver to v0.37.3, k8s.io/apimachinery to v0.37.3, k8s.io/client-go to v0.37.3
+
 ## v1.16.2
 
 - chore: remove orphaned section comments left in `.trivyignore` by the stale-ignore sweep
